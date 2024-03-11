@@ -1,7 +1,7 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { TaskColumnComponent } from './task-column/task-column.component';
-import { TaskStatus, ALL_TASKS_STATUSES } from '../model/task-status';
+import { ALL_TASKS_STATUSES } from '../model/task-status';
 
 @Component({
   selector: 'app-kanban-board',
@@ -13,4 +13,5 @@ import { TaskStatus, ALL_TASKS_STATUSES } from '../model/task-status';
 export class KanbanBoardComponent {
 
   tasksStatuses = ALL_TASKS_STATUSES;
+
 }
