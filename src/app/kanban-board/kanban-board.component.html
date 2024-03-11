@@ -1,3 +1,8 @@
+<header>
+    <h1>Personal Kanban Board</h1>
+</header>
 <main class="kanban-board">
-    <app-task-column *ngFor="let tasksStatus of tasksStatuses" [tasksStatus]="tasksStatus"></app-task-column>
+    @for (tasksStatus of tasksStatuses; track $index) {
+    <app-task-column [tasksStatus]="tasksStatus" class="kanban-board__task-column" />
+    }
 </main>
