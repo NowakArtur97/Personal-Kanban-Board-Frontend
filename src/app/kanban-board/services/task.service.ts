@@ -10,7 +10,7 @@ const EXAMPLE_TASK: Task = {
   description: "Create backend repository for Personal Kanbard Board application",
   status: TaskStatus.InProgress,
   priority: TaskPriority.MEDIUM,
-  targetEndDate: "",
+  targetEndDate: "2016-08-16T12:10:56",
   createdOn: "Tuesday, Aug 16, 2016 12:10:56 PM",
   createdBy: "Arthur Smith",
   updatedOn: "Tuesday, Aug 16, 2016 12:10:56 PM",
@@ -62,7 +62,7 @@ const TEMP_TASKS: Task[] = [
 })
 export class TaskService {
 
-  #tasks = signal<Task[]>([]);
+  #tasks = signal<Task[]>(TEMP_TASKS);
 
   tasks = this.#tasks.asReadonly();
 }
