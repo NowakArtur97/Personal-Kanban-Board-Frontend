@@ -1,8 +1,9 @@
 .task-column {
     width: 250px;
     margin: 1vw auto;
+    padding: 0.25% 0;
 
-    background-color: aqua;
+    border-radius: 4px;
 }
 
 .task-column__status {
