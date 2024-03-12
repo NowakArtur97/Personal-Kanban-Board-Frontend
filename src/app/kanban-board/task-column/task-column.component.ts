@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
-import { TaskService } from '../services/task.service';
 import { TaskStatus } from '../models/task-status.model';
+import { TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-task-column',
