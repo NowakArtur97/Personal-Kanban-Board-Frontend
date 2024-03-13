@@ -22,7 +22,7 @@
 }
 
 .task__title {
-    font-size: 1.25em;
+    font-size: 1.3em;
     font-weight: 600;
 
     white-space: nowrap;
@@ -34,7 +34,7 @@
     display: flex;
     justify-content: space-between;
 
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: 400;
     flex-basis: 10%;
 }
@@ -48,12 +48,14 @@
     flex-basis: 60%;
     opacity: 0;
 
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     transform: translateY(75%);
     transform-origin: bottom;
     transition: all 1s;
 }
 
-.task__description_container {
-    overflow: hidden;
-    text-overflow: ellipsis;
+.task__description {
+    font-size: 1.2rem;
 }
