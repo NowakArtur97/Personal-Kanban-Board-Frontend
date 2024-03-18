@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 import Task from '../models/task.model';
 import { NgStyle } from '@angular/common';
 import TaskPriority from '../models/task-priority.model';
-import TaskColorUtil from '../utils/task-color.util';
+import TaskColorUtil from '../../utils/task-color.util';
 
 @Component({
   selector: 'app-task',
