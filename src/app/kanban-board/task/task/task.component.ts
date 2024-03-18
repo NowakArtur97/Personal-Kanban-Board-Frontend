@@ -1,7 +1,6 @@
 import { Component, input } from '@angular/core';
 import Task from '../models/task.model';
 import { NgStyle } from '@angular/common';
-import TaskPriority from '../models/task-priority.model';
 import TaskColorUtil from '../../utils/task-color.util';
 
 @Component({
@@ -17,7 +16,7 @@ export class TaskComponent {
   color = TaskColorUtil.randomColor();
 
   get priority() {
-    const priority = TaskPriority[this.task()!.priority];
+    const priority = this.task()?.priority.toString() ?? "";
     return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
   }
 }
