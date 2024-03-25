@@ -22,7 +22,7 @@
     display: flex;
 }
 
-.user_auth__action_header {
+.user_auth__action_button {
     flex-basis: 50%;
 
     padding: 2.5% 7%;
@@ -39,17 +39,17 @@
     transition: all 0.5s;
 }
 
-.user_auth__action_header:hover {
+.user_auth__action_button:hover {
     background-color: hsla(0, 0%, 0%);
     color: hsl(0, 0%, 100%);
 }
 
-.user_auth__action_header--active {
+.user_auth__action_button--active {
     background-color: hsla(0, 0%, 0%);
     color: hsl(0, 0%, 100%);
 }
 
-.user_auth__action_header--active:hover {
+.user_auth__action_button--active:hover {
     background-color: hsl(0, 0%, 100%);
     color: hsla(0, 0%, 0%);
 }

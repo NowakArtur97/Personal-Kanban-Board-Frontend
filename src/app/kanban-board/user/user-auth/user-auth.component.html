@@ -1,15 +1,18 @@
 <div class="user_auth">
     <div class="user_auth__action">
-        <button (click)="changeAction()" class="user_auth__action_header user_auth__action_header--active">Sign
+        <button (click)="changeAction()" [ngClass]="{' user_auth__action_button--active': isInLoginView}"
+            class="user_auth__action_button">Sign
             in</button>
-        <button (click)="changeAction()" class="user_auth__action_header">Sign up</button>
+        <button (click)="changeAction()" [ngClass]="{' user_auth__action_button--active': !isInLoginView}"
+            class="user_auth__action_button">Sign up</button>
     </div>
     <form class="user_auth__form">
         <div class="user_auth__controls_wrapper">
             <label for="username" class="user_auth__label">
                 {{isInLoginView ?"Username or email:" : "Username:"}}
             </label>
-            <input id="username" type="text" placeholder="Username" class="user_auth__input">
+            <input id="username" type="text" placeholder='{{isInLoginView ?"Username or email:" : "Username:"}}'
+                class="user_auth__input">
         </div>
         @if (!isInLoginView) {
         <div class="user_auth__controls_wrapper">
