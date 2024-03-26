@@ -36,7 +36,7 @@ export class UserAuthComponent {
         usernameOrEmail: usernameOrEmail!!,
         password: password!!
       };
-      // this.userService.loginUser(authenticationRequest);
+      this.userService.loginUser(authenticationRequest);
     } else {
 
     }
