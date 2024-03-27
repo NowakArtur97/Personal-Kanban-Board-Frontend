@@ -1,10 +1,10 @@
 <div class="user_auth">
     <div class="user_auth__action">
-        <button #signInButton (click)="changeAction()" (mouseenter)="setupHover(signInButton, signUpButton)"
+        <button #signInButton (click)="changeAction(true)" (mouseenter)="setupHover(signInButton, signUpButton)"
             (mouseleave)="setupUnhover(signInButton, signUpButton)"
             [ngClass]="{'user_auth__action_button--active': isInLoginView}" class="user_auth__action_button">Sign
             in</button>
-        <button #signUpButton (click)="changeAction()" (mouseenter)="setupHover(signUpButton, signInButton)"
+        <button #signUpButton (click)="changeAction(false)" (mouseenter)="setupHover(signUpButton, signInButton)"
             (mouseleave)="setupUnhover(signUpButton, signInButton)"
             [ngClass]="{'user_auth__action_button--active': !isInLoginView}" class="user_auth__action_button">Sign
             up</button>
