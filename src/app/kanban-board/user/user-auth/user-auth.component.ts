@@ -2,7 +2,7 @@ import { NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import AuthenticationRequest from '../models/authentication-request.dto';
 import { UserService } from '../services/user.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import UserDTO from '../models/user.dto';
 
 @Component({
@@ -18,10 +18,31 @@ export class UserAuthComponent {
 
   isInLoginView = true;
 
-  userForm = new FormGroup({
-    email: new FormControl(''),
-    usernameOrEmail: new FormControl(''),
-    password: new FormControl(''),
+  loginForm = new FormGroup({
+    usernameOrEmail: new FormControl('', [
+      Validators.required,
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+    ]),
+  });
+
+  registerForm = new FormGroup({
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+      Validators.maxLength(100),
+    ]),
+    email: new FormControl('', [
+      Validators.required,
+      Validators.email,
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+    ]),
+    matchingPassword: new FormControl('', [
+      Validators.required,
+    ]),
   });
 
   errors = this.userService.errors;
@@ -32,25 +53,28 @@ export class UserAuthComponent {
     if (isClickingOnTheSameAction) {
       return;
     }
+    this.loginForm.reset();
+    this.registerForm.reset();
     this.isInLoginView = !this.isInLoginView;
     this.userService.resetErrorMessages();
   }
 
-  doAction(userForm: any): void {
-    if (!userForm.valid) {
+  doAction(loginForm: any): void {
+    if (!loginForm.valid) {
       return;
     }
+    this.userService.resetErrorMessages();
     if (this.isInLoginView) {
-      const { usernameOrEmail, password } = this.userForm.value;
+      const { usernameOrEmail, password } = this.loginForm.value;
       const authenticationRequest: AuthenticationRequest = {
         usernameOrEmail: usernameOrEmail!!,
         password: password!!
       };
       this.userService.loginUser(authenticationRequest);
     } else {
-      const { usernameOrEmail, email, password } = this.userForm.value;
+      const { username, email, password } = this.registerForm.value;
       const userDTO: UserDTO = {
-        username: usernameOrEmail!!,
+        username: username!!,
         email: email!!,
         password: password!!
       };

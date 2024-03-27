@@ -9,31 +9,20 @@
             [ngClass]="{'user_auth__action_button--active': !isInLoginView}" class="user_auth__action_button">Sign
             up</button>
     </div>
-    <form [formGroup]="userForm" (ngSubmit)="doAction(userForm)" class="user_auth__form">
+    @if(isInLoginView) {
+    <form [formGroup]="loginForm" (ngSubmit)="doAction(loginForm)" class="user_auth__form">
         <div class="user_auth__controls_wrapper">
-            <label for="username" class="user_auth__label">
-                {{isInLoginView ?"Username or email:" : "Username:"}}
+            <label for="username-or-email" class="user_auth__label">
+                Username or email:
             </label>
-            <input formControlName="usernameOrEmail" id="username" type="text"
-                placeholder='{{isInLoginView ?"Username or email:" : "Username:"}}' class="user_auth__input">
+            <input formControlName="usernameOrEmail" id="username-or-email" type="text" placeholder="Username or email"
+                class="user_auth__input">
         </div>
-        @if (!isInLoginView) {
-        <div class="user_auth__controls_wrapper">
-            <label for="email" class="user_auth__label">Email:</label>
-            <input formControlName="email" id="email" type="email" placeholder="Email" class="user_auth__input">
-        </div>
-        }
         <div class="user_auth__controls_wrapper">
             <label for="password" class="user_auth__label">Password:</label>
             <input formControlName="password" id="password" type="password" placeholder="*****"
                 class="user_auth__input">
         </div>
-        @if (!isInLoginView) {
-        <div class="user_auth__controls_wrapper">
-            <label for="matching-password" class="user_auth__label">Repeat password:</label>
-            <input id="matching-password" placeholder="*****" type="password" class="user_auth__input">
-        </div>
-        }
         <div class="user_auth__controls_wrapper">
             <button class="user_auth__button" type="submit">Submit</button>
         </div>
@@ -45,4 +34,38 @@
         </div>
         }
     </form>
+    } @else {
+    <form [formGroup]="registerForm" (ngSubmit)="doAction(registerForm)" class="user_auth__form">
+        <div class="user_auth__controls_wrapper">
+            <label for="username" class="user_auth__label">
+                Username:
+            </label>
+            <input formControlName="username" id="username" type="text" placeholder="Username" class="user_auth__input">
+        </div>
+        <div class="user_auth__controls_wrapper">
+            <label for="email" class="user_auth__label">Email:</label>
+            <input formControlName="email" id="email" type="email" placeholder="Email" class="user_auth__input">
+        </div>
+        <div class="user_auth__controls_wrapper">
+            <label for="password" class="user_auth__label">Password:</label>
+            <input formControlName="password" id="password" type="password" placeholder="*****"
+                class="user_auth__input">
+        </div>
+        <div class="user_auth__controls_wrapper">
+            <label for="matching-password" class="user_auth__label">Repeat password:</label>
+            <input formControlName="matchingPassword" id="matching-password" placeholder="*****" type="password"
+                class="user_auth__input">
+        </div>
+        <div class="user_auth__controls_wrapper">
+            <button class="user_auth__button" type="submit">Submit</button>
+        </div>
+        @if(errors().length > 0){
+        <div class="user_auth__controls_wrapper">
+            @for (error of errors(); track $index) {
+            <p class="user_auth__error">{{error}}</p>
+            }
+        </div>
+        }
+    </form>
+    }
 </div>
