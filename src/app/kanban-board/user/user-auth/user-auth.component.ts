@@ -24,7 +24,7 @@ export class UserAuthComponent {
     password: new FormControl(''),
   });
 
-  errors: string[] = this.userService.errors();
+  errors = this.userService.errors;
 
   changeAction(): void {
     this.isInLoginView = !this.isInLoginView;
