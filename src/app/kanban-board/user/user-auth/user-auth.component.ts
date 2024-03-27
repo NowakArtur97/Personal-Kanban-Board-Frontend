@@ -28,6 +28,7 @@ export class UserAuthComponent {
 
   changeAction(): void {
     this.isInLoginView = !this.isInLoginView;
+    this.userService.resetErrorMessages();
   }
 
   doAction(userForm: any): void {
