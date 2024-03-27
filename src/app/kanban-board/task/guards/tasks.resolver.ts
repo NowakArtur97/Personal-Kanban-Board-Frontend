@@ -3,6 +3,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { inject } from '@angular/core';
 import { UserService } from '../../user/services/user.service';
 import { TaskService } from '../services/task.service';
+import { PATHS } from '../../../app.routes';
 
 export const tasksResolver: ResolveFn<any>
     = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> => {
@@ -10,7 +11,7 @@ export const tasksResolver: ResolveFn<any>
         const userService = inject(UserService);
 
         switch (state.url) {
-            case "/":
+            case `/${PATHS.KANBAN_BOARD}`:
                 taskService.getTasksByUsername(userService.user().username);
         }
         return EMPTY;
