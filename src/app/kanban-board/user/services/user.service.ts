@@ -11,6 +11,8 @@ import { ApolloError } from '@apollo/client';
 })
 export class UserService {
 
+    private readonly ERROR_MESSAGE_DIVIDER = ".\n";
+
     private apollo = inject(Apollo);
 
     #user = signal<User>({
@@ -20,8 +22,10 @@ export class UserService {
         token: "",
         expirationTimeInMilliseconds: 0
     });
+    #errors = signal<string[]>([]);
 
     user = this.#user.asReadonly();
+    errors = this.#errors.asReadonly();
 
     loginUser(authenticationRequest: AuthenticationRequest): void {
         this.apollo.watchQuery({
@@ -29,12 +33,12 @@ export class UserService {
             variables: {
                 authenticationRequest,
             },
-        }).valueChanges.subscribe(({ data, error }: any) => {
+        }).valueChanges.subscribe(({ data }: any) => {
             this.#user.set(data.loginUser);
             console.log(this.#user());
-        }, (error: ApolloError) => {
-            console.log(error.message);
-        });
+        }, (error: ApolloError) =>
+            this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        );
     }
 
     registerUser(userDTO: UserDTO): void {
@@ -46,9 +50,8 @@ export class UserService {
         }).subscribe(({ data }: any) => {
             this.#user.set(data.registerUser);
             console.log(this.#user());
-        }, (error: ApolloError) => {
-            console.log(error.message);
-        }
+        }, (error: ApolloError) =>
+            this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
 }

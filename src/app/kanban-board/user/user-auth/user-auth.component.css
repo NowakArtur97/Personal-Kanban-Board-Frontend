@@ -99,6 +99,12 @@
 
 .user_auth__button:hover {
     background-color: hsl(0, 0%, 100%);
-    color: hsla(0, 0%, 0%, 5);
+    color: hsla(0, 0%, 0%);
     transform: scale(1.1);
+}
+
+.user_auth__error {
+    color: rgb(255, 0, 0);
+    font-size: 1.25rem;
+    text-align: center;
 }
