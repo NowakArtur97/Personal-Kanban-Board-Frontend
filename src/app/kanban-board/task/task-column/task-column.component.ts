@@ -17,18 +17,18 @@ export class TaskColumnComponent {
   private taskService = inject(TaskService);
 
   tasksStatus = input<TaskStatus>();
-
   tasks = computed(() =>
     this.taskService.tasks().filter(task =>
       this.hasSameTaskStatus(task)
       || this.hasSameStatusInAnySubtask(task)));
 
-  color = this.randomColor();
+  color: string = "";
 
   // TODO: Remove
   constructor() {
     effect(() => {
       console.table(this.tasks());
+      this.randomColor(this.tasksStatus() ?? 0);
     });
   }
 
@@ -42,9 +42,8 @@ export class TaskColumnComponent {
   private hasSameTaskStatus = (task: Task): boolean =>
     TaskStatus[task.status] === this.status;
 
-
-  private randomColor(): string {
+  private randomColor(index: number): void {
     const colors = ["#ef7d57", "#41a6f6", "#566c86"];
-    return colors[Math.floor(Math.random() * colors.length)];
+    this.color = colors[index];
   };
 }

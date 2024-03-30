@@ -2,14 +2,13 @@
     <div class="task__title_container">
         <p class="task__title">{{task()?.title}}</p>
     </div>
-    <div class="task__details_container">
-        <p class="task__assigned_to">Assigned to: {{task()?.assignedTo}}</p>
-        <p class="task__priority">Priority: {{priority}}</p>
-        <p class="task__target_end">Target end: {{task()?.targetEndDate}}</p>
-    </div>
     <div class="task__description_container">
         <p class="task__description">
             {{task()?.description}}
         </p>
+    </div>
+    <div class="task__details_container">
+        <p class="task__assigned_to">Assigned to: {{task()?.assignedTo}}</p>
+        <p class="task__priority">{{priority}}</p>
     </div>
 </div>

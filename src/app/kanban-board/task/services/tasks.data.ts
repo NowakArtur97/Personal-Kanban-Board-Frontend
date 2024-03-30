@@ -36,6 +36,7 @@ const EXAMPLE_SUBTASK: Subtask = {
 const TEMP_TASKS: Task[] = [
     {
         ...EXAMPLE_TASK,
+        title: "Lorem ipsum dolor sit amet",
         status: TaskStatus.InProgress,
         priority: TaskPriority.MEDIUM,
         subtasks: [
@@ -59,7 +60,7 @@ const TEMP_TASKS: Task[] = [
     {
         ...EXAMPLE_TASK,
         status: TaskStatus.ReadyToStart,
-        priority: TaskPriority.MEDIUM,
+        priority: TaskPriority.LOW,
         subtasks: [
             {
                 ...EXAMPLE_SUBTASK,
