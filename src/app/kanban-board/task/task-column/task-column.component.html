@@ -1,5 +1,5 @@
 <div class="task-column">
-    <p class="task-column__status">{{status}}</p>
+    <h2 class="task-column__status">{{status}}</h2>
     <div class="task-column__tasks">
         @for (task of tasks(); track $index) {
         <app-task [task]="task" class="task-column__task" />
