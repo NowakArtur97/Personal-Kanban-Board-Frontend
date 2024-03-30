@@ -12,13 +12,10 @@ import { NgStyle } from '@angular/common';
 export class TaskComponent {
 
   task = input<Task>();
+  color = this.randomColor();
 
-  randomColor() {
-    let color = '#';
-    const letters = '0123456789ABCDEF';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  private randomColor(): string {
+    const colors = ["#94b0c2", "#73eff7", "#a7f070", "#ffcd75"];
+    return colors[Math.floor(Math.random() * colors.length)];
   };
 }
