@@ -62,7 +62,7 @@ const TEMP_TASKS: Task[] = [
 })
 export class TaskService {
 
-    #tasks = signal<Task[]>([]);
+    #tasks = signal<Task[]>(TEMP_TASKS);
 
     tasks = this.#tasks.asReadonly();
 }

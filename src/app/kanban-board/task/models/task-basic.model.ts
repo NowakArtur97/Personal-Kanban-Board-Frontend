@@ -8,11 +8,12 @@ export default interface BaseTask {
     title: string,
     description: string,
     status: TaskStatus,
+    priority: TaskPriority,
     targetEndDate: string,
+
     createdOn: string,
     createdBy: string,
-    updatedOn: string,
-    updatedBy: string,
+    updatedOn?: string,
+    updatedBy?: string,
     assignedTo: string,
-    priority: TaskPriority,
 }
