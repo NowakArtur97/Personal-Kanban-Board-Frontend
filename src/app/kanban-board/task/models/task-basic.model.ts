@@ -1,5 +1,5 @@
 import TaskPriority from "./task-priority.model";
-import { TaskStatus } from "./task-status";
+import { TaskStatus } from "./task-status.model";
 
 export default interface BaseTask {
     id: string,
