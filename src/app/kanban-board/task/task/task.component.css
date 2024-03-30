@@ -1,6 +1,35 @@
 .task {
+    display: flex;
+    flex-direction: column;
+
     height: 150px;
     width: 234px;
     margin: 2% auto;
     padding: 3%;
+}
+
+.task__title_container {
+    flex-basis: 15%;
+}
+
+.task__title {
+    font-size: 1.25em;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task__details_container {
+    font-size: 1.1em;
+    font-weight: 400;
+    flex-basis: 30%;
+}
+
+.task__description_container {
+    flex-basis: 55%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
