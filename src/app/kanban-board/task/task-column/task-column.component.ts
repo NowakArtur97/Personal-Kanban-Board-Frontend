@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-task-column',
@@ -9,5 +9,5 @@ import { Component, Input } from '@angular/core';
 })
 export class TaskColumnComponent {
 
-  @Input() tasksStatus!: string;
+  tasksStatus = input<string>();
 }

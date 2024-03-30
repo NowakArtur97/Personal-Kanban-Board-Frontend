@@ -1,0 +1,8 @@
+.kanban-board {
+    display: flex;
+
+}
+
+.kanban-board__task-column {
+    flex-basis: calc(100% / 3);
+}
