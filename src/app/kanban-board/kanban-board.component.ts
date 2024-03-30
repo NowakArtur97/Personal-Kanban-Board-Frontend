@@ -13,4 +13,5 @@ import { TaskColumnComponent } from './task/task-column/task-column.component';
 export class KanbanBoardComponent {
 
     tasksStatuses = ALL_TASKS_STATUSES;
+
 }
