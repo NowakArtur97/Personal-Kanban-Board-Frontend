@@ -3,10 +3,18 @@
     flex-direction: column;
     justify-content: space-between;
 
-    height: 150px;
+    height: 60px;
     width: 234px;
     margin: 2% auto;
     padding: 3%;
+
+    transform-origin: bottom;
+    transition: all 1s;
+}
+
+.task:hover {
+    cursor: pointer;
+    height: 150px;
 }
 
 .task__title_container {
@@ -31,9 +39,21 @@
     flex-basis: 10%;
 }
 
+.task:hover .task__description_container {
+    transform: translateY(0%);
+    opacity: 1;
+}
+
 .task__description_container {
     flex-basis: 60%;
+    opacity: 0;
 
+    transform: translateY(75%);
+    transform-origin: bottom;
+    transition: all 1s;
+}
+
+.task__description_container {
     overflow: hidden;
     text-overflow: ellipsis;
 }

@@ -37,6 +37,7 @@ const TEMP_TASKS: Task[] = [
     {
         ...EXAMPLE_TASK,
         title: "Lorem ipsum dolor sit amet",
+        description: "Lorem ipsum dolor sit amet",
         status: TaskStatus.InProgress,
         priority: TaskPriority.MEDIUM,
         subtasks: [
