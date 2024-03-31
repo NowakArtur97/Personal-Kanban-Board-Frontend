@@ -3,7 +3,6 @@ import { TaskStatus } from "./task-status.model";
 
 export default interface BaseTask {
     id: string,
-    userId: string,
 
     title: string,
     description: string,
@@ -11,9 +10,9 @@ export default interface BaseTask {
     priority: TaskPriority,
     targetEndDate: string,
 
-    createdOn: string,
     createdBy: string,
-    updatedOn?: string,
+    createdOn: string,
     updatedBy?: string,
+    updatedOn?: string,
     assignedTo: string,
 }
