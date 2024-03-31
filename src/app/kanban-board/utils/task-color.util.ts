@@ -7,14 +7,14 @@ export default class TaskColorUtil {
     ];
 
     static randomColor(): string {
-        if (this.#colors.every(color => color.numberOfTimesUsed === 0)) {
-            this.#colors[Math.floor(Math.random() * this.#colors.length)].numberOfTimesUsed++;
-        } else {
+        if (this.#colors.some(color => color.numberOfTimesUsed !== 0)) {
             this.#colors[this.#colors.length - 1].numberOfTimesUsed++;
+        } else {
+            this.#colors[Math.floor(Math.random() * this.#colors.length)].numberOfTimesUsed++;
         }
-        this.#colors = this.#colors.sort((c1, c2) =>
-            (c1.numberOfTimesUsed > c2.numberOfTimesUsed) ? -1
-                : ((c2.numberOfTimesUsed > c1.numberOfTimesUsed) ? 1 : 0));
+        this.#colors = this.#colors.sort(({ numberOfTimesUsed }, { numberOfTimesUsed: numberOfTimesUsed2 }) =>
+            (numberOfTimesUsed > numberOfTimesUsed2) ? -1
+                : ((numberOfTimesUsed2 > numberOfTimesUsed) ? 1 : 0));
 
         return this.#colors[this.#colors.length - 1].color;
     };
