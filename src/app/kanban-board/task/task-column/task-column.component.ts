@@ -46,4 +46,7 @@ export class TaskColumnComponent {
     const colors = ["#ef7d57", "#41a6f6", "#566c86"];
     this.color = colors[index];
   };
+
+  formattedStatus = (): string =>
+    TaskStatus[this.tasksStatus()!].replace(/([A-Z])/g, ' $1').trim();
 }
