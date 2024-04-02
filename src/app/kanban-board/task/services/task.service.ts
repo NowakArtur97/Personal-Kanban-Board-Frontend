@@ -1,13 +1,28 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
-import TEMP_TASKS from './tasks.data';
+import { Apollo } from 'apollo-angular';
+import { GET_TASKS } from './task.queries';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TaskService {
 
-    #tasks = signal<Task[]>(TEMP_TASKS);
+    private apollo = inject(Apollo);
+
+    #tasks = signal<Task[]>([]);
 
     tasks = this.#tasks.asReadonly();
+
+    getTasksByUsername(username: string): void {
+        this.apollo.watchQuery({
+            query: GET_TASKS,
+            variables: {
+                username,
+            },
+        }).valueChanges.subscribe(({ data, error }: any) => {
+            console.log(data.tasks);
+            this.#tasks.set(data.tasks);
+        });
+    }
 }
