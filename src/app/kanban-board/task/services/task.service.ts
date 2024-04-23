@@ -11,7 +11,6 @@ export class TaskService {
     private apollo = inject(Apollo);
 
     #tasks = signal<Task[]>([]);
-
     tasks = this.#tasks.asReadonly();
 
     getTasksByUsername(username: string): void {
@@ -20,9 +19,7 @@ export class TaskService {
             variables: {
                 username,
             },
-        }).valueChanges.subscribe(({ data, error }: any) => {
-            console.log(data.tasks);
-            this.#tasks.set(data.tasks);
-        });
+        }).valueChanges.subscribe(({ data, error }: any) =>
+            this.#tasks.set(data.tasks));
     }
 }

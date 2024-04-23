@@ -20,27 +20,25 @@ export class TaskColumnComponent {
   tasks = computed(() =>
     this.taskService.tasks().filter(task =>
       this.hasSameTaskStatus(task)
-      || this.hasSameStatusInAnySubtask(task)));
+      || this.hasSameStatusInAnySubtask(task))
+  );
 
   color: string = "";
 
   // TODO: Remove
   constructor() {
-    effect(() => {
-      console.table(this.tasks());
-      this.randomColor(this.tasksStatus() ?? 0);
-    });
+    effect(() => this.randomColor(this.tasksStatus() ?? 0));
   }
 
   get status(): string {
     return TaskStatus[this.tasksStatus()!];
   }
 
-  private hasSameStatusInAnySubtask = (task: Task): boolean =>
-    task.subtasks.some(subtask => TaskStatus[subtask.status] === this.status);
+  private hasSameStatusInAnySubtask = ({ subtasks }: Task): boolean =>
+    subtasks ? subtasks.some(subtask => TaskStatus[subtask.status] === this.status) : false;
 
   private hasSameTaskStatus = (task: Task): boolean =>
-    TaskStatus[task.status] === this.status;
+    task.status.toString() === TaskStatus[this.tasksStatus()!];
 
   private randomColor(index: number): void {
     const colors = ["#ef7d57", "#41a6f6", "#566c86"];
