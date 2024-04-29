@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Kanbadn Board Template
+Parameters:
+  KanbanBoardWebsiteBucketName:
+    Type: String
+    Description: S3 Bucket name for kanban board website
+    Default: kanban-board-997
+Resources:
+  KanbanBoardWebsiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref KanbanBoardWebsiteBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  KanbanBoardWebsiteS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref KanbanBoardWebsiteS3Bucket
+      PolicyDocument:
+        Id: KanbanBoardWebsiteS3BucketPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjectsAndObjectsVersions
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+              - "s3:GetObjectVersion"
+            Resource: !Sub "arn:aws:s3:::${KanbanBoardWebsiteS3Bucket}/*"
+Outputs:
+  KanbanBoardWebsiteUrl:
+    Description: Kanban board website url
+    Value: !GetAtt KanbanBoardWebsiteS3Bucket.WebsiteURL
