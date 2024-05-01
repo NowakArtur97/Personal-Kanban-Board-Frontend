@@ -3,21 +3,64 @@ Description: Kanbadn Board Template
 Parameters:
   KanbanBoardWebsiteBucketName:
     Type: String
-    Description: S3 Bucket name for kanban board website
+    Description: S3 Bucket name for Kanan Board website
     Default: kanban-board-997
+  CodeBuildProjectName:
+    Type: String
+    Description: Name of the project in the CodeBuild
+    Default: kanban-board-997
+  GitHubRepositoryName:
+    Type: String
+    Description: Name of GitHub repository with Kanan Board frontend project
+    # TODO: Change
+    Default: Personal-Kanban-Board-Frontend
+  GitHubRepositoryURL:
+    Type: String
+    Description: URL for GitHub repository with Kanan Board frontend project
+    Default: https://github.com/NowakArtur97/Personal-Kanban-Board-Frontend.git
+  GitHubBranch:
+    Type: String
+    Description: GitHub branch with code for CodePipeline
+    Default: aws-cloudformation
+  GitHubOAuthToken:
+    Type: String
+    Description: Thee GitHub Personal Access Token so CodePipeline can get the code
+    Default: token
+  GitHubBranchPattern:
+    Type: String
+    Description: GitHub branch with code for CodeBuild
+    Default: ^refs/heads/aws-cloudformation
+  BuildSpecPath:
+    Type: String
+    Description: Path to buildspec.yml file for CodeBuild
+    Default: aws/buildspec.yml
+  CodeBuildImage:
+    Type: String
+    Description: Image for CodeBuild
+    Default: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+    AllowedValues:
+      - aws/codebuild/amazonlinux2-x86_64-standard:2.0
+      - aws/codebuild/amazonlinux2-aarch64-standard:3.0
+      - aws/codebuild/amazonlinux2-x86_64-standard:4.0
+      - aws/codebuild/amazonlinux2-x86_64-standard:5.0
+      - aws/codebuild/amazonlinux2-x86_64-standard:corretto11
+      - aws/codebuild/amazonlinux2-x86_64-standard:corretto8
+  CodeBuildComputeType:
+    Type: String
+    Description: Type of compute environment for CodeBuild
+    Default: BUILD_GENERAL1_SMALL
+    AllowedValues:
+      - BUILD_GENERAL1_SMALL
+      - BUILD_GENERAL1_MEDIUM
+      - BUILD_GENERAL1_LARGE
+      - BUILD_GENERAL1_XLARGE
+      - BUILD_GENERAL1_2XLARGE
+      - BUILD_LAMBDA_1GB
+      - BUILD_LAMBDA_2GB
+      - BUILD_LAMBDA_4GB
+      - BUILD_LAMBDA_8GB
+      - BUILD_LAMBDA_10GB
 Resources:
-  KanbanBoardWebsiteS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Ref KanbanBoardWebsiteBucketName
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-      OwnershipControls:
-        Rules:
-          - ObjectOwnership: ObjectWriter
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: index.html
   KanbanBoardWebsiteS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -33,7 +76,57 @@ Resources:
               - "s3:GetObject"
               - "s3:GetObjectVersion"
             Resource: !Sub "arn:aws:s3:::${KanbanBoardWebsiteS3Bucket}/*"
+  KanbanBoardWebsiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref KanbanBoardWebsiteBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: CodeBuildPolicies
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${CodeBuildProjectName}"
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${CodeBuildProjectName}:*"
+              - Effect: Allow
+                Action:
+                  - codebuild:CreateReportGroup
+                  - codebuild:CreateReport
+                  - codebuild:UpdateReport
+                  - codebuild:BatchPutTestCases
+                  - codebuild:BatchPutCodeCoverages
+                Resource: !Sub "arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/${CodeBuildProjectName}-*"
 Outputs:
   KanbanBoardWebsiteUrl:
-    Description: Kanban board website url
+    Description: Kanban Board website url
     Value: !GetAtt KanbanBoardWebsiteS3Bucket.WebsiteURL
