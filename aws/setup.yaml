@@ -108,8 +108,15 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  # - s3:PutObject
+                  # - s3:GetObject
+                  # - s3:GetObjectVersion
+                  # - s3:GetBucketAcl
+                  # - s3:GetBucketLocation
                   - s3:*
-                Resource: "*"
+                Resource:
+                  "*"
+                  # - !Sub "arn:aws:s3:::codepipeline-${AWS::Region}-*"
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -126,6 +133,35 @@ Resources:
                   - codebuild:BatchPutTestCases
                   - codebuild:BatchPutCodeCoverages
                 Resource: !Sub "arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/${CodeBuildProjectName}-*"
+  KanbanBoardFrontendProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Ref CodeBuildProjectName
+      Source:
+        # Type: CODEPIPELINE
+        Type: GITHUB
+        Location: !Ref GitHubRepositoryURL
+        GitCloneDepth: 1
+        BuildSpec: !Ref BuildSpecPath
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: PUSH
+            - Type: HEAD_REF
+              Pattern: !Ref GitHubBranchPattern
+      Environment:
+        Type: LINUX_CONTAINER
+        Image: !Ref CodeBuildImage
+        ComputeType: !Ref CodeBuildComputeType
+      ServiceRole: !Ref CodeBuildRole
+      Artifacts:
+        # Type: CODEPIPELINE
+        Type: NO_ARTIFACTS
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+          GroupName: !Sub "/aws/codebuild/${CodeBuildProjectName}"
 Outputs:
   KanbanBoardWebsiteUrl:
     Description: Kanban Board website url
