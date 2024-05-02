@@ -49,11 +49,6 @@
     color: hsl(0, 0%, 100%);
 }
 
-.user_auth__action_button--active:hover {
-    background-color: hsl(0, 0%, 100%);
-    color: hsla(0, 0%, 0%);
-}
-
 .user_auth__form {
     margin-top: 5%;
 }
@@ -98,10 +93,12 @@
 
     cursor: pointer;
 
+    transform: scale(1);
     transition: all 0.5s;
 }
 
 .user_auth__button:hover {
     background-color: hsl(0, 0%, 100%);
     color: hsla(0, 0%, 0%, 5);
+    transform: scale(1.1);
 }
