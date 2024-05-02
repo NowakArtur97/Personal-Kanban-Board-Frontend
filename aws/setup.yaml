@@ -12,7 +12,6 @@ Parameters:
   GitHubRepositoryName:
     Type: String
     Description: Name of GitHub repository with Kanan Board frontend project
-    # TODO: Change
     Default: Personal-Kanban-Board-Frontend
   GitHubRepositoryURL:
     Type: String
@@ -21,7 +20,7 @@ Parameters:
   GitHubBranch:
     Type: String
     Description: GitHub branch with code for CodePipeline
-    Default: aws-cloudformation
+    Default: main
   GitHubOAuthToken:
     Type: String
     Description: Thee GitHub Personal Access Token so CodePipeline can get the code
@@ -29,7 +28,7 @@ Parameters:
   GitHubBranchPattern:
     Type: String
     Description: GitHub branch with code for CodeBuild
-    Default: ^refs/heads/aws-cloudformation
+    Default: ^refs/heads/main
   BuildSpecPath:
     Type: String
     Description: Path to buildspec.yml file for CodeBuild
@@ -112,15 +111,14 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  # - s3:PutObject
-                  # - s3:GetObject
-                  # - s3:GetObjectVersion
-                  # - s3:GetBucketAcl
-                  # - s3:GetBucketLocation
-                  - s3:*
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:GetBucketAcl
+                  - s3:GetBucketLocation
                 Resource:
-                  "*"
-                  # - !Sub "arn:aws:s3:::codepipeline-${AWS::Region}-*"
+                  - !Sub "arn:aws:s3:::${KanbanBoardWebsiteS3Bucket}/*"
+                  - !Sub "arn:aws:s3:::${BuildArtifactsS3Bucket}/*"
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -142,26 +140,16 @@ Resources:
     Properties:
       Name: !Ref CodeBuildProjectName
       Source:
-        # Type: CODEPIPELINE
-        Type: GITHUB
-        Location: !Ref GitHubRepositoryURL
+        Type: CODEPIPELINE
         GitCloneDepth: 1
         BuildSpec: !Ref BuildSpecPath
-      Triggers:
-        Webhook: true
-        FilterGroups:
-          - - Type: EVENT
-              Pattern: PUSH
-            - Type: HEAD_REF
-              Pattern: !Ref GitHubBranchPattern
       Environment:
         Type: LINUX_CONTAINER
         Image: !Ref CodeBuildImage
         ComputeType: !Ref CodeBuildComputeType
       ServiceRole: !Ref CodeBuildRole
       Artifacts:
-        # Type: CODEPIPELINE
-        Type: NO_ARTIFACTS
+        Type: CODEPIPELINE
       LogsConfig:
         CloudWatchLogs:
           Status: ENABLED
@@ -229,6 +217,7 @@ Resources:
                 Branch: !Ref GitHubBranch
                 Owner: NowakArtur97
                 OAuthToken: !Ref GitHubOAuthToken
+                PollForSourceChanges: false
               OutputArtifacts:
                 - Name: source-output-artifacts
               RunOrder: 1
@@ -257,11 +246,24 @@ Resources:
                 Version: 1
               InputArtifacts:
                 - Name: build-output-artifacts
-              OutputArtifacts: []
               Configuration:
                 BucketName: !Ref KanbanBoardWebsiteS3Bucket
                 Extract: true
               RunOrder: 1
+  KanbanBoardFrontendGithubWebhook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Name: KanbanBoardFrontendGithubWebhook
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GitHubOAuthToken
+      RegisterWithThirdParty: true
+      TargetAction: Source
+      TargetPipeline: !Ref KanbanBoardFrontendPipeline
+      TargetPipelineVersion: !GetAtt KanbanBoardFrontendPipeline.Version
+      Filters:
+        - JsonPath: "$.ref"
+          MatchEquals: "refs/heads/{Branch}"
   S3BucketCleanerLambdaRole:
     Type: AWS::IAM::Role
     Properties:
