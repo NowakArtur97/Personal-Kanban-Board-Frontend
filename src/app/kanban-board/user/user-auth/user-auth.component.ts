@@ -9,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class UserAuthComponent {
 
+  isInLoginView = true;
+
+  changeAction(): void {
+    this.isInLoginView = !this.isInLoginView;
+  }
 }
