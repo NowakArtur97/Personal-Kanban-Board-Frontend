@@ -54,4 +54,8 @@ export class UserService {
             this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
+
+    resetErrorMessages(): void {
+        this.#errors.set([]);
+    }
 }
