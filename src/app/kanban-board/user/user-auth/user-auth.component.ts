@@ -26,7 +26,12 @@ export class UserAuthComponent {
 
   errors = this.userService.errors;
 
-  changeAction(): void {
+  changeAction(isInLogiView: boolean): void {
+    const isClickingOnTheSameAction = isInLogiView && this.isInLoginView
+      || !isInLogiView && !this.isInLoginView;
+    if (isClickingOnTheSameAction) {
+      return;
+    }
     this.isInLoginView = !this.isInLoginView;
     this.userService.resetErrorMessages();
   }
