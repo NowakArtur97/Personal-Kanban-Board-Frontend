@@ -46,7 +46,7 @@ export class UserAuthComponent {
         email: email!!,
         password: password!!
       };
-      // this.userService.registerUser(userDTO);
+      this.userService.registerUser(userDTO);
     }
   }
 

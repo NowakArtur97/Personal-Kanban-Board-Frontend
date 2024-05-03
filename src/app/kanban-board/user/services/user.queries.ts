@@ -12,4 +12,16 @@ const AUTHENTICATE_USER = gql`
     }
 `;
 
-export { AUTHENTICATE_USER };
+const REGISTER_USER = gql`
+    mutation REGISTER_USER($userDTO: UserDTO!) {
+       registerUser(userDTO: $userDTO) {
+            userId
+            username
+            email
+            token
+            expirationTimeInMilliseconds
+        }
+    }
+`;
+
+export { AUTHENTICATE_USER, REGISTER_USER };

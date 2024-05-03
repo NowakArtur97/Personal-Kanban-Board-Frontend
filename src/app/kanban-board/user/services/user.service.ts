@@ -1,8 +1,10 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { AUTHENTICATE_USER } from './user.queries';
+import { AUTHENTICATE_USER, REGISTER_USER } from './user.queries';
 import AuthenticationRequest from '../models/authentication-request.dto';
 import User from '../models/user.model';
+import UserDTO from '../models/user.dto';
+import { ApolloError } from '@apollo/client';
 
 @Injectable({
     providedIn: 'root'
@@ -30,6 +32,23 @@ export class UserService {
         }).valueChanges.subscribe(({ data, error }: any) => {
             this.#user.set(data.loginUser);
             console.log(this.#user());
+        }, (error: ApolloError) => {
+            console.log(error.message);
         });
+    }
+
+    registerUser(userDTO: UserDTO): void {
+        this.apollo.mutate({
+            mutation: REGISTER_USER,
+            variables: {
+                userDTO,
+            },
+        }).subscribe(({ data }: any) => {
+            this.#user.set(data.registerUser);
+            console.log(this.#user());
+        }, (error: ApolloError) => {
+            console.log(error.message);
+        }
+        );
     }
 }
