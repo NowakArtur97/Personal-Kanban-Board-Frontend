@@ -1,19 +1,45 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import AuthenticationRequest from '../models/authentication-request.dto';
+import { UserService } from '../services/user.service';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-auth',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, ReactiveFormsModule],
   templateUrl: './user-auth.component.html',
   styleUrl: './user-auth.component.css'
 })
 export class UserAuthComponent {
 
+  private userService = inject(UserService);
+
   isInLoginView = true;
+
+  userForm = new FormGroup({
+    usernameOrEmail: new FormControl(''),
+    password: new FormControl(''),
+  });
 
   changeAction(): void {
     this.isInLoginView = !this.isInLoginView;
+  }
+
+  doAction(userForm: any): void {
+    if (!userForm.valid) {
+      return;
+    }
+    const { usernameOrEmail, password } = this.userForm.value;
+    if (this.isInLoginView) {
+      const authenticationRequest: AuthenticationRequest = {
+        usernameOrEmail: usernameOrEmail!!,
+        password: password!!
+      };
+      // this.userService.loginUser(authenticationRequest);
+    } else {
+
+    }
   }
 
   setupHover(hoveredElement: HTMLButtonElement, inactiveElement: HTMLButtonElement): void {
