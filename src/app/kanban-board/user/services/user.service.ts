@@ -11,7 +11,7 @@ import { ApolloError } from '@apollo/client';
 })
 export class UserService {
 
-    private readonly ERROR_MESSAGE_DIVIDER = ".\n";
+    private readonly ERROR_MESSAGE_DIVIDER = "\n";
 
     private apollo = inject(Apollo);
 
