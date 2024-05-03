@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import AuthenticationRequest from '../models/authentication-request.dto';
 import { UserService } from '../services/user.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import UserDTO from '../models/user.dto';
 
 @Component({
   selector: 'app-user-auth',
@@ -18,6 +19,7 @@ export class UserAuthComponent {
   isInLoginView = true;
 
   userForm = new FormGroup({
+    email: new FormControl(''),
     usernameOrEmail: new FormControl(''),
     password: new FormControl(''),
   });
@@ -30,15 +32,21 @@ export class UserAuthComponent {
     if (!userForm.valid) {
       return;
     }
-    const { usernameOrEmail, password } = this.userForm.value;
     if (this.isInLoginView) {
+      const { usernameOrEmail, password } = this.userForm.value;
       const authenticationRequest: AuthenticationRequest = {
         usernameOrEmail: usernameOrEmail!!,
         password: password!!
       };
       this.userService.loginUser(authenticationRequest);
     } else {
-
+      const { usernameOrEmail, email, password } = this.userForm.value;
+      const userDTO: UserDTO = {
+        username: usernameOrEmail!!,
+        email: email!!,
+        password: password!!
+      };
+      // this.userService.registerUser(userDTO);
     }
   }
 
