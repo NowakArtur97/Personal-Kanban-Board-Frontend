@@ -4,6 +4,7 @@ import AuthenticationRequest from '../models/authentication-request.dto';
 import { UserService } from '../services/user.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import UserDTO from '../models/user.dto';
+import { availableUsernameAndEmailValidator } from '../validators/username-and-email.validator';
 
 @Component({
   selector: 'app-user-auth',
@@ -16,7 +17,7 @@ export class UserAuthComponent {
 
   private userService = inject(UserService);
 
-  isInLoginView = true;
+  isInLoginView = false;
 
   loginForm = new FormGroup({
     usernameOrEmail: new FormControl('', [
@@ -24,8 +25,9 @@ export class UserAuthComponent {
     ]),
     password: new FormControl('', [
       Validators.required,
-    ]),
-  });
+    ])
+  }
+  );
 
   registerForm = new FormGroup({
     username: new FormControl('', [
@@ -42,8 +44,13 @@ export class UserAuthComponent {
     ]),
     matchingPassword: new FormControl('', [
       Validators.required,
-    ]),
-  });
+    ])
+  }, {
+    asyncValidators: [
+      availableUsernameAndEmailValidator(this.userService),
+    ],
+  }
+  );
 
   errors = this.userService.errors;
 
@@ -57,10 +64,10 @@ export class UserAuthComponent {
     this.registerForm.reset();
     this.isInLoginView = !this.isInLoginView;
     this.userService.resetErrorMessages();
-  }
+  };
 
-  doAction(loginForm: any): void {
-    if (!loginForm.valid) {
+  doAction(form: FormGroup): void {
+    if (!form.valid) {
       return;
     }
     this.userService.resetErrorMessages();

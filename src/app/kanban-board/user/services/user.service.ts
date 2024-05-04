@@ -7,6 +7,8 @@ import UserDTO from '../models/user.dto';
 import { ApolloError } from '@apollo/client';
 import { Router } from '@angular/router';
 import { PATHS } from '../../../app.routes';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +19,7 @@ export class UserService {
 
     private apollo = inject(Apollo);
     private router = inject(Router);
+    private httpClient = inject(HttpClient);
 
     #user = signal<User>({
         userId: "",
@@ -57,8 +60,11 @@ export class UserService {
     private handleUserResponse(userData: User) {
         this.#user.set(userData);
         this.router.navigate([PATHS.KANBAN_BOARD]);
-        console.log(this.#user());
     }
 
+    isUsernameAndEmailAvailable = (username: string, email: string): Observable<boolean> =>
+        this.httpClient.get<boolean>("http://localhost:8080/api/v1/user-data-validator", { params: { username, email } });
+
     resetErrorMessages = (): void => this.#errors.set([]);
-}
+
+};
