@@ -7,7 +7,7 @@ const EXAMPLE_TASK: Task = {
     id: "3e0fb254-60ad-4614-8972-f783e4f62170",
     title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
     description: "Aliquam nunc mi, faucibus et justo et, rhoncus finibus ipsum. Aliquam iaculis tempor felis, sit amet rhoncus magna interdum in. Maecenas finibus ut mauris ornare tristique. Donec urna erat, vulputate a ante nec, fringilla porta diam. Morbi eleifend mi nec tortor vestibulum pretium. Donec imperdiet vestibulum vulputate. Phasellus ante diam, dapibus in venenatis et, cursus eu sapien. Nulla quis tincidunt ante, eget sollicitudin lorem.",
-    status: TaskStatus.InProgress,
+    status: TaskStatus.IN_PROGRESS,
     priority: TaskPriority.MEDIUM,
     targetEndDate: "2016-08-16T12:10:56",
     createdBy: "Arthur Smith",
@@ -22,7 +22,7 @@ const EXAMPLE_SUBTASK: Subtask = {
     taskId: "3e0fb254-60ad-4614-8972-f783e4f62170",
     title: "Curabitur malesuada scelerisque mi, sed rutrum nisi rhoncus eget.",
     description: "Donec pulvinar at arcu eget venenatis. Fusce et vestibulum odio. Ut aliquam iaculis pharetra. Integer a ipsum eleifend, sodales ex a, facilisis justo. Aliquam vehicula nec libero et gravida. Vivamus laoreet quam ac elit pulvinar, eu finibus odio mollis. Etiam mollis dolor eget feugiat convallis. Sed ac erat eget libero placerat hendrerit id semper tellus. Integer lobortis in quam id bibendum. Duis nec convallis nisl. Praesent elementum lorem felis, et efficitur diam finibus at. Quisque pulvinar dui lacus, quis rhoncus quam euismod porttitor.",
-    status: TaskStatus.InProgress,
+    status: TaskStatus.IN_PROGRESS,
     priority: TaskPriority.MEDIUM,
     targetEndDate: "2016-08-16T12:10:56",
     createdBy: "Arthur Smith",
@@ -36,85 +36,85 @@ const TEMP_TASKS: Task[] = [
         ...EXAMPLE_TASK,
         title: "Lorem ipsum dolor sit amet",
         description: "Lorem ipsum dolor sit amet",
-        status: TaskStatus.InProgress,
+        status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         subtasks: [
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.ReadyToStart,
+                status: TaskStatus.READY_TO_START,
                 priority: TaskPriority.LOW
             },
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.InProgress,
+                status: TaskStatus.IN_PROGRESS,
                 priority: TaskPriority.MEDIUM
             },
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.Done,
+                status: TaskStatus.DONE,
                 priority: TaskPriority.HIGH
             },
         ]
     },
     {
         ...EXAMPLE_TASK,
-        status: TaskStatus.ReadyToStart,
+        status: TaskStatus.READY_TO_START,
         priority: TaskPriority.LOW,
         subtasks: [
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.ReadyToStart,
+                status: TaskStatus.READY_TO_START,
                 priority: TaskPriority.MEDIUM
             },
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.ReadyToStart,
+                status: TaskStatus.READY_TO_START,
                 priority: TaskPriority.HIGH
             },
         ]
     },
     {
         ...EXAMPLE_TASK,
-        status: TaskStatus.InProgress,
+        status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         subtasks: [
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.ReadyToStart,
+                status: TaskStatus.READY_TO_START,
                 priority: TaskPriority.LOW
             },
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.InProgress,
+                status: TaskStatus.IN_PROGRESS,
                 priority: TaskPriority.HIGH
             },
         ]
     },
     {
         ...EXAMPLE_TASK,
-        status: TaskStatus.InProgress,
+        status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         subtasks: []
     },
     {
         ...EXAMPLE_TASK,
-        status: TaskStatus.InProgress,
+        status: TaskStatus.IN_PROGRESS,
         priority: TaskPriority.MEDIUM,
         subtasks: []
     },
     {
         ...EXAMPLE_TASK,
-        status: TaskStatus.Done,
+        status: TaskStatus.DONE,
         priority: TaskPriority.MEDIUM,
         subtasks: [
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.Done,
+                status: TaskStatus.DONE,
                 priority: TaskPriority.HIGH
             },
             {
                 ...EXAMPLE_SUBTASK,
-                status: TaskStatus.Done,
+                status: TaskStatus.DONE,
                 priority: TaskPriority.HIGH
             },
         ]
