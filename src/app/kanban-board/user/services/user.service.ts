@@ -5,6 +5,8 @@ import AuthenticationRequest from '../models/authentication-request.dto';
 import User from '../models/user.model';
 import UserDTO from '../models/user.dto';
 import { ApolloError } from '@apollo/client';
+import { Router } from '@angular/router';
+import { PATHS } from '../../../app.routes';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +16,7 @@ export class UserService {
     private readonly ERROR_MESSAGE_DIVIDER = "\n";
 
     private apollo = inject(Apollo);
+    private router = inject(Router);
 
     #user = signal<User>({
         userId: "",
@@ -33,11 +36,10 @@ export class UserService {
             variables: {
                 authenticationRequest,
             },
-        }).valueChanges.subscribe(({ data }: any) => {
-            this.#user.set(data.loginUser);
-            console.log(this.#user());
-        }, (error: ApolloError) =>
-            this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        }).valueChanges.subscribe(({ data }: any) =>
+            this.handleUserResponse(data.loginUser),
+            (error: ApolloError) =>
+                this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
 
@@ -47,15 +49,16 @@ export class UserService {
             variables: {
                 userDTO,
             },
-        }).subscribe(({ data }: any) => {
-            this.#user.set(data.registerUser);
-            console.log(this.#user());
-        }, (error: ApolloError) =>
+        }).subscribe(({ data }: any) => this.handleUserResponse(data.registerForm), (error: ApolloError) =>
             this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
 
-    resetErrorMessages(): void {
-        this.#errors.set([]);
+    private handleUserResponse(userData: User) {
+        this.#user.set(userData);
+        this.router.navigate([PATHS.KANBAN_BOARD]);
+        console.log(this.#user());
     }
+
+    resetErrorMessages = (): void => this.#errors.set([]);
 }
