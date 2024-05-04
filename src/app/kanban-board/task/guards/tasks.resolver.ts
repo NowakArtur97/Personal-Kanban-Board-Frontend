@@ -11,8 +11,10 @@ export const tasksResolver: ResolveFn<any>
         const userService = inject(UserService);
 
         switch (state.url) {
-            case `/${PATHS.KANBAN_BOARD}`:
-                taskService.getTasksByUsername(userService.user().username);
+            case `/${PATHS.KANBAN_BOARD}`: {
+                const { username, token } = userService.user();
+                taskService.getTasksByUsername(username, token);
+            }
         }
         return EMPTY;
     };
