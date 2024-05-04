@@ -14,16 +14,14 @@ export class TaskService {
     #tasks = signal<Task[]>([]);
     tasks = this.#tasks.asReadonly();
 
-    getTasksByUsername(username: string, token: string): void {
+    getTasksByUsername(token: string): void {
         this.apollo.watchQuery({
             query: GET_TASKS,
-            variables: {
-                username,
-            },
             context: {
                 headers: new HttpHeaders().set("Authorization", "Bearer " + token),
             }
         }).valueChanges.subscribe(({ data, error }: any) =>
-            this.#tasks.set(data.tasks));
+            this.#tasks.set(data.tasks)
+        );
     }
 }
