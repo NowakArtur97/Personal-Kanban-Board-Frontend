@@ -67,4 +67,15 @@ export class UserService {
 
     resetErrorMessages = (): void => this.#errors.set([]);
 
+    addError(error: string): void {
+        if (!this.#errors().includes(error)) {
+            this.#errors.set([...this.#errors(), error]);
+        };
+    }
+
+    removeError(error: string): void {
+        if (this.#errors().includes(error)) {
+            this.#errors.set(this.#errors().filter(e => e !== error));
+        };
+    }
 };

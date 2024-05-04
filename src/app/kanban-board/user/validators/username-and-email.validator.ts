@@ -16,9 +16,13 @@ export const availableUsernameAndEmailValidator = (userService: UserService): As
             .isUsernameAndEmailAvailable(formGroup.get("username")?.value,
                 formGroup.get("email")?.value)
             .pipe(
-                map((result: boolean) => {
-                    return result ? EMPTY
-                        : of({ usernameAndEmailAlreadyTaken: true });
+                map((isUsernameAndEmailAvailable: boolean) => {
+                    if (isUsernameAndEmailAvailable) {
+                        userService.removeError(ERROR_MESSAGE);
+                    } else {
+                        userService.addError(ERROR_MESSAGE);
+                    }
+                    return isUsernameAndEmailAvailable ? EMPTY : of({ usernameAndEmailAlreadyTaken: true });
                 })
             );
     };
