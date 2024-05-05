@@ -10,7 +10,7 @@ import { UserService } from '../services/user.service';
 const ERROR_MESSAGE = "Username/email is already taken.";
 
 export const availableUsernameAndEmailValidator = (userService: UserService): AsyncValidatorFn => {
-    return (control: AbstractControl): Observable<ValidationErrors> => {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
         const formGroup = control as FormGroup;
         return userService
             .isUsernameAndEmailAvailable(formGroup.get("username")!!.value,
@@ -22,7 +22,7 @@ export const availableUsernameAndEmailValidator = (userService: UserService): As
                     } else {
                         userService.addError(ERROR_MESSAGE);
                     }
-                    return isUsernameOrEmailAvailable ? {}
+                    return isUsernameOrEmailAvailable ? null
                         : { usernameAndEmailAlreadyTaken: true };
                 })
             );
