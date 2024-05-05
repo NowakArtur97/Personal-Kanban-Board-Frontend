@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import UserDTO from '../models/user.dto';
 import { availableUsernameAndEmailValidator } from '../validators/username-and-email.validator';
+import { matchingPasswordsValidator } from '../validators/matching-passwords.validator';
 
 @Component({
   selector: 'app-user-auth',
@@ -46,8 +47,11 @@ export class UserAuthComponent {
       Validators.required,
     ])
   }, {
+    validators: [
+      matchingPasswordsValidator(this.userService)
+    ],
     asyncValidators: [
-      availableUsernameAndEmailValidator(this.userService),
+      availableUsernameAndEmailValidator(this.userService)
     ],
   }
   );
