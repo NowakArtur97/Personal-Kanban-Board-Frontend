@@ -4,7 +4,7 @@ import {
     FormGroup,
     ValidationErrors
 } from '@angular/forms';
-import { EMPTY, Observable, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { UserService } from '../services/user.service';
 
 const ERROR_MESSAGE = "Username/email is already taken.";
@@ -13,16 +13,17 @@ export const availableUsernameAndEmailValidator = (userService: UserService): As
     return (control: AbstractControl): Observable<ValidationErrors> => {
         const formGroup = control as FormGroup;
         return userService
-            .isUsernameAndEmailAvailable(formGroup.get("username")?.value,
-                formGroup.get("email")?.value)
+            .isUsernameAndEmailAvailable(formGroup.get("username")!!.value,
+                formGroup.get("email")!!.value)
             .pipe(
-                map((isUsernameAndEmailAvailable: boolean) => {
-                    if (isUsernameAndEmailAvailable) {
+                map((isUsernameOrEmailAvailable: boolean) => {
+                    if (isUsernameOrEmailAvailable) {
                         userService.removeError(ERROR_MESSAGE);
                     } else {
                         userService.addError(ERROR_MESSAGE);
                     }
-                    return isUsernameAndEmailAvailable ? EMPTY : of({ usernameAndEmailAlreadyTaken: true });
+                    return isUsernameOrEmailAvailable ? {}
+                        : { usernameAndEmailAlreadyTaken: true };
                 })
             );
     };
