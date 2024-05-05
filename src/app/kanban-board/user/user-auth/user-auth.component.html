@@ -24,7 +24,8 @@
                 class="user_auth__input">
         </div>
         <div class="user_auth__controls_wrapper">
-            <button class="user_auth__button" type="submit">Submit</button>
+            <button [ngClass]="loginForm.valid  || !loginForm.touched ? '' : 'user_auth__button--error' "
+                class="user_auth__button" type="submit">Submit</button>
         </div>
         @if(errors().length > 0){
         <div class="user_auth__controls_wrapper">
@@ -57,7 +58,8 @@
                 class="user_auth__input">
         </div>
         <div class="user_auth__controls_wrapper">
-            <button class="user_auth__button" type="submit">Submit</button>
+            <button [ngClass]="registerForm.valid  || !registerForm.touched ? '' : 'user_auth__button--error' "
+                class="user_auth__button" type="submit">Submit</button>
         </div>
         @if(errors().length > 0){
         <div class="user_auth__controls_wrapper">

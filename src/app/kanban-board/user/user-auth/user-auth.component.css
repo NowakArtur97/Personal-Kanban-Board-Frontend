@@ -97,10 +97,21 @@
     transition: all 0.5s;
 }
 
+.user_auth__button--error {
+    background-color: rgb(134, 0, 0);
+    color: hsl(0, 0%, 100%);
+}
+
 .user_auth__button:hover {
     background-color: hsl(0, 0%, 100%);
     color: hsla(0, 0%, 0%);
     transform: scale(1.1);
+}
+
+.user_auth__button--error:hover {
+    background-color: hsl(0, 0%, 100%);
+    color: hsl(0, 0%, 100%);
+    border: none;
 }
 
 .user_auth__error {
