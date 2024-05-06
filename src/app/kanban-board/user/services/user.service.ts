@@ -39,8 +39,7 @@ export class UserService {
             variables: {
                 authenticationRequest,
             },
-        }).valueChanges.subscribe(({ data }: any) =>
-            this.handleUserResponse(data.loginUser),
+        }).valueChanges.subscribe(({ data }: any) => this.handleUserResponse(data.loginUser),
             (error: ApolloError) =>
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
@@ -52,7 +51,7 @@ export class UserService {
             variables: {
                 userDTO,
             },
-        }).subscribe(({ data }: any) => this.handleUserResponse(data.registerForm), (error: ApolloError) =>
+        }).subscribe(({ data }: any) => this.handleUserResponse(data.registerUser), (error: ApolloError) =>
             this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
