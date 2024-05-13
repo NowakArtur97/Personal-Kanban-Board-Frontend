@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Kanbadn Board Template
+Description: Kanban Frontend Board Template
 Parameters:
   KanbanBoardWebsiteBucketName:
     Type: String
