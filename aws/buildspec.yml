@@ -9,13 +9,18 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo Installing source NPM dependencies...
+      - echo Installing source NPM dependencies
       - npm install
       - npm install -g @angular/cli
+      - echo Installation completed
   build:
     commands:
+      - echo Generating environment file
+      - npm run generate-env
+      - echo Environment generated
       - echo Build started
       - ng build --configuration production
+      - echo Build completed
 artifacts:
   files:
     - "**/*"
