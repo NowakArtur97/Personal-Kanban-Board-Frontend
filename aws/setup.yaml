@@ -1,38 +1,18 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Kanban Frontend Board Template
+Description: Kanban Board Frontend Template
 Parameters:
   KanbanBoardWebsiteBucketName:
     Type: String
     Description: S3 Bucket name for Kanan Board website
-    Default: kanban-board-997
-  CodeBuildProjectName:
-    Type: String
-    Description: Name of the project in the CodeBuild
-    Default: kanban-board-997
-  GitHubRepositoryName:
-    Type: String
-    Description: Name of GitHub repository with Kanan Board frontend project
-    Default: Personal-Kanban-Board-Frontend
-  GitHubRepositoryURL:
-    Type: String
-    Description: URL for GitHub repository with Kanan Board frontend project
-    Default: https://github.com/NowakArtur97/Personal-Kanban-Board-Frontend.git
-  GitHubBranch:
-    Type: String
-    Description: GitHub branch with code for CodePipeline
-    Default: main
-  GitHubOAuthToken:
-    Type: String
-    Description: Thee GitHub Personal Access Token so CodePipeline can get the code
-    Default: token
-  GitHubBranchPattern:
-    Type: String
-    Description: GitHub branch with code for CodeBuild
-    Default: ^refs/heads/main
+    Default: kanban-board-frontend-997
   BuildSpecPath:
     Type: String
     Description: Path to buildspec.yml file for CodeBuild
     Default: aws/buildspec.yml
+  CodeBuildProjectName:
+    Type: String
+    Description: Name of the project in the CodeBuild
+    Default: kanban-board-frontend-997
   CodeBuildImage:
     Type: String
     Description: Image for CodeBuild
@@ -62,7 +42,31 @@ Parameters:
   BuildArtifactsS3BucketName:
     Type: String
     Description: S3 Bucket name for build artifacts
-    Default: artifacts-kanban-board-997
+    Default: artifacts-kanban-board-frontend-997
+  GitHubRepositoryName:
+    Type: String
+    Description: Name of GitHub repository with Kanan Board frontend project
+    Default: Personal-Kanban-Board-Frontend
+  GitHubRepositoryURL:
+    Type: String
+    Description: URL for GitHub repository with Kanan Board frontend project
+    Default: https://github.com/NowakArtur97/Personal-Kanban-Board-Frontend.git
+  GitHubBranch:
+    Type: String
+    Description: GitHub branch with code for CodePipeline
+    Default: main
+  GitHubOAuthToken:
+    Type: String
+    Description: Thee GitHub Personal Access Token so CodePipeline can get the code
+    Default: token
+  GitHubBranchPattern:
+    Type: String
+    Description: GitHub branch with code for CodeBuild
+    Default: ^refs/heads/main
+  ParameterStoreBackendURLParameterName:
+    Type: String
+    Description: Name of the parameter for backend URL
+    Default: BACKEND_URL
 Resources:
   KanbanBoardWebsiteS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -135,7 +139,11 @@ Resources:
                   - codebuild:BatchPutTestCases
                   - codebuild:BatchPutCodeCoverages
                 Resource: !Sub "arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:report-group/${CodeBuildProjectName}-*"
-  KanbanBoardFrontendProject:
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameters
+                Resource: "*"
+  CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Ref CodeBuildProjectName
@@ -158,7 +166,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref BuildArtifactsS3BucketName
-  KanbanBoardFrontendPipelineRole:
+  CodePipelineRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -179,26 +187,16 @@ Resources:
               - Action:
                   - "s3:*"
                   - "iam:PassRole"
-                  - "sns:Publish"
                   - "codebuild:BatchGetBuilds"
                   - "codebuild:StartBuild"
                   - "codecommit:*"
-                  - "cloudformation:CreateStack"
-                  - "cloudformation:DescribeStacks"
-                  - "cloudformation:DeleteStack"
-                  - "cloudformation:UpdateStack"
-                  - "cloudformation:CreateChangeSet"
-                  - "cloudformation:ExecuteChangeSet"
-                  - "cloudformation:DeleteChangeSet"
-                  - "cloudformation:DescribeChangeSet"
-                  - "cloudformation:SetStackPolicy"
                 Effect: Allow
                 Resource: "*"
-  KanbanBoardFrontendPipeline:
+  CodePipelinePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
       Name: !Ref CodeBuildProjectName
-      RoleArn: !GetAtt KanbanBoardFrontendPipelineRole.Arn
+      RoleArn: !GetAtt CodePipelineRole.Arn
       PipelineType: "V2"
       ArtifactStore:
         Location: !Ref BuildArtifactsS3Bucket
@@ -234,7 +232,8 @@ Resources:
               OutputArtifacts:
                 - Name: build-output-artifacts
               Configuration:
-                ProjectName: !Ref KanbanBoardFrontendProject
+                ProjectName: !Ref CodeBuildProject
+                EnvironmentVariables: !Sub '[{"name":"${ParameterStoreBackendURLParameterName}", "type": "PARAMETER_STORE", "value": "${ParameterStoreBackendURLParameterName}"}]'
               RunOrder: 1
         - Name: Deploy
           Actions:
@@ -250,17 +249,17 @@ Resources:
                 BucketName: !Ref KanbanBoardWebsiteS3Bucket
                 Extract: true
               RunOrder: 1
-  KanbanBoardFrontendGithubWebhook:
+  GithubWebhook:
     Type: AWS::CodePipeline::Webhook
     Properties:
-      Name: KanbanBoardFrontendGithubWebhook
+      Name: GithubWebhook
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
         SecretToken: !Ref GitHubOAuthToken
       RegisterWithThirdParty: true
       TargetAction: Source
-      TargetPipeline: !Ref KanbanBoardFrontendPipeline
-      TargetPipelineVersion: !GetAtt KanbanBoardFrontendPipeline.Version
+      TargetPipeline: !Ref CodePipelinePipeline
+      TargetPipelineVersion: !GetAtt CodePipelinePipeline.Version
       Filters:
         - JsonPath: "$.ref"
           MatchEquals: "refs/heads/{Branch}"
