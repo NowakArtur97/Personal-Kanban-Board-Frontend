@@ -1,17 +1,11 @@
-import { ActivatedRouteSnapshot, RouterStateSnapshot, ResolveFn } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
+import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { UserService } from '../../user/services/user.service';
 import { TaskService } from '../services/task.service';
+import { UserService } from '../../user/services/user.service';
+import Task from '../models/task.model';
 
-export const tasksResolver: ResolveFn<any>
-    = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> => {
-        const taskService = inject(TaskService);
-        const userService = inject(UserService);
-
-        switch (state.url) {
-            case "/":
-                taskService.getTasksByUsername(userService.user().username);
-        }
-        return EMPTY;
+export const tasksResolver: ResolveFn<Task[]>
+    = (): any => {
+        const { token } = inject(UserService).user();
+        inject(TaskService).getUserTasks(token);
     };
