@@ -14,7 +14,7 @@ export class TaskService {
     #tasks = signal<Task[]>([]);
     tasks = this.#tasks.asReadonly();
 
-    getTasksByUsername(token: string): void {
+    getUserTasks(token: string): void {
         this.apollo.watchQuery({
             query: GET_TASKS,
             context: {

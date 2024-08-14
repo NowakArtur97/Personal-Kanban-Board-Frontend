@@ -12,9 +12,10 @@ const ERROR_MESSAGE = "Username/email is already taken.";
 export const availableUsernameAndEmailValidator = (userService: UserService): AsyncValidatorFn => {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
         const formGroup = control as FormGroup;
+        const username = formGroup.get("username")!!.value;
+        const email = formGroup.get("email")!!.value;
         return userService
-            .isUsernameAndEmailAvailable(formGroup.get("username")!!.value,
-                formGroup.get("email")!!.value)
+            .isUsernameAndEmailAvailable(username, email)
             .pipe(
                 map((isUsernameOrEmailAvailable: boolean) => {
                     if (isUsernameOrEmailAvailable) {

@@ -7,5 +7,5 @@ import Task from '../models/task.model';
 export const tasksResolver: ResolveFn<Task[]>
     = (): any => {
         const { token } = inject(UserService).user();
-        inject(TaskService).getTasksByUsername(token);
+        inject(TaskService).getUserTasks(token);
     };

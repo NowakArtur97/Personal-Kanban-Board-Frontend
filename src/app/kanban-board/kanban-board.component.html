@@ -1,5 +1,13 @@
-<header>
+<header class="kanban-board__header">
     <h1 class="kanban-board__title">Personal Kanban Board</h1>
+    <div class="kanban-board__options">
+        <button class="kanban-board__option-button">
+            <span class="kanban-board__option">+</span>
+        </button>
+        <button class="kanban-board__option-button">
+            <span class="kanban-board__option">-</span>
+        </button>
+    </div>
 </header>
 <main class="kanban-board">
     @for (tasksStatus of tasksStatuses; track $index) {
