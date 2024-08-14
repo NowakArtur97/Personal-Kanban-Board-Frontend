@@ -24,4 +24,13 @@ const REGISTER_USER = gql`
     }
 `;
 
-export { AUTHENTICATE_USER, REGISTER_USER };
+const FIND_ALL_USERS = gql`
+    query FIND_ALL_USERS {
+        users {
+            userId
+            username
+        }
+    }
+`;
+
+export { AUTHENTICATE_USER, REGISTER_USER, FIND_ALL_USERS };

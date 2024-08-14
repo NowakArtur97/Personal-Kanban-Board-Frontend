@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
-import { GET_TASKS } from './task.queries';
+import { FIND_ALL_USER_TASKS } from './task.queries';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class TaskService {
 
     getUserTasks(token: string): void {
         this.apollo.watchQuery({
-            query: GET_TASKS,
+            query: FIND_ALL_USER_TASKS,
             context: {
                 headers: new HttpHeaders().set("Authorization", "Bearer " + token),
             }

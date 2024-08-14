@@ -1,13 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { AUTHENTICATE_USER, REGISTER_USER } from './user.queries';
+import { AUTHENTICATE_USER, FIND_ALL_USERS, REGISTER_USER } from './user.queries';
 import AuthenticationRequest from '../models/authentication-request.dto';
 import User from '../models/user.model';
 import UserDTO from '../models/user.dto';
 import { ApolloError } from '@apollo/client';
 import { Router } from '@angular/router';
 import { PATHS } from '../../../app.routes';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -28,9 +28,11 @@ export class UserService {
         token: "",
         expirationTimeInMilliseconds: 0
     });
+    #users = signal<User[]>([]);
     #errors = signal<string[]>([]);
 
     user = this.#user.asReadonly();
+    users = this.#users.asReadonly();
     errors = this.#errors.asReadonly();
 
     loginUser(authenticationRequest: AuthenticationRequest): void {
@@ -56,9 +58,26 @@ export class UserService {
         );
     }
 
+    findAllUsers(): void {
+        this.apollo.watchQuery({
+            query: FIND_ALL_USERS,
+            context: {
+                headers: new HttpHeaders().set("Authorization", "Bearer " + this.user().token),
+            }
+        }).valueChanges.subscribe(({ data }: any) => this.handleUsersResponse(data.users),
+            (error: ApolloError) => {
+                console.log(error.message);
+            }
+        );
+    }
+
     private handleUserResponse(userData: User) {
         this.#user.set(userData);
         this.router.navigate([PATHS.KANBAN_BOARD]);
+    }
+
+    private handleUsersResponse(usersData: User[]) {
+        this.#users.set(usersData);
     }
 
     isUsernameAndEmailAvailable = (username: string, email: string): Observable<boolean> =>

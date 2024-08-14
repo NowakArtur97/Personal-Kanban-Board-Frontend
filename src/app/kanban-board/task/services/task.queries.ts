@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 
-const GET_TASKS = gql`
-    query GET_TASKS {
+const FIND_ALL_USER_TASKS = gql`
+    query FIND_ALL_USER_TASKS {
         tasks {
             taskId
             title
@@ -18,4 +18,4 @@ const GET_TASKS = gql`
     }
 `;
 
-export { GET_TASKS };
+export { FIND_ALL_USER_TASKS };
