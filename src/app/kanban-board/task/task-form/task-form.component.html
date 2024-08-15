@@ -15,24 +15,40 @@
                 class="task_form__input">
         </div>
         <div class="task_form__controls_wrapper">
-            <label for="status" class="task_form__label">Status:</label>
-            <label for="low" class="task_form__label">Low:</label>
-            <input formControlName="status" value="Low" id="low" type="radio" class="task_form__input">
-            <label for="medium" class="task_form__label">Medium:</label>
-            <input formControlName="status" value="Medium" id="medium" type="radio" class="task_form__input">
-            <label for="high" class="task_form__label">High:</label>
-            <input formControlName="status" value="High" id="high" type="radio" class="task_form__input">
+            <label class="task_form__label">Status:</label>
+            <div class="task_form__radios_wrapper">
+                <div class="task_form__controls_wrapper">
+                    <label for="low" class="task_form__label task_form__label--small">Low</label>
+                    <input formControlName="status" value="Low" id="low" type="radio" class="task_form__input">
+                </div>
+                <div class="task_form__controls_wrapper">
+                    <label for="medium" class="task_form__label task_form__label--small">Medium</label>
+                    <input formControlName="status" value="Medium" id="medium" type="radio" class="task_form__input">
+                </div>
+                <div class="task_form__controls_wrapper">
+                    <label for="high" class="task_form__label task_form__label--small">High</label>
+                    <input formControlName="status" value="High" id="high" type="radio" class="task_form__input">
+                </div>
+            </div>
         </div>
         <div class="task_form__controls_wrapper">
-            <label for="priority" class="task_form__label">Priority:</label>
-            <label for="ready-to-start" class="task_form__label">Redy to start:</label>
-            <input formControlName="priority" value="READY_TO_START" id="ready-to-start" type="radio"
-                class="task_form__input">
-            <label for="in-progress" class="task_form__label">In progress:</label>
-            <input formControlName="priority" value="IN_PROGRESS" id="in-progress" type="radio"
-                class="task_form__input">
-            <label for="done" class="task_form__label">Done:</label>
-            <input formControlName="priority" value="DONE" id="done" type="radio" class="task_form__input">
+            <label class="task_form__label">Priority:</label>
+            <div class="task_form__radios_wrapper">
+                <div class="task_form__controls_wrapper">
+                    <label for="ready-to-start" class="task_form__label task_form__label--small">Redy to start</label>
+                    <input formControlName="priority" value="READY_TO_START" id="ready-to-start" type="radio"
+                        class="task_form__input">
+                </div>
+                <div class="task_form__controls_wrapper">
+                    <label for="in-progress" class="task_form__label task_form__label--small">In progress</label>
+                    <input formControlName="priority" value="IN_PROGRESS" id="in-progress" type="radio"
+                        class="task_form__input">
+                </div>
+                <div class="task_form__controls_wrapper">
+                    <label for="done" class="task_form__label task_form__label--small">Done</label>
+                    <input formControlName="priority" value="DONE" id="done" type="radio" class="task_form__input">
+                </div>
+            </div>
         </div>
         <div class="task_form__controls_wrapper">
             <label for="assigned-to" class="task_form__label">Assigned to:</label>
