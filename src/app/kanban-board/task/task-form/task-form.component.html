@@ -35,14 +35,17 @@
             <div class="task_form__controls_wrapper">
                 <label for="assigned-to" class="task_form__label">Assigned to:</label>
                 <select id="assigned-to" class="task_form__select">
-
+                    @for (user of users(); track $index) {
+                    <option class="task_form__select" [value]="user.username">{{user.username}}</option>
+                    }
                 </select>
             </div>
             <div class="task_form__controls_wrapper">
                 <label for="target-end-date" class="task_form__label">
                     Target end date:
                 </label>
-                <input formControlName="targetEndDate" id="target-end-date" type="date" class="task_form__input">
+                <input formControlName="targetEndDate" [min]="minTargetEndDate" id="target-end-date" type="date"
+                    class="task_form__input">
             </div>
             <div class="task_form__controls_wrapper">
                 <button [ngClass]="taskForm.valid || !taskForm.touched ? '' : 'task_form__button--error' "

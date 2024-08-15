@@ -1,6 +1,8 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { TaskService } from '../services/task.service';
+import { UserService } from '../../user/services/user.service';
 
 @Component({
   selector: 'app-task-form',
@@ -9,7 +11,16 @@ import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angula
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'
 })
-export class TaskFormComponent {
+export class TaskFormComponent implements OnInit {
+
+  private taskService = inject(TaskService);
+  private userService = inject(UserService);
+
+  ngOnInit(): void {
+    this.userService.findAllUsers();
+  }
+
+  users = this.userService.users;
 
   taskForm = new FormGroup({
     title: new FormControl('', [
@@ -26,4 +37,9 @@ export class TaskFormComponent {
     assignedTo: new FormControl('')
   }
   );
+
+  minTargetEndDate = new Date().toISOString().split("T")[0];
+
+  createTask(): void {
+  }
 }
