@@ -1,4 +1,4 @@
-<div class="task_form__wrapper">
+<div [ngStyle]="{'display': isCeateTaskFormVisible() ? 'block' : 'none'}" class="task_form__wrapper">
     <div class="task_form">
         <form [formGroup]="taskForm" (ngSubmit)="createTask()" class="task_form__form">
             <div class="task_form__controls_wrapper">

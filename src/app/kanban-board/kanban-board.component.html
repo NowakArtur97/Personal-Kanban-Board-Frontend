@@ -1,7 +1,7 @@
 <header class="kanban-board__header">
     <h1 class="kanban-board__title">Personal Kanban Board</h1>
     <div class="kanban-board__options">
-        <button class="kanban-board__option-button">
+        <button (click)="showCreateTaskForm()" class="kanban-board__option-button">
             <span class="kanban-board__option">+</span>
         </button>
         <button class="kanban-board__option-button">
@@ -14,4 +14,4 @@
     <app-task-column [tasksStatus]="tasksStatus" class="kanban-board__task-column" />
     }
 </main>
-<app-task-form></app-task-form>
+<app-task-form [isCeateTaskFormVisible]="isCeateTaskFormVisible"></app-task-form>

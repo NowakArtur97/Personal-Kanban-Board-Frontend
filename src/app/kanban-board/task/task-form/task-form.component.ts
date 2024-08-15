@@ -1,5 +1,5 @@
-import { NgClass } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { NgClass, NgStyle } from '@angular/common';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '../services/task.service';
 import { UserService } from '../../user/services/user.service';
@@ -7,7 +7,7 @@ import { UserService } from '../../user/services/user.service';
 @Component({
   selector: 'app-task-form',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass, NgStyle, ReactiveFormsModule],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'
 })
@@ -20,6 +20,7 @@ export class TaskFormComponent implements OnInit {
     this.userService.findAllUsers();
   }
 
+  isCeateTaskFormVisible = input<boolean>(false);
   users = this.userService.users;
 
   taskForm = new FormGroup({
