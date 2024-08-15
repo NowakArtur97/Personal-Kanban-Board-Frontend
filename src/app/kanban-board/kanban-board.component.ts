@@ -19,4 +19,8 @@ export class KanbanBoardComponent {
     showCreateTaskForm(): void {
         this.isCeateTaskFormVisible = true;
     }
+
+    hideCreateTaskForm(): void {
+        this.isCeateTaskFormVisible = false;
+    }
 }

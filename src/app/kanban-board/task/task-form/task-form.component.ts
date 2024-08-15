@@ -1,5 +1,5 @@
 import { NgClass, NgStyle } from '@angular/common';
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '../services/task.service';
 import { UserService } from '../../user/services/user.service';
@@ -21,6 +21,7 @@ export class TaskFormComponent implements OnInit {
   }
 
   isCeateTaskFormVisible = input<boolean>(false);
+  @Output() hideCeateTaskForm = new EventEmitter<boolean>();
   users = this.userService.users;
 
   taskForm = new FormGroup({
@@ -42,5 +43,9 @@ export class TaskFormComponent implements OnInit {
   minTargetEndDate = new Date().toISOString().split("T")[0];
 
   createTask(): void {
+  }
+
+  emitHideCeateTaskFormEvent(): void {
+    this.hideCeateTaskForm.emit();
   }
 }
