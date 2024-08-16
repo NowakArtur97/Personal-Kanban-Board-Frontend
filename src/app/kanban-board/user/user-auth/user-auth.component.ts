@@ -12,7 +12,7 @@ import { matchingPasswordsValidator } from '../validators/matching-passwords.val
   standalone: true,
   imports: [NgClass, ReactiveFormsModule],
   templateUrl: './user-auth.component.html',
-  styleUrl: './user-auth.component.css'
+  styleUrls: ['./user-auth.component.css', '../../common/form.styles.css'],
 })
 export class UserAuthComponent {
 

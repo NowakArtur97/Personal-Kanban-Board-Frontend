@@ -9,7 +9,7 @@ import { UserService } from '../../user/services/user.service';
   standalone: true,
   imports: [NgClass, NgStyle, ReactiveFormsModule],
   templateUrl: './task-form.component.html',
-  styleUrl: './task-form.component.css'
+  styleUrls: ['./task-form.component.css', '../../common/form.styles.css'],
 })
 export class TaskFormComponent implements OnInit {
 

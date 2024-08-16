@@ -1,73 +1,73 @@
 <div (click)="emitHideCeateTaskFormEvent()" [ngStyle]="{'display': isCeateTaskFormVisible() ? 'block' : 'none'}"
     class="task_form__background">
 </div>
-<div [ngStyle]="{'display': isCeateTaskFormVisible() ? 'block' : 'none'}" class="task_form">
-    <form [formGroup]="taskForm" (ngSubmit)="createTask()" class="task_form__form">
-        <div class="task_form__controls_wrapper">
-            <label for="title" class="task_form__label">
+<div [ngStyle]="{'display': isCeateTaskFormVisible() ? 'block' : 'none'}" class="form_wrapper">
+    <form [formGroup]="taskForm" (ngSubmit)="createTask()" class="form">
+        <div class="form__controls_wrapper">
+            <label for="title" class="form__label">
                 Title:
             </label>
-            <input formControlName="title" id="title" type="text" placeholder="Title" class="task_form__input">
+            <input formControlName="title" id="title" type="text" placeholder="Title" class="form__input">
         </div>
-        <div class="task_form__controls_wrapper">
-            <label for="description" class="task_form__label">Description:</label>
+        <div class="form__controls_wrapper">
+            <label for="description" class="form__label">Description:</label>
             <input formControlName="description" id="description" type="description" placeholder="Description"
-                class="task_form__input">
+                class="form__input">
         </div>
-        <div class="task_form__controls_wrapper">
-            <label class="task_form__label">Status:</label>
-            <div class="task_form__radios_wrapper">
-                <div class="task_form__controls_wrapper">
-                    <label for="low" class="task_form__label task_form__label--small">Low</label>
-                    <input formControlName="status" value="Low" id="low" type="radio" class="task_form__input">
+        <div class="form__controls_wrapper">
+            <label class="form__label">Status:</label>
+            <div class="form__radios_wrapper">
+                <div class="form__controls_wrapper">
+                    <label for="low" class="form__label form__label--small">Low</label>
+                    <input formControlName="status" value="Low" id="low" type="radio" class="form__input">
                 </div>
-                <div class="task_form__controls_wrapper">
-                    <label for="medium" class="task_form__label task_form__label--small">Medium</label>
-                    <input formControlName="status" value="Medium" id="medium" type="radio" class="task_form__input">
+                <div class="form__controls_wrapper">
+                    <label for="medium" class="form__label form__label--small">Medium</label>
+                    <input formControlName="status" value="Medium" id="medium" type="radio" class="form__input">
                 </div>
-                <div class="task_form__controls_wrapper">
-                    <label for="high" class="task_form__label task_form__label--small">High</label>
-                    <input formControlName="status" value="High" id="high" type="radio" class="task_form__input">
+                <div class="form__controls_wrapper">
+                    <label for="high" class="form__label form__label--small">High</label>
+                    <input formControlName="status" value="High" id="high" type="radio" class="form__input">
                 </div>
             </div>
         </div>
-        <div class="task_form__controls_wrapper">
-            <label class="task_form__label">Priority:</label>
-            <div class="task_form__radios_wrapper">
-                <div class="task_form__controls_wrapper">
-                    <label for="ready-to-start" class="task_form__label task_form__label--small">Redy to start</label>
+        <div class="form__controls_wrapper">
+            <label class="form__label">Priority:</label>
+            <div class="form__radios_wrapper">
+                <div class="form__controls_wrapper">
+                    <label for="ready-to-start" class="form__label form__label--small">Redy to start</label>
                     <input formControlName="priority" value="READY_TO_START" id="ready-to-start" type="radio"
-                        class="task_form__input">
+                        class="form__input">
                 </div>
-                <div class="task_form__controls_wrapper">
-                    <label for="in-progress" class="task_form__label task_form__label--small">In progress</label>
+                <div class="form__controls_wrapper">
+                    <label for="in-progress" class="form__label form__label--small">In progress</label>
                     <input formControlName="priority" value="IN_PROGRESS" id="in-progress" type="radio"
-                        class="task_form__input">
+                        class="form__input">
                 </div>
-                <div class="task_form__controls_wrapper">
-                    <label for="done" class="task_form__label task_form__label--small">Done</label>
-                    <input formControlName="priority" value="DONE" id="done" type="radio" class="task_form__input">
+                <div class="form__controls_wrapper">
+                    <label for="done" class="form__label form__label--small">Done</label>
+                    <input formControlName="priority" value="DONE" id="done" type="radio" class="form__input">
                 </div>
             </div>
         </div>
-        <div class="task_form__controls_wrapper">
-            <label for="assigned-to" class="task_form__label">Assigned to:</label>
-            <select id="assigned-to" class="task_form__select">
+        <div class="form__controls_wrapper">
+            <label for="assigned-to" class="form__label">Assigned to:</label>
+            <select id="assigned-to" class="form__select">
                 @for (user of users(); track $index) {
-                <option class="task_form__select" [value]="user.username">{{user.username}}</option>
+                <option class="form__select" [value]="user.username">{{user.username}}</option>
                 }
             </select>
         </div>
-        <div class="task_form__controls_wrapper">
-            <label for="target-end-date" class="task_form__label">
+        <div class="form__controls_wrapper">
+            <label for="target-end-date" class="form__label">
                 Target end date:
             </label>
             <input formControlName="targetEndDate" [min]="minTargetEndDate" id="target-end-date" type="date"
-                class="task_form__input">
+                class="form__input">
         </div>
-        <div class="task_form__controls_wrapper">
-            <button [ngClass]="taskForm.valid || !taskForm.touched ? '' : 'task_form__button--error' "
-                class="task_form__button" type="submit">Submit</button>
+        <div class="form__controls_wrapper">
+            <button [ngClass]="taskForm.valid || !taskForm.touched ? '' : 'form__button--error'" class="form__button"
+                type="submit">Submit</button>
         </div>
     </form>
 </div>

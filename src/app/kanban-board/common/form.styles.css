@@ -1,0 +1,98 @@
+.form_wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 25%;
+
+    padding: 0 3% 1.5%;
+    border: 1px solid hsla(0, 0%, 0%, 0.25);
+    border-radius: 20px;
+    background-color: hsl(0, 0%, 100%);
+
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: all 0.5s;
+
+    overflow: hidden;
+}
+
+.form_wrapper:hover {
+    border-color: hsl(0, 0%, 0%);
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.form {
+    margin-top: 5%;
+}
+
+.form__controls_wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 5%;
+}
+
+.form__radios_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.form__label {
+    margin-bottom: 3%;
+
+    font-size: 1.35em;
+}
+
+.form__input {
+    padding: 2.5%;
+    border: 1px solid hsla(0, 0%, 0%, 0.25);
+    border-radius: 20px;
+    outline: none;
+
+    font-size: 1.2em;
+
+    transition: all 0.5s;
+}
+
+.form__input:hover {
+    border-color: hsl(0, 0%, 0%);
+}
+
+.form__button {
+    padding: 2.5% 12%;
+    background-color: hsla(0, 0%, 0%);
+    border-radius: 20px;
+
+    font-size: 1.35rem;
+    color: hsl(0, 0%, 100%);
+
+    cursor: pointer;
+
+    transition: all 0.5s;
+}
+
+.form__button--error {
+    background-color: rgb(134, 0, 0);
+    color: hsl(0, 0%, 100%);
+}
+
+.form__button:hover {
+    background-color: hsl(0, 0%, 100%);
+    color: hsla(0, 0%, 0%);
+    transform: scale(1.1);
+}
+
+.form__button--error:hover {
+    background-color: hsl(0, 0%, 100%);
+    color: hsl(0, 0%, 100%);
+    border: none;
+}
+
+.form__error {
+    color: rgb(255, 0, 0);
+    font-size: 1.25rem;
+    text-align: center;
+}
