@@ -54,12 +54,13 @@ export class TaskFormComponent implements OnInit {
       return;
     }
     const { title, description, status, priority, targetEndDate, assignedTo } = this.taskForm.value;
+    console.log(targetEndDate!! === "" ? this.minTargetEndDate : targetEndDate!!);
     const taskDTO: TaskDTO = {
       title: title!!,
       description: description!!,
       status: TaskStatus[TaskStatus[status!! as keyof typeof TaskStatus]],
       priority: TaskPriority[TaskPriority[priority!! as keyof typeof TaskPriority]],
-      targetEndDate: targetEndDate!!,
+      targetEndDate: targetEndDate!! === "" ? this.minTargetEndDate : targetEndDate!!,
       assignedTo: assignedTo!!,
     };
     this.taskService.createTask(taskDTO);
