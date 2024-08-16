@@ -1,11 +1,9 @@
-import TaskPriority from "./task-priority.model";
-import { TaskStatus } from "./task-status.model";
 
 export default interface TaskDTO {
     title: string,
     description: string,
-    status: TaskStatus,
-    priority: TaskPriority,
+    status: string,
+    priority: string,
     targetEndDate: string,
     assignedTo: string,
 }

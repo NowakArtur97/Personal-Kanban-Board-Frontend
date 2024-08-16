@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angula
 import { TaskService } from '../services/task.service';
 import { UserService } from '../../user/services/user.service';
 import FormUtil from '../../utils/form.util';
+import TaskDTO from '../models/task.dto';
 import { ALL_TASK_STATUSES, TaskStatus } from '../models/task-status.model';
 import { TaskPriority, ALL_TASKS_PRIORITIES } from '../models/task-priority.model';
 
@@ -49,6 +50,19 @@ export class TaskFormComponent implements OnInit {
   taskPriorities = ALL_TASKS_PRIORITIES;
 
   createTask(): void {
+    if (!this.taskForm.valid) {
+      return;
+    }
+    const { title, description, status, priority, targetEndDate, assignedTo } = this.taskForm.value;
+    const taskDTO: TaskDTO = {
+      title: title!!,
+      description: description!!,
+      status: TaskStatus[TaskStatus[status!! as keyof typeof TaskStatus]],
+      priority: TaskPriority[TaskPriority[priority!! as keyof typeof TaskPriority]],
+      targetEndDate: targetEndDate!!,
+      assignedTo: assignedTo!!,
+    };
+    this.taskService.createTask(taskDTO);
   }
 
   emitHideCeateTaskFormEvent(): void {
