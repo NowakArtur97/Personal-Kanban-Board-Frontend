@@ -20,6 +20,7 @@ export class UserAuthComponent {
   private userService = inject(UserService);
 
   isInLoginView = false;
+  errors = this.userService.errors;
 
   loginForm = new FormGroup({
     usernameOrEmail: new FormControl('', [
@@ -56,8 +57,6 @@ export class UserAuthComponent {
     ],
   }
   );
-
-  errors = this.userService.errors;
 
   changeAction(isInLogiView: boolean): void {
     const isClickingOnTheSameAction = isInLogiView && this.isInLoginView
