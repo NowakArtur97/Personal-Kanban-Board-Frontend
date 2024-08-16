@@ -1,7 +1,7 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { TaskColumnComponent } from './task/task-column/task-column.component';
-import { ALL_TASKS_STATUSES } from './task/models/task-status.model';
+import { ALL_TASK_STATUSES } from './task/models/task-status.model';
 import { TaskFormComponent } from './task/task-form/task-form.component';
 
 @Component({
@@ -13,8 +13,8 @@ import { TaskFormComponent } from './task/task-form/task-form.component';
 })
 export class KanbanBoardComponent {
 
-    tasksStatuses = ALL_TASKS_STATUSES;
-    isCeateTaskFormVisible = false;
+    taskStatuses = ALL_TASK_STATUSES;
+    isCeateTaskFormVisible = true;
 
     showCreateTaskForm(): void {
         this.isCeateTaskFormVisible = true;

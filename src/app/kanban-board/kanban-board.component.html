@@ -10,8 +10,8 @@
     </div>
 </header>
 <main class="kanban-board">
-    @for (tasksStatus of tasksStatuses; track $index) {
-    <app-task-column [tasksStatus]="tasksStatus" class="kanban-board__task-column" />
+    @for (taskStatus of taskStatuses; track $index) {
+    <app-task-column [taskStatus]="taskStatus" class="kanban-board__task-column" />
     }
 </main>
 <app-task-form [isCeateTaskFormVisible]="isCeateTaskFormVisible"

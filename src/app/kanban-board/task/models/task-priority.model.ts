@@ -4,5 +4,10 @@ enum TaskPriority {
     HIGH
 }
 
+const ALL_TASKS_PRIORITIES: TaskPriority[] = [
+    TaskPriority.LOW,
+    TaskPriority.MEDIUM,
+    TaskPriority.HIGH
+];
 
-export default TaskPriority;
+export { TaskPriority, ALL_TASKS_PRIORITIES };

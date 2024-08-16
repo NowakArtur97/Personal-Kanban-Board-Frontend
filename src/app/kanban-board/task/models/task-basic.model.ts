@@ -1,4 +1,4 @@
-import TaskPriority from "./task-priority.model";
+import { TaskPriority } from "./task-priority.model";
 import { TaskStatus } from "./task-status.model";
 
 export default interface BaseTask {

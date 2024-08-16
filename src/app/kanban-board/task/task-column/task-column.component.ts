@@ -16,7 +16,7 @@ export class TaskColumnComponent {
 
   private taskService = inject(TaskService);
 
-  tasksStatus = input<TaskStatus>();
+  taskStatus = input<TaskStatus>();
   tasks = computed(() =>
     this.taskService.tasks().filter(task =>
       this.hasSameTaskStatus(task)
@@ -27,18 +27,18 @@ export class TaskColumnComponent {
 
   // TODO: Remove
   constructor() {
-    effect(() => this.randomColor(this.tasksStatus() ?? 0));
+    effect(() => this.randomColor(this.taskStatus() ?? 0));
   }
 
   get status(): string {
-    return TaskStatus[this.tasksStatus()!];
+    return TaskStatus[this.taskStatus()!];
   }
 
   private hasSameStatusInAnySubtask = ({ subtasks }: Task): boolean =>
     subtasks ? subtasks.some(subtask => TaskStatus[subtask.status] === this.status) : false;
 
   private hasSameTaskStatus = (task: Task): boolean =>
-    task.status.toString() === TaskStatus[this.tasksStatus()!];
+    task.status.toString() === TaskStatus[this.taskStatus()!];
 
   private randomColor(index: number): void {
     const colors = ["#ef7d57", "#41a6f6", "#566c86"];
@@ -46,7 +46,7 @@ export class TaskColumnComponent {
   };
 
   formattedStatus = (): string =>
-    TaskStatus[this.tasksStatus()!]
+    TaskStatus[this.taskStatus()!]
       .split("_")
       .filter(x => x.length > 0)
       .map((x) => (x.charAt(0).toUpperCase() + x.slice(1).toLowerCase()))

@@ -4,6 +4,8 @@ import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angula
 import { TaskService } from '../services/task.service';
 import { UserService } from '../../user/services/user.service';
 import FormUtil from '../../utils/form.util';
+import { ALL_TASK_STATUSES, TaskStatus } from '../models/task-status.model';
+import { TaskPriority, ALL_TASKS_PRIORITIES } from '../models/task-priority.model';
 
 @Component({
   selector: 'app-task-form',
@@ -43,6 +45,8 @@ export class TaskFormComponent implements OnInit {
   );
 
   minTargetEndDate = new Date().toISOString().split("T")[0];
+  taskStatuses = ALL_TASK_STATUSES;
+  taskPriorities = ALL_TASKS_PRIORITIES;
 
   createTask(): void {
   }
@@ -54,4 +58,27 @@ export class TaskFormComponent implements OnInit {
   formErrors(formControl: FormControl, controlName: string, minLength = 0, maxLength = 0): string[] {
     return FormUtil.formErrors(formControl, controlName, minLength, maxLength);
   }
+
+  status = (tasksStatus: TaskStatus): string => TaskStatus[tasksStatus];
+
+  formattedStatus = (tasksStatus: TaskStatus): string =>
+    this.formatEnum(TaskStatus[tasksStatus]);
+
+  priority = (taskPriority: TaskPriority): string => TaskPriority[taskPriority];
+
+  formattedPriority = (taskPriority: TaskPriority): string =>
+    this.formatEnum(TaskPriority[taskPriority]);
+
+  formatEnum = (enumValue: string): string =>
+    enumValue
+      .split("_")
+      .filter(x => x.length > 0)
+      .map((x, index) => {
+        if (index === 0) {
+          return x.charAt(0).toUpperCase() + x.slice(1).toLowerCase();
+        } else {
+          return x.toLowerCase();
+        }
+      })
+      .join(" ");
 }

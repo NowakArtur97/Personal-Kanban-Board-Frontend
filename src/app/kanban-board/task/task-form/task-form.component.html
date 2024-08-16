@@ -27,38 +27,27 @@
         <div class="form__controls_wrapper">
             <label class="form__label">Priority:</label>
             <div class="form__radios_wrapper">
+                @for (taskPriority of taskPriorities; track $index) {
                 <div class="form__controls_wrapper">
-                    <label for="low" class="form__label form__label--small">Low</label>
-                    <input formControlName="priority" checked="checked" value="LOW" id="low" type="radio"
-                        class="form__input">
+                    <label [for]="priority(taskPriority)"
+                        class="form__label form__label--small">{{formattedPriority(taskPriority)}}</label>
+                    <input formControlName="priority" checked="checked" [value]="priority(taskPriority)"
+                        [id]="priority(taskPriority)" type="radio" class="form__input">
                 </div>
-                <div class="form__controls_wrapper">
-                    <label for="medium" class="form__label form__label--small">Medium</label>
-                    <input formControlName="priority" value="MEDIUM" id="medium" type="radio" class="form__input">
-                </div>
-                <div class="form__controls_wrapper">
-                    <label for="high" class="form__label form__label--small">High</label>
-                    <input formControlName="priority" value="HIGH" id="high" type="radio" class="form__input">
-                </div>
+                }
             </div>
         </div>
         <div class="form__controls_wrapper">
             <label class="form__label">Status:</label>
             <div class="form__radios_wrapper">
+                @for (taskStatus of taskStatuses; track $index) {
                 <div class="form__controls_wrapper">
-                    <label for="ready-to-start" class="form__label form__label--small">Redy to start</label>
-                    <input formControlName="status" checked="checked" value="READY_TO_START" id="ready-to-start"
-                        type="radio" class="form__input">
+                    <label [for]="status(taskStatus)"
+                        class="form__label form__label--small">{{formattedStatus(taskStatus)}}</label>
+                    <input formControlName="status" checked="checked" [value]="status(taskStatus)"
+                        [id]="status(taskStatus)" type="radio" class="form__input">
                 </div>
-                <div class="form__controls_wrapper">
-                    <label for="in-progress" class="form__label form__label--small">In progress</label>
-                    <input formControlName="status" value="IN_PROGRESS" id="in-progress" type="radio"
-                        class="form__input">
-                </div>
-                <div class="form__controls_wrapper">
-                    <label for="done" class="form__label form__label--small">Done</label>
-                    <input formControlName="status" value="DONE" id="done" type="radio" class="form__input">
-                </div>
+                }
             </div>
         </div>
         <div class="form__controls_wrapper">

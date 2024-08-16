@@ -1,5 +1,5 @@
 import Subtask from "../models/subtask.model";
-import TaskPriority from "../models/task-priority.model";
+import { TaskPriority } from "../models/task-priority.model";
 import { TaskStatus } from "../models/task-status.model";
 import Task from "../models/task.model";
 
