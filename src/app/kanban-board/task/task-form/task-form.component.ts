@@ -24,20 +24,21 @@ export class TaskFormComponent implements OnInit {
   isCeateTaskFormVisible = input<boolean>(false);
   @Output() hideCeateTaskForm = new EventEmitter<boolean>();
   users = this.userService.users;
+  errors = this.taskService.errors;
 
   taskForm = new FormGroup({
-    title: new FormControl('', [
+    title: new FormControl(null, [
       Validators.required,
       Validators.minLength(4),
       Validators.maxLength(100),
     ]),
-    description: new FormControl('', [
+    description: new FormControl(null, [
       Validators.maxLength(1000),
     ]),
     status: new FormControl('READY_TO_START'),
-    priority: new FormControl('Low'),
+    priority: new FormControl('LOW'),
     targetEndDate: new FormControl(new Date().toISOString().substring(0, 10)),
-    assignedTo: new FormControl('')
+    assignedTo: new FormControl(this.userService.user().userId)
   }
   );
 

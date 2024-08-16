@@ -29,16 +29,16 @@
             <div class="form__radios_wrapper">
                 <div class="form__controls_wrapper">
                     <label for="low" class="form__label form__label--small">Low</label>
-                    <input formControlName="priority" checked="checked" value="Low" id="low" type="radio"
+                    <input formControlName="priority" checked="checked" value="LOW" id="low" type="radio"
                         class="form__input">
                 </div>
                 <div class="form__controls_wrapper">
                     <label for="medium" class="form__label form__label--small">Medium</label>
-                    <input formControlName="priority" value="Medium" id="medium" type="radio" class="form__input">
+                    <input formControlName="priority" value="MEDIUM" id="medium" type="radio" class="form__input">
                 </div>
                 <div class="form__controls_wrapper">
                     <label for="high" class="form__label form__label--small">High</label>
-                    <input formControlName="priority" value="High" id="high" type="radio" class="form__input">
+                    <input formControlName="priority" value="HIGH" id="high" type="radio" class="form__input">
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
             <label for="assigned-to" class="form__label">Assigned to:</label>
             <select id="assigned-to" class="form__select">
                 @for (user of users(); track $index) {
-                <option class="form__select" [value]="user.username">{{user.username}}</option>
+                <option class="form__select" [value]="user.userId">{{user.username}}</option>
                 }
             </select>
         </div>
@@ -80,11 +80,10 @@
             <button [ngClass]="taskForm.valid || !taskForm.touched ? '' : 'form__button--error'" class="form__button"
                 type="submit">Submit</button>
         </div>
-        <!-- TODO: Add general errors -->
-        <!-- <div class="form__controls_wrapper">
+        <div class="form__controls_wrapper">
             @for (error of errors(); track $index) {
             <p class="form__error">{{error}}</p>
             }
-        </div> -->
+        </div>
     </form>
 </div>
