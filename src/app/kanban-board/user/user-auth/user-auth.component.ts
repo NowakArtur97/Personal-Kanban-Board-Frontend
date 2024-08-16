@@ -6,6 +6,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import UserDTO from '../models/user.dto';
 import { availableUsernameAndEmailValidator } from '../validators/username-and-email.validator';
 import { matchingPasswordsValidator } from '../validators/matching-passwords.validator';
+import FormUtil from '../../utils/form.util';
 
 @Component({
   selector: 'app-user-auth',
@@ -94,17 +95,7 @@ export class UserAuthComponent {
   }
 
   formErrors(formControl: FormControl, controlName: string, minLength = 0, maxLength = 0): string[] {
-    const errors: string[] = [];
-    if (formControl.hasError('required')) {
-      errors.push(`${controlName} cannot be empty.`);
-    }
-    if (formControl.hasError('minlength') || formControl.hasError('maxlength')) {
-      errors.push(`${controlName} must be between ${minLength} and ${maxLength} characters.`);
-    }
-    if (formControl.hasError('email')) {
-      errors.push("Email must be a valid email address.");
-    }
-    return errors;
+    return FormUtil.formErrors(formControl, controlName, minLength, maxLength);
   }
 
   setupHover(hoveredElement: HTMLButtonElement, inactiveElement: HTMLButtonElement): void {
