@@ -53,8 +53,9 @@ export class UserService {
             variables: {
                 userDTO,
             },
-        }).subscribe(({ data }: any) => this.handleUserResponse(data.registerUser), (error: ApolloError) =>
-            this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        }).subscribe(({ data }: any) => this.handleUserResponse(data.registerUser),
+            (error: ApolloError) =>
+                this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
 

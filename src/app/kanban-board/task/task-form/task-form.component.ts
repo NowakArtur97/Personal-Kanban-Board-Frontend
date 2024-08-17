@@ -7,7 +7,6 @@ import FormUtil from '../../utils/form.util';
 import TaskDTO from '../models/task.dto';
 import { ALL_TASK_STATUSES, TaskStatus } from '../models/task-status.model';
 import { TaskPriority, ALL_TASKS_PRIORITIES } from '../models/task-priority.model';
-import { trigger, style, transition, animate, state } from '@angular/animations';
 
 @Component({
   selector: 'app-task-form',
@@ -15,19 +14,6 @@ import { trigger, style, transition, animate, state } from '@angular/animations'
   imports: [ReactiveFormsModule, NgClass, NgStyle],
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.css', '../../common/form.styles.css'],
-  animations: [
-    trigger('appearHide', [
-      state('invisible', style({
-        transform: 'translate(-50%, -50%) scale(0)'
-      })),
-      state('visible', style({
-        transform: 'translate(-50%, -50%) scale(0.9)',
-      })),
-      transition('visible <=> invisible', [
-        animate('0.25s')
-      ]),
-    ]),
-  ],
 })
 export class TaskFormComponent implements OnInit {
 

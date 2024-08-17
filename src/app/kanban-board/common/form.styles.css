@@ -9,20 +9,19 @@
     border-radius: 20px;
     background-color: hsl(0, 0%, 100%);
 
-    overflow: hidden;
-}
-
-.form_wrapper--animated {
     transform: translate(-50%, -50%) scale(0.9);
     transition: all 0.5s;
+
+    overflow: hidden;
 }
 
 .form_wrapper:hover {
     border-color: hsl(0, 0%, 0%);
+    transform: translate(-50%, -50%) scale(1);
 }
 
-.form_wrapper--animated:hover {
-    transform: translate(-50%, -50%) scale(1);
+.form_wrapper--hidden {
+    transform: translate(-50%, -50%) scale(0);
 }
 
 .form {

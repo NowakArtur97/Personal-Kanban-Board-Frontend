@@ -1,7 +1,7 @@
-<div (click)="emitHideCeateTaskFormEvent()" [ngStyle]="{'display': isCeateTaskFormVisible() ? 'block' : 'none'}"
-    class="task_form__background">
+<div (click)="emitHideCeateTaskFormEvent()"
+    [ngStyle]="isCeateTaskFormVisible() ? { display: 'block' } : { display: 'none' }" class="task_form__background">
 </div>
-<div [@appearHide]="isCeateTaskFormVisible() ? 'visible': 'invisible'" class="form_wrapper">
+<div [ngClass]="{'form_wrapper--hidden': !isCeateTaskFormVisible()}" class="form_wrapper">
     <form [formGroup]="taskForm" (ngSubmit)="createTask()" class="form">
         <div class="form__controls_wrapper">
             <label for="title" class="form__label">
