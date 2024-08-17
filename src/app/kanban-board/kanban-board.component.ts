@@ -14,7 +14,7 @@ import { TaskFormComponent } from './task/task-form/task-form.component';
 export class KanbanBoardComponent {
 
     taskStatuses = ALL_TASK_STATUSES;
-    isCeateTaskFormVisible = true;
+    isCeateTaskFormVisible = false;
 
     showCreateTaskForm(): void {
         this.isCeateTaskFormVisible = true;

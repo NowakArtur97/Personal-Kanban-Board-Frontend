@@ -5,6 +5,7 @@ import { CREATE_TASK, FIND_ALL_USER_TASKS } from './task.queries';
 import { HttpHeaders } from '@angular/common/http';
 import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
+import { UserService } from '../../user/services/user.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,7 @@ export class TaskService {
     private readonly ERROR_MESSAGE_DIVIDER = "\n";
 
     private apollo = inject(Apollo);
+    private userService = inject(UserService);
 
     #tasks = signal<Task[]>([]);
     #errors = signal<string[]>([]);
@@ -27,6 +29,9 @@ export class TaskService {
             variables: {
                 taskDTO,
             },
+            context: {
+                headers: new HttpHeaders().set("Authorization", "Bearer " + this.userService.user().token),
+            }
         }).subscribe(({ data }: any) =>
             this.#tasks.set([...this.tasks(), data.createTask]),
             (error: ApolloError) =>
