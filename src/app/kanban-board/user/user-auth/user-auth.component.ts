@@ -11,7 +11,7 @@ import FormUtil from '../../utils/form.util';
 @Component({
   selector: 'app-user-auth',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: './user-auth.component.html',
   styleUrls: ['./user-auth.component.css', '../../common/form.styles.css'],
 })

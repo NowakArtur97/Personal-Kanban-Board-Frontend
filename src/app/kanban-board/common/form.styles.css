@@ -9,14 +9,19 @@
     border-radius: 20px;
     background-color: hsl(0, 0%, 100%);
 
+    overflow: hidden;
+}
+
+.form_wrapper--animated {
     transform: translate(-50%, -50%) scale(0.9);
     transition: all 0.5s;
-
-    overflow: hidden;
 }
 
 .form_wrapper:hover {
     border-color: hsl(0, 0%, 0%);
+}
+
+.form_wrapper--animated:hover {
     transform: translate(-50%, -50%) scale(1);
 }
 
@@ -38,13 +43,17 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-top: -3%;
+    margin-top: -4%;
 }
 
 .form__label {
     margin-bottom: 3%;
 
     font-size: 1.35em;
+}
+
+.form__label--small {
+    font-size: 1.2em;
 }
 
 .form__input {
