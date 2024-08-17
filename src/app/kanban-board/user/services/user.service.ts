@@ -63,7 +63,7 @@ export class UserService {
         this.apollo.watchQuery({
             query: FIND_ALL_USERS,
             context: {
-                headers: new HttpHeaders().set("Authorization", "Bearer " + this.user().token),
+                headers: this.getAuthorizationHeader(),
             }
         }).valueChanges.subscribe(({ data }: any) => this.handleUsersResponse(data.users),
             (error: ApolloError) => {
@@ -97,4 +97,7 @@ export class UserService {
             this.#errors.set(this.#errors().filter(e => e !== error));
         };
     }
+
+    getAuthorizationHeader = (): HttpHeaders =>
+        new HttpHeaders().set("Authorization", "Bearer " + this.user().token);
 };

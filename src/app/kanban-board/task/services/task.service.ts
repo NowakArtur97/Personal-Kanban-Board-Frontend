@@ -2,7 +2,6 @@ import { Injectable, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
 import { CREATE_TASK, FIND_ALL_USER_TASKS } from './task.queries';
-import { HttpHeaders } from '@angular/common/http';
 import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
@@ -30,7 +29,7 @@ export class TaskService {
                 taskDTO,
             },
             context: {
-                headers: new HttpHeaders().set("Authorization", "Bearer " + this.userService.user().token),
+                headers: this.userService.getAuthorizationHeader(),
             }
         }).subscribe(({ data }: any) =>
             this.#tasks.set([...this.tasks(), data.createTask]),
@@ -43,7 +42,7 @@ export class TaskService {
         this.apollo.watchQuery({
             query: FIND_ALL_USER_TASKS,
             context: {
-                headers: new HttpHeaders().set("Authorization", "Bearer " + token),
+                headers: this.userService.getAuthorizationHeader(),
             }
         }).valueChanges.subscribe(({ data, error }: any) =>
             this.#tasks.set(data.tasks)
