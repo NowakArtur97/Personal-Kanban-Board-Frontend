@@ -1,6 +1,14 @@
 <div [ngStyle]="{'background-color': color}" class="task">
     <div class="task__title_container">
         <p class="task__title">{{task()?.title}}</p>
+        <div class="task__options">
+            <button class="task__option-button">
+                <span class="task__option">+</span>
+            </button>
+            <button class="task__option-button">
+                <span class="task__option">-</span>
+            </button>
+        </div>
     </div>
     <div class="task__description_container">
         <p class="task__description">
