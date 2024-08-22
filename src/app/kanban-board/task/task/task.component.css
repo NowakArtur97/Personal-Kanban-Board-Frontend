@@ -20,6 +20,10 @@
 
 .task__title_container {
     flex-basis: 10%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .task__title {
@@ -29,6 +33,42 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.task__options {
+    display: flex;
+    justify-content: space-between;
+}
+
+.task__option-button {
+    width: 20px;
+    border: none;
+    background-color: transparent;
+}
+
+.task__option {
+    display: inline-block;
+
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    background-color: hsla(0, 0%, 100%);
+
+    font-size: 1.15em;
+    line-height: 15px;
+    color: hsla(0, 0%, 0%);
+
+    cursor: pointer;
+
+    transition: all 0.5s;
+}
+
+.task__option:hover {
+    color: hsla(0, 0%, 100%);
+
+    background-color: hsla(0, 0%, 20%);
+
+    transform: scale(1.5);
 }
 
 .task__details_container {
