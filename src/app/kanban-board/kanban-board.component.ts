@@ -21,5 +21,6 @@ export class KanbanBoardComponent {
 
     showCreateTaskForm(): void {
         this.taskService.changeTaskFormVisibility(true);
+        this.taskService.setTaskToUpdate(null);
     }
 }
