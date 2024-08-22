@@ -1,8 +1,9 @@
 import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TaskColumnComponent } from './task/task-column/task-column.component';
 import { ALL_TASK_STATUSES } from './task/models/task-status.model';
 import { TaskFormComponent } from './task/task-form/task-form.component';
+import { TaskService } from './task/services/task.service';
 
 @Component({
     selector: 'app-kanban-board',
@@ -13,14 +14,12 @@ import { TaskFormComponent } from './task/task-form/task-form.component';
 })
 export class KanbanBoardComponent {
 
+    private taskService = inject(TaskService);
+
     taskStatuses = ALL_TASK_STATUSES;
     isCeateTaskFormVisible = false;
 
     showCreateTaskForm(): void {
-        this.isCeateTaskFormVisible = true;
-    }
-
-    hideCreateTaskForm(): void {
-        this.isCeateTaskFormVisible = false;
+        this.taskService.changeTaskFormVisibility(true);
     }
 }

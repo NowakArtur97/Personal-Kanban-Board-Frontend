@@ -18,9 +18,11 @@ export class TaskService {
 
     #tasks = signal<Task[]>([]);
     #errors = signal<string[]>([]);
+    #isTaskFormVisible = signal<boolean>(false);
 
     tasks = this.#tasks.asReadonly();
     errors = this.#errors.asReadonly();
+    isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
 
     createTask(taskDTO: TaskDTO): void {
         this.apollo.mutate({
@@ -47,5 +49,9 @@ export class TaskService {
         }).valueChanges.subscribe(({ data, error }: any) =>
             this.#tasks.set(data.tasks)
         );
+    }
+
+    changeTaskFormVisibility(isVisible: boolean): void {
+        this.#isTaskFormVisible.set(isVisible);
     }
 }

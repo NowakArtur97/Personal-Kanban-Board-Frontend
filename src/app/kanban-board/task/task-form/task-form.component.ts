@@ -1,5 +1,5 @@
 import { NgClass, NgStyle } from '@angular/common';
-import { Component, EventEmitter, inject, input, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '../services/task.service';
 import { UserService } from '../../user/services/user.service';
@@ -24,10 +24,9 @@ export class TaskFormComponent implements OnInit {
     this.userService.findAllUsers();
   }
 
-  isCeateTaskFormVisible = input<boolean>(false);
-  @Output() hideCeateTaskForm = new EventEmitter<boolean>();
   users = this.userService.users;
   errors = this.taskService.errors;
+  isCeateTaskFormVisible = this.taskService.isTaskFormVisible;
 
   taskForm = new FormGroup({
     title: new FormControl(null, [
@@ -66,7 +65,7 @@ export class TaskFormComponent implements OnInit {
   }
 
   emitHideCeateTaskFormEvent(): void {
-    this.hideCeateTaskForm.emit();
+    this.taskService.changeTaskFormVisibility(false);
   }
 
   formErrors(formControl: FormControl, controlName: string, minLength = 0, maxLength = 0): string[] {
