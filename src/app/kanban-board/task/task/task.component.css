@@ -44,6 +44,14 @@
     width: 20px;
     border: none;
     background-color: transparent;
+
+    transform: scale(0);
+    transition: all 0.5s;
+}
+
+.task:hover .task__option-button {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .task__option {
