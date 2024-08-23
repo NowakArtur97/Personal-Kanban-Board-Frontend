@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
-import { CREATE_TASK, FIND_ALL_USER_TASKS } from './task.queries';
+import { CREATE_TASK, FIND_ALL_USER_TASKS, UPDATE_TASK } from './task.queries';
 import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
@@ -17,6 +17,7 @@ export class TaskService {
     private userService = inject(UserService);
 
     #tasks = signal<Task[]>([]);
+    #taskIdToUpdate = signal<String | null>(null);
     #taskToUpdate = signal<TaskDTO | null>({
         title: "",
         description: "",
@@ -31,6 +32,7 @@ export class TaskService {
     tasks = this.#tasks.asReadonly();
     errors = this.#errors.asReadonly();
     isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
+    taskIdToUpdate = this.#taskIdToUpdate.asReadonly();
     taskToUpdate = this.#taskToUpdate.asReadonly();
 
     createTask(taskDTO: TaskDTO): void {
@@ -48,6 +50,24 @@ export class TaskService {
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
     }
+
+    updateTask(taskDTO: TaskDTO): void {
+        this.apollo.mutate({
+            mutation: UPDATE_TASK,
+            variables: {
+                taskId: this.taskIdToUpdate(),
+                taskDTO,
+            },
+            context: {
+                headers: this.userService.getAuthorizationHeader(),
+            }
+        }).subscribe(({ data }: any) =>
+            this.#tasks.set([...this.tasks().filter(task => task.taskId !== data.updateTask.taskId), data.updateTask]),
+            (error: ApolloError) =>
+                this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        );
+    }
+
     getUserTasks(): void {
         this.apollo.watchQuery({
             query: FIND_ALL_USER_TASKS,
@@ -61,16 +81,17 @@ export class TaskService {
 
     setTaskToUpdate(task: Task | null): void {
         if (task === null) {
+            this.#taskIdToUpdate.set(null);
             this.#taskToUpdate.set(null);
         } else {
-            console.log(task.status + "");
+            this.#taskIdToUpdate.set(task.taskId);
             this.#taskToUpdate.set({
                 title: task.title,
                 description: task.description,
                 status: task.status + "",
                 priority: task.priority + "",
                 targetEndDate: task.targetEndDate,
-                assignedTo: task.assignedTo
+                assignedTo: this.userService.users().find(user => user.username === task.assignedTo)!!.userId
             });
         }
     }
