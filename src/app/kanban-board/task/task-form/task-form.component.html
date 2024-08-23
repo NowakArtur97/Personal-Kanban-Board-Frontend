@@ -52,7 +52,7 @@
         </div>
         <div class="form__controls_wrapper">
             <label for="assigned-to" class="form__label">Assigned to:</label>
-            <select id="assigned-to" class="form__select">
+            <select formControlName="assignedTo" id="assigned-to" class="form__select">
                 @for (user of users(); track $index) {
                 <option class="form__select" [value]="user.userId">{{user.username}}</option>
                 }
