@@ -19,7 +19,7 @@ const CREATE_TASK = gql`
 `;
 
 const UPDATE_TASK = gql`
-    mutation UPDATE_TASK($taskId: ID!, $taskDTO: TaskDTO!) {
+    mutation UPDATE_TASK($taskId: UUID!, $taskDTO: TaskDTO!) {
        updateTask(taskId: $taskId, taskDTO: $taskDTO) {
             taskId
             title
