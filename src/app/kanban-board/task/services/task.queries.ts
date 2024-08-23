@@ -18,6 +18,24 @@ const CREATE_TASK = gql`
     }
 `;
 
+const UPDATE_TASK = gql`
+    mutation UPDATE_TASK($taskId: ID!, $taskDTO: TaskDTO!) {
+       updateTask(taskId: $taskId, taskDTO: $taskDTO) {
+            taskId
+            title
+            description
+            status
+            priority
+            targetEndDate
+            assignedTo
+            createdBy
+            createdOn
+            updatedBy
+            updatedOn
+        }
+    }
+`;
+
 const FIND_ALL_USER_TASKS = gql`
     query FIND_ALL_USER_TASKS {
         tasks {
@@ -36,4 +54,4 @@ const FIND_ALL_USER_TASKS = gql`
     }
 `;
 
-export { CREATE_TASK, FIND_ALL_USER_TASKS };
+export { CREATE_TASK, UPDATE_TASK, FIND_ALL_USER_TASKS };
