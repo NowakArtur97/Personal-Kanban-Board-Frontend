@@ -61,8 +61,10 @@ export class TaskService {
             context: {
                 headers: this.userService.getAuthorizationHeader(),
             }
-        }).subscribe(({ data }: any) =>
-            this.#tasks.set([...this.tasks().filter(task => task.taskId !== data.updateTask.taskId), data.updateTask]),
+        }).subscribe(({ data }: any) => {
+            this.#tasks.set([...this.tasks().filter(task => task.taskId !== data.updateTask.taskId), data.updateTask]);
+            this.changeTaskFormVisibility(false);
+        },
             (error: ApolloError) =>
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
