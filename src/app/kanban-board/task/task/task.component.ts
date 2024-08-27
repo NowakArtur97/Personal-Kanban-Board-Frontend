@@ -23,6 +23,10 @@ export class TaskComponent {
     this.taskService.changeTaskFormVisibility(true);
   }
 
+  deleteTask(): void {
+    this.taskService.deleteTask(this.task()!!.taskId);
+  }
+
   get priority() {
     const priority = this.task()?.priority.toString() ?? "";
     return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();

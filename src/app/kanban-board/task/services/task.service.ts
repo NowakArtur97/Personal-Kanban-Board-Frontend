@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
-import { CREATE_TASK, FIND_ALL_USER_TASKS, UPDATE_TASK } from './task.queries';
+import { CREATE_TASK, DELETE_TASK, FIND_ALL_USER_TASKS, UPDATE_TASK } from './task.queries';
 import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
@@ -64,6 +64,23 @@ export class TaskService {
         }).subscribe(({ data }: any) => {
             this.#tasks.set([...this.tasks().filter(task => task.taskId !== data.updateTask.taskId), data.updateTask]);
             this.changeTaskFormVisibility(false);
+        },
+            (error: ApolloError) =>
+                this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        );
+    }
+
+    deleteTask(taskId: String): void {
+        this.apollo.mutate({
+            mutation: DELETE_TASK,
+            variables: {
+                taskId,
+            },
+            context: {
+                headers: this.userService.getAuthorizationHeader(),
+            }
+        }).subscribe(() => {
+            this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
         },
             (error: ApolloError) =>
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))

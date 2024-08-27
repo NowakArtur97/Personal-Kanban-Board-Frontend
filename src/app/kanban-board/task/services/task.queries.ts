@@ -36,6 +36,12 @@ const UPDATE_TASK = gql`
     }
 `;
 
+const DELETE_TASK = gql`
+    mutation DELETE_TASK($taskId: UUID!) {
+       deleteTask(taskId: $taskId)
+    }
+`;
+
 const FIND_ALL_USER_TASKS = gql`
     query FIND_ALL_USER_TASKS {
         tasks {
@@ -54,4 +60,4 @@ const FIND_ALL_USER_TASKS = gql`
     }
 `;
 
-export { CREATE_TASK, UPDATE_TASK, FIND_ALL_USER_TASKS };
+export { CREATE_TASK, UPDATE_TASK, DELETE_TASK, FIND_ALL_USER_TASKS };
