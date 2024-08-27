@@ -44,8 +44,10 @@ export class TaskService {
             context: {
                 headers: this.userService.getAuthorizationHeader(),
             }
-        }).subscribe(({ data }: any) =>
-            this.#tasks.set([...this.tasks(), data.createTask]),
+        }).subscribe(({ data }: any) => {
+            this.#tasks.set([...this.tasks(), data.createTask]);
+            this.changeTaskFormVisibility(false);
+        },
             (error: ApolloError) =>
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
