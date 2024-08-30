@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { PATHS } from '../../../app.routes';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import UserRole from '../models/user-role.model';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +27,8 @@ export class UserService {
         username: "",
         email: "",
         token: "",
-        expirationTimeInMilliseconds: 0
+        expirationTimeInMilliseconds: 0,
+        role: UserRole.ANONYMOUS
     });
     #users = signal<User[]>([]);
     #errors = signal<string[]>([]);

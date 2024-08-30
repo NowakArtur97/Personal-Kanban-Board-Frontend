@@ -8,6 +8,7 @@ const AUTHENTICATE_USER = gql`
             email
             token
             expirationTimeInMilliseconds
+            role
         }
     }
 `;
@@ -20,6 +21,7 @@ const REGISTER_USER = gql`
             email
             token
             expirationTimeInMilliseconds
+            role
         }
     }
 `;
