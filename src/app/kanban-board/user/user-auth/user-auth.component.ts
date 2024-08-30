@@ -19,7 +19,7 @@ export class UserAuthComponent {
 
   private userService = inject(UserService);
 
-  isInLoginView = false;
+  isInLoginView = true;
   errors = this.userService.errors;
 
   loginForm = new FormGroup({

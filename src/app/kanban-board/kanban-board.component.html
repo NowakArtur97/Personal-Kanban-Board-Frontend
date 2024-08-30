@@ -4,9 +4,11 @@
         <button (click)="showCreateTaskForm()" class="kanban-board__option-button">
             <span class="kanban-board__option">+</span>
         </button>
+        @if (isAdmin()) {
         <button class="kanban-board__option-button">
             <span class="kanban-board__option">-</span>
         </button>
+        }
     </div>
 </header>
 <main class="kanban-board">
