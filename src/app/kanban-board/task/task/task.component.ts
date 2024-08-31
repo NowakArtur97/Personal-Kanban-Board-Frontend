@@ -35,14 +35,23 @@ export class TaskComponent {
 
   task = input<Task>();
   color = TaskColorUtil.randomColor();
+  deleteTaskState = "default";
+  isDeletingTask = false;
 
   updateTask(): void {
     this.taskService.setTaskToUpdate(this.task()!!);
     this.taskService.changeTaskFormVisibility(true);
   }
 
+  startDeleteTaskAnimation(): void {
+    this.deleteTaskState = "delete";
+    this.isDeletingTask = true;
+  }
+
   deleteTask(): void {
-    this.taskService.deleteTask(this.task()!!.taskId);
+    if (this.isDeletingTask) {
+      this.taskService.deleteTask(this.task()!!.taskId);
+    }
   }
 
   get priority() {
