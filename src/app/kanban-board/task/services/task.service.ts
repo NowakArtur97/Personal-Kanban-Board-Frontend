@@ -82,7 +82,8 @@ export class TaskService {
                 headers: this.userService.getAuthorizationHeader(),
             }
         }).subscribe(() => {
-            this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
+            // TODO: Remove or try to fix
+            // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
         },
             (error: ApolloError) =>
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
