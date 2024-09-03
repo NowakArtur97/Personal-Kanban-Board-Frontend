@@ -71,6 +71,11 @@
     border-color: hsl(0, 0%, 0%);
 }
 
+.form__select {
+    background-color: transparent;
+    border: none;
+}
+
 .form__button {
     padding: 2.5% 12%;
     background-color: hsla(0, 0%, 0%);

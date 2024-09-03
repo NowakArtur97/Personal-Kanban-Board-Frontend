@@ -11,7 +11,7 @@ import { UserService } from '../../user/services/user.service';
   standalone: true,
   imports: [NgStyle],
   templateUrl: './task.component.html',
-  styleUrl: './task.component.css',
+  styleUrls: ['./task.component.css', '../../common/form.styles.css'],
   animations: [
     trigger('deleteTask', [
       state('default', style({
