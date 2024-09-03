@@ -36,6 +36,24 @@ const UPDATE_TASK = gql`
     }
 `;
 
+const UPDATE_USER_ASSIGNED_TO_TASK = gql`
+    mutation UPDATE_USER_ASSIGNED_TO_TASK($taskId: UUID!, $assignedToId: UUID!) {
+       updateUserAssignedToTask(taskId: $taskId, assignedToId: $assignedToId) {
+            taskId
+            title
+            description
+            status
+            priority
+            targetEndDate
+            assignedTo
+            createdBy
+            createdOn
+            updatedBy
+            updatedOn
+        }
+    }
+`;
+
 const DELETE_TASK = gql`
     mutation DELETE_TASK($taskId: UUID!) {
        deleteTask(taskId: $taskId)
@@ -60,4 +78,4 @@ const FIND_ALL_USER_TASKS = gql`
     }
 `;
 
-export { CREATE_TASK, UPDATE_TASK, DELETE_TASK, FIND_ALL_USER_TASKS };
+export { CREATE_TASK, UPDATE_TASK, UPDATE_USER_ASSIGNED_TO_TASK, DELETE_TASK, FIND_ALL_USER_TASKS };

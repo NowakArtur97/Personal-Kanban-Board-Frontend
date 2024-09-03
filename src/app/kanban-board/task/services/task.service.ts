@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
-import { CREATE_TASK, DELETE_TASK, FIND_ALL_USER_TASKS, UPDATE_TASK } from './task.queries';
+import { CREATE_TASK, DELETE_TASK, FIND_ALL_USER_TASKS, UPDATE_TASK, UPDATE_USER_ASSIGNED_TO_TASK } from './task.queries';
 import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
@@ -72,6 +72,24 @@ export class TaskService {
         );
     }
 
+    updateAssignedUserToTask(taskId: string, assignedToId: string): void {
+        this.apollo.mutate({
+            mutation: UPDATE_USER_ASSIGNED_TO_TASK,
+            variables: {
+                taskId,
+                assignedToId,
+            },
+            context: {
+                headers: this.userService.getAuthorizationHeader(),
+            }
+        }).subscribe(({ data }: any) => {
+            this.#tasks.set([...this.tasks().filter(task => task.taskId !== data.updateUserAssignedToTask.taskId), data.updateUserAssignedToTask]);
+        },
+            (error: ApolloError) =>
+                this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        );
+    };
+
     deleteTask(taskId: String): void {
         this.apollo.mutate({
             mutation: DELETE_TASK,
@@ -88,7 +106,7 @@ export class TaskService {
             (error: ApolloError) =>
                 this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
         );
-    }
+    };
 
     getUserTasks(): void {
         this.apollo.watchQuery({
@@ -99,7 +117,7 @@ export class TaskService {
         }).valueChanges.subscribe(({ data, error }: any) =>
             this.#tasks.set(data.tasks)
         );
-    }
+    };
 
     setTaskToUpdate(task: Task | null): void {
         if (task === null) {
