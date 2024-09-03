@@ -4,6 +4,7 @@ import { NgStyle } from '@angular/common';
 import TaskColorUtil from '../../utils/task-color.util';
 import { TaskService } from '../services/task.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { UserService } from '../../user/services/user.service';
 
 @Component({
   selector: 'app-task',
@@ -32,15 +33,21 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 export class TaskComponent {
 
   private taskService = inject(TaskService);
+  private userService = inject(UserService);
 
   task = input<Task>();
   color = TaskColorUtil.randomColor();
   deleteTaskState = "default";
   isDeletingTask = false;
+  users = this.userService.users;
 
   updateTask(): void {
     this.taskService.setTaskToUpdate(this.task()!!);
     this.taskService.changeTaskFormVisibility(true);
+  }
+
+  updateAssignedUserToTask(value: string): void {
+    this.taskService.updateAssignedUserToTask(this.task()!!.taskId, value);
   }
 
   startDeleteTaskAnimation(): void {

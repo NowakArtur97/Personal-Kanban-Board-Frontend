@@ -17,7 +17,14 @@
         </p>
     </div>
     <div class="task__details_container">
-        <p class="task__assigned_to">Assigned to: {{task()?.assignedTo}}</p>
+        <p class="task__assigned_to">Assigned to:
+            <select #userAssignedTo (change)="updateAssignedUserToTask(userAssignedTo.value)" class="form__select">
+                @for (user of users(); track $index) {
+                <option class="form__select" [selected]="task()?.assignedTo === user.username" [value]="user.userId">
+                    {{user.username}}</option>
+                }
+            </select>
+        </p>
         <p class="task__priority">{{priority}}</p>
     </div>
 </div>
