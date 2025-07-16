@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { TaskColumnComponent } from './task/task-column/task-column.component';
 import { ALL_TASK_STATUSES } from './task/models/task-status.model';
@@ -10,7 +9,7 @@ import UserRole from './user/models/user-role.model';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [NgFor, TaskColumnComponent, TaskFormComponent],
+  imports: [TaskColumnComponent, TaskFormComponent],
   templateUrl: './kanban-board.component.html',
   styleUrl: './kanban-board.component.css',
 })
