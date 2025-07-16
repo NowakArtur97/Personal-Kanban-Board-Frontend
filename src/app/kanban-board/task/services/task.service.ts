@@ -34,12 +34,14 @@ export class TaskService {
   });
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
+  #shouldDeleteAllTasks = signal<boolean>(false);
 
   tasks = this.#tasks.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   taskIdToUpdate = this.#taskIdToUpdate.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
+  shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
 
   createTask(taskDTO: TaskDTO): void {
     this.apollo
@@ -144,11 +146,8 @@ export class TaskService {
           headers: this.userService.getAuthorizationHeader(),
         },
       })
-      .subscribe(
-        () => {},
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
-      );
+      .subscribe(() => this.#shouldDeleteAllTasks.set(true));
+    // TODO: Display errors?
   }
 
   getUserTasks(): void {
