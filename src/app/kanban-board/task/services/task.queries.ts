@@ -60,6 +60,12 @@ const DELETE_TASK = gql`
   }
 `;
 
+const DELETE_ALL_TASKS = gql`
+  mutation DELETE_ALL_TASKS {
+    deleteAllTasks
+  }
+`;
+
 const FIND_ALL_USER_TASKS = gql`
   query FIND_ALL_USER_TASKS {
     tasks {
@@ -83,5 +89,6 @@ export {
   UPDATE_TASK,
   UPDATE_USER_ASSIGNED_TO_TASK,
   DELETE_TASK,
+  DELETE_ALL_TASKS,
   FIND_ALL_USER_TASKS,
 };

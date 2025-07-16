@@ -3,6 +3,7 @@ import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
 import {
   CREATE_TASK,
+  DELETE_ALL_TASKS,
   DELETE_TASK,
   FIND_ALL_USER_TASKS,
   UPDATE_TASK,
@@ -130,6 +131,21 @@ export class TaskService {
           // TODO: Remove or try to fix
           // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
         },
+        (error: ApolloError) =>
+          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+      );
+  }
+
+  deleteAllTasks(): void {
+    this.apollo
+      .mutate({
+        mutation: DELETE_ALL_TASKS,
+        context: {
+          headers: this.userService.getAuthorizationHeader(),
+        },
+      })
+      .subscribe(
+        () => {},
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );

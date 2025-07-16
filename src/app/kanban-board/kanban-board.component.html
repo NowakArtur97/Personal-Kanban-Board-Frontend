@@ -5,7 +5,7 @@
       <span class="kanban-board__option">+</span>
     </button>
     @if (isAdmin()) {
-    <button class="kanban-board__option-button">
+    <button (click)="deleteAllTasks()" class="kanban-board__option-button">
       <span class="kanban-board__option">-</span>
     </button>
     }
