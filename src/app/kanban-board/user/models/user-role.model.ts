@@ -1,7 +1,7 @@
 enum UserRole {
-    ANONYMOUS,
-    USER,
-    ADMIN
+  ANONYMOUS,
+  USER,
+  ADMIN,
 }
 
 export default UserRole;

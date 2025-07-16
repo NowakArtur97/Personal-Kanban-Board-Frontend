@@ -10,20 +10,22 @@ import { NgStyle } from '@angular/common';
   standalone: true,
   imports: [NgStyle, TaskComponent],
   templateUrl: './task-column.component.html',
-  styleUrl: './task-column.component.css'
+  styleUrl: './task-column.component.css',
 })
 export class TaskColumnComponent {
-
   private taskService = inject(TaskService);
 
   taskStatus = input<TaskStatus>();
   tasks = computed(() =>
-    this.taskService.tasks().filter(task =>
-      this.hasSameTaskStatus(task)
-      || this.hasSameStatusInAnySubtask(task))
+    this.taskService
+      .tasks()
+      .filter(
+        (task) =>
+          this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
+      )
   );
 
-  color: string = "";
+  color: string = '';
 
   // TODO: Remove
   constructor() {
@@ -35,20 +37,22 @@ export class TaskColumnComponent {
   }
 
   private hasSameStatusInAnySubtask = ({ subtasks }: Task): boolean =>
-    subtasks ? subtasks.some(subtask => TaskStatus[subtask.status] === this.status) : false;
+    subtasks
+      ? subtasks.some((subtask) => TaskStatus[subtask.status] === this.status)
+      : false;
 
   private hasSameTaskStatus = (task: Task): boolean =>
     task.status.toString() === TaskStatus[this.taskStatus()!];
 
   private randomColor(index: number): void {
-    const colors = ["#ef7d57", "#41a6f6", "#566c86"];
+    const colors = ['#ef7d57', '#41a6f6', '#566c86'];
     this.color = colors[index];
-  };
+  }
 
   formattedStatus = (): string =>
     TaskStatus[this.taskStatus()!]
-      .split("_")
-      .filter(x => x.length > 0)
-      .map((x) => (x.charAt(0).toUpperCase() + x.slice(1).toLowerCase()))
-      .join(" ");
+      .split('_')
+      .filter((x) => x.length > 0)
+      .map((x) => x.charAt(0).toUpperCase() + x.slice(1).toLowerCase())
+      .join(' ');
 }

@@ -3,7 +3,13 @@ import Task from '../models/task.model';
 import { NgStyle } from '@angular/common';
 import TaskColorUtil from '../../utils/task-color.util';
 import { TaskService } from '../services/task.service';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
 import { UserService } from '../../user/services/user.service';
 
 @Component({
@@ -14,30 +20,33 @@ import { UserService } from '../../user/services/user.service';
   styleUrls: ['./task.component.css', '../../common/form.styles.css'],
   animations: [
     trigger('deleteTask', [
-      state('default', style({
-        transform: "translateY(0)"
-      })),
-      state('delete', style({
-        transform: "translateY(500px)",
-        margin: 0,
-        padding: 0,
-        height: "0px",
-        display: "none"
-      })),
-      transition('default => delete', [
-        animate('1s')
-      ]),
+      state(
+        'default',
+        style({
+          transform: 'translateY(0)',
+        })
+      ),
+      state(
+        'delete',
+        style({
+          transform: 'translateY(500px)',
+          margin: 0,
+          padding: 0,
+          height: '0px',
+          display: 'none',
+        })
+      ),
+      transition('default => delete', [animate('1s')]),
     ]),
-  ]
+  ],
 })
 export class TaskComponent {
-
   private taskService = inject(TaskService);
   private userService = inject(UserService);
 
   task = input<Task>();
   color = TaskColorUtil.randomColor();
-  deleteTaskState = "default";
+  deleteTaskState = 'default';
   isDeletingTask = false;
   users = this.userService.users;
 
@@ -51,7 +60,7 @@ export class TaskComponent {
   }
 
   startDeleteTaskAnimation(): void {
-    this.deleteTaskState = "delete";
+    this.deleteTaskState = 'delete';
     this.isDeletingTask = true;
   }
 
@@ -62,7 +71,7 @@ export class TaskComponent {
   }
 
   get priority() {
-    const priority = this.task()?.priority.toString() ?? "";
+    const priority = this.task()?.priority.toString() ?? '';
     return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
   }
 }

@@ -7,7 +7,6 @@ import { KanbanBoardComponent } from './kanban-board/kanban-board.component';
   standalone: true,
   imports: [RouterOutlet, KanbanBoardComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
-export class AppComponent {
-}
+export class AppComponent {}

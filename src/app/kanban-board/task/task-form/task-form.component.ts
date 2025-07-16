@@ -1,12 +1,20 @@
 import { NgClass, NgStyle } from '@angular/common';
 import { Component, effect, inject, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TaskService } from '../services/task.service';
 import { UserService } from '../../user/services/user.service';
 import FormUtil from '../../utils/form.util';
 import TaskDTO from '../models/task.dto';
 import { ALL_TASK_STATUSES, TaskStatus } from '../models/task-status.model';
-import { TaskPriority, ALL_TASKS_PRIORITIES } from '../models/task-priority.model';
+import {
+  TaskPriority,
+  ALL_TASKS_PRIORITIES,
+} from '../models/task-priority.model';
 
 @Component({
   selector: 'app-task-form',
@@ -16,7 +24,6 @@ import { TaskPriority, ALL_TASKS_PRIORITIES } from '../models/task-priority.mode
   styleUrls: ['./task-form.component.css', '../../common/form.styles.css'],
 })
 export class TaskFormComponent implements OnInit {
-
   private taskService = inject(TaskService);
   private userService = inject(UserService);
 
@@ -34,7 +41,7 @@ export class TaskFormComponent implements OnInit {
           status: task.status,
           priority: task.priority,
           targetEndDate: task.targetEndDate,
-          assignedTo: task.assignedTo
+          assignedTo: task.assignedTo,
         });
       }
     });
@@ -55,12 +62,13 @@ export class TaskFormComponent implements OnInit {
     ]),
     status: new FormControl<string>('READY_TO_START'),
     priority: new FormControl<string>('LOW'),
-    targetEndDate: new FormControl<string>(new Date().toISOString().substring(0, 10)),
-    assignedTo: new FormControl<string>(this.userService.user().userId)
-  }
-  );
+    targetEndDate: new FormControl<string>(
+      new Date().toISOString().substring(0, 10)
+    ),
+    assignedTo: new FormControl<string>(this.userService.user().userId),
+  });
 
-  minTargetEndDate = new Date().toISOString().split("T")[0];
+  minTargetEndDate = new Date().toISOString().split('T')[0];
   taskStatuses = ALL_TASK_STATUSES;
   taskPriorities = ALL_TASKS_PRIORITIES;
 
@@ -68,12 +76,27 @@ export class TaskFormComponent implements OnInit {
     if (!this.taskForm.valid) {
       return;
     }
-    const { title, description, status, priority, targetEndDate, assignedTo } = this.taskForm.value;
+    const { title, description, status, priority, targetEndDate, assignedTo } =
+      this.taskForm.value;
     if (this.taskToUpdate()) {
-      const taskDTO: TaskDTO = this.createTaskDTO(title, description, status, priority, targetEndDate, assignedTo);
+      const taskDTO: TaskDTO = this.createTaskDTO(
+        title,
+        description,
+        status,
+        priority,
+        targetEndDate,
+        assignedTo
+      );
       this.taskService.updateTask(taskDTO);
     } else {
-      const taskDTO: TaskDTO = this.createTaskDTO(title, description, status, priority, targetEndDate, assignedTo);
+      const taskDTO: TaskDTO = this.createTaskDTO(
+        title,
+        description,
+        status,
+        priority,
+        targetEndDate,
+        assignedTo
+      );
       this.taskService.createTask(taskDTO);
     }
   }
@@ -90,17 +113,24 @@ export class TaskFormComponent implements OnInit {
       title: title!!,
       description: description!!,
       status: TaskStatus[TaskStatus[status!! as keyof typeof TaskStatus]],
-      priority: TaskPriority[TaskPriority[priority!! as keyof typeof TaskPriority]],
-      targetEndDate: targetEndDate!! === "" ? this.minTargetEndDate : targetEndDate!!,
+      priority:
+        TaskPriority[TaskPriority[priority!! as keyof typeof TaskPriority]],
+      targetEndDate:
+        targetEndDate!! === '' ? this.minTargetEndDate : targetEndDate!!,
       assignedTo: assignedTo!!,
     };
-  };
+  }
 
   emitHideCeateTaskFormEvent(): void {
     this.taskService.changeTaskFormVisibility(false);
-  };
+  }
 
-  formErrors(formControl: FormControl, controlName: string, minLength = 0, maxLength = 0): string[] {
+  formErrors(
+    formControl: FormControl,
+    controlName: string,
+    minLength = 0,
+    maxLength = 0
+  ): string[] {
     return FormUtil.formErrors(formControl, controlName, minLength, maxLength);
   }
 
@@ -116,8 +146,8 @@ export class TaskFormComponent implements OnInit {
 
   formatEnum = (enumValue: string): string =>
     enumValue
-      .split("_")
-      .filter(x => x.length > 0)
+      .split('_')
+      .filter((x) => x.length > 0)
       .map((x, index) => {
         if (index === 0) {
           return x.charAt(0).toUpperCase() + x.slice(1).toLowerCase();
@@ -125,5 +155,5 @@ export class TaskFormComponent implements OnInit {
           return x.toLowerCase();
         }
       })
-      .join(" ");
+      .join(' ');
 }
