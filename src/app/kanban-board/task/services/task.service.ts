@@ -139,6 +139,7 @@ export class TaskService {
   }
 
   deleteAllTasks(): void {
+    this.#shouldDeleteAllTasks.set(true);
     this.apollo
       .mutate({
         mutation: DELETE_ALL_TASKS,
@@ -146,7 +147,7 @@ export class TaskService {
           headers: this.userService.getAuthorizationHeader(),
         },
       })
-      .subscribe(() => this.#shouldDeleteAllTasks.set(true));
+      .subscribe(() => this.#shouldDeleteAllTasks.set(false));
     // TODO: Display errors?
   }
 
