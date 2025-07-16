@@ -1,78 +1,129 @@
-<div (click)="emitHideCeateTaskFormEvent()"
-    [ngStyle]="isCeateTaskFormVisible() ? { display: 'block' } : { display: 'none' }" class="task_form__background">
-</div>
-<div [ngClass]="{'form_wrapper--hidden': !isCeateTaskFormVisible()}" class="form_wrapper">
-    <form [formGroup]="taskForm" (ngSubmit)="submitForm()" class="form">
+<div
+  (click)="emitHideCeateTaskFormEvent()"
+  [ngStyle]="
+    isCeateTaskFormVisible() ? { display: 'block' } : { display: 'none' }
+  "
+  class="task_form__background"
+></div>
+<div
+  [ngClass]="{ 'form_wrapper--hidden': !isCeateTaskFormVisible() }"
+  class="form_wrapper"
+>
+  <form [formGroup]="taskForm" (ngSubmit)="submitForm()" class="form">
+    <div class="form__controls_wrapper">
+      <label for="title" class="form__label"> Title: </label>
+      <input
+        formControlName="title"
+        id="title"
+        type="text"
+        placeholder="Title"
+        class="form__input"
+      />
+      @if (taskForm.controls.title.touched) { @for (error of
+      formErrors(taskForm.controls.title, "Title",4,100); track $index) {
+      <p class="form__error">{{ error }}</p>
+      } }
+    </div>
+    <div class="form__controls_wrapper">
+      <label for="description" class="form__label">Description:</label>
+      <input
+        formControlName="description"
+        id="description"
+        type="description"
+        placeholder="Description"
+        class="form__input"
+      />
+      @if (taskForm.controls.description.touched) { @for (error of
+      formErrors(taskForm.controls.description, "Description", 0, 1000); track
+      $index) {
+      <p class="form__error">{{ error }}</p>
+      } }
+    </div>
+    <div class="form__controls_wrapper">
+      <label class="form__label">Priority:</label>
+      <div class="form__radios_wrapper">
+        @for (taskPriority of taskPriorities; track $index) {
         <div class="form__controls_wrapper">
-            <label for="title" class="form__label">
-                Title:
-            </label>
-            <input formControlName="title" id="title" type="text" placeholder="Title" class="form__input">
-            @if (taskForm.controls.title.touched) {
-            @for (error of formErrors(taskForm.controls.title, "Title",4,100); track $index) {
-            <p class="form__error">{{error}}</p>
-            }
-            }
+          <label
+            [for]="priority(taskPriority)"
+            class="form__label form__label--small"
+            >{{ formattedPriority(taskPriority) }}</label
+          >
+          <input
+            formControlName="priority"
+            checked="checked"
+            [value]="priority(taskPriority)"
+            [id]="priority(taskPriority)"
+            type="radio"
+            class="form__input"
+          />
         </div>
+        }
+      </div>
+    </div>
+    <div class="form__controls_wrapper">
+      <label class="form__label">Status:</label>
+      <div class="form__radios_wrapper">
+        @for (taskStatus of taskStatuses; track $index) {
         <div class="form__controls_wrapper">
-            <label for="description" class="form__label">Description:</label>
-            <input formControlName="description" id="description" type="description" placeholder="Description"
-                class="form__input">
-            @if (taskForm.controls.description.touched) {
-            @for (error of formErrors(taskForm.controls.description, "Description", 0, 1000); track $index) {
-            <p class="form__error">{{error}}</p>
-            }
-            }
+          <label
+            [for]="status(taskStatus)"
+            class="form__label form__label--small"
+            >{{ formattedStatus(taskStatus) }}</label
+          >
+          <input
+            formControlName="status"
+            checked="checked"
+            [value]="status(taskStatus)"
+            [id]="status(taskStatus)"
+            type="radio"
+            class="form__input"
+          />
         </div>
-        <div class="form__controls_wrapper">
-            <label class="form__label">Priority:</label>
-            <div class="form__radios_wrapper">
-                @for (taskPriority of taskPriorities; track $index) {
-                <div class="form__controls_wrapper">
-                    <label [for]="priority(taskPriority)"
-                        class="form__label form__label--small">{{formattedPriority(taskPriority)}}</label>
-                    <input formControlName="priority" checked="checked" [value]="priority(taskPriority)"
-                        [id]="priority(taskPriority)" type="radio" class="form__input">
-                </div>
-                }
-            </div>
-        </div>
-        <div class="form__controls_wrapper">
-            <label class="form__label">Status:</label>
-            <div class="form__radios_wrapper">
-                @for (taskStatus of taskStatuses; track $index) {
-                <div class="form__controls_wrapper">
-                    <label [for]="status(taskStatus)"
-                        class="form__label form__label--small">{{formattedStatus(taskStatus)}}</label>
-                    <input formControlName="status" checked="checked" [value]="status(taskStatus)"
-                        [id]="status(taskStatus)" type="radio" class="form__input">
-                </div>
-                }
-            </div>
-        </div>
-        <div class="form__controls_wrapper">
-            <label for="assigned-to" class="form__label">Assigned to:</label>
-            <select formControlName="assignedTo" id="assigned-to" class="form__select">
-                @for (user of users(); track $index) {
-                <option class="form__select" [value]="user.userId">{{user.username}}</option>
-                }
-            </select>
-        </div>
-        <div class="form__controls_wrapper">
-            <label for="target-end-date" class="form__label">
-                Target end date:
-            </label>
-            <input formControlName="targetEndDate" [min]="minTargetEndDate" id="target-end-date" type="date"
-                class="form__input">
-        </div>
-        <div class="form__controls_wrapper">
-            <button [ngClass]="taskForm.valid || !taskForm.touched ? '' : 'form__button--error'" class="form__button"
-                type="submit">Submit</button>
-        </div>
-        <div class="form__controls_wrapper">
-            @for (error of errors(); track $index) {
-            <p class="form__error">{{error}}</p>
-            }
-        </div>
-    </form>
+        }
+      </div>
+    </div>
+    <div class="form__controls_wrapper">
+      <label for="assigned-to" class="form__label">Assigned to:</label>
+      <select
+        formControlName="assignedTo"
+        id="assigned-to"
+        class="form__select"
+      >
+        @for (user of users(); track $index) {
+        <option class="form__select" [value]="user.userId">
+          {{ user.username }}
+        </option>
+        }
+      </select>
+    </div>
+    <div class="form__controls_wrapper">
+      <label for="target-end-date" class="form__label">
+        Target end date:
+      </label>
+      <input
+        formControlName="targetEndDate"
+        [min]="minTargetEndDate"
+        id="target-end-date"
+        type="date"
+        class="form__input"
+      />
+    </div>
+    <div class="form__controls_wrapper">
+      <button
+        [ngClass]="
+          taskForm.valid || !taskForm.touched ? '' : 'form__button--error'
+        "
+        class="form__button"
+        type="submit"
+      >
+        Submit
+      </button>
+    </div>
+    <div class="form__controls_wrapper">
+      @for (error of errors(); track $index) {
+      <p class="form__error">{{ error }}</p>
+      }
+    </div>
+  </form>
 </div>

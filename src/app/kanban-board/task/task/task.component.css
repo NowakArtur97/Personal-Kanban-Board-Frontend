@@ -1,110 +1,110 @@
 .task {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
-    height: 60px;
-    width: 234px;
-    margin: 2% auto;
-    padding: 3%;
+  height: 60px;
+  width: 234px;
+  margin: 2% auto;
+  padding: 3%;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transform-origin: bottom;
-    transition: all 1s;
+  transform-origin: bottom;
+  transition: all 1s;
 }
 
 .task:hover {
-    height: 150px;
+  height: 150px;
 }
 
 .task__title_container {
-    flex-basis: 10%;
+  flex-basis: 10%;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .task__title {
-    font-size: 1.3em;
-    font-weight: 600;
+  font-size: 1.3em;
+  font-weight: 600;
 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task__options {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .task__option-button {
-    width: 20px;
-    border: none;
-    background-color: transparent;
+  width: 20px;
+  border: none;
+  background-color: transparent;
 
-    transform: scale(0);
-    transition: all 0.5s;
+  transform: scale(0);
+  transition: all 0.5s;
 }
 
 .task:hover .task__option-button {
-    transform: scale(1);
-    opacity: 1;
+  transform: scale(1);
+  opacity: 1;
 }
 
 .task__option {
-    display: inline-block;
+  display: inline-block;
 
-    height: 15px;
-    width: 15px;
-    border-radius: 50%;
-    background-color: hsla(0, 0%, 100%);
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: hsla(0, 0%, 100%);
 
-    font-size: 1.15em;
-    line-height: 15px;
-    color: hsla(0, 0%, 0%);
+  font-size: 1.15em;
+  line-height: 15px;
+  color: hsla(0, 0%, 0%);
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: all 0.5s;
+  transition: all 0.5s;
 }
 
 .task__option:hover {
-    color: hsla(0, 0%, 100%);
+  color: hsla(0, 0%, 100%);
 
-    background-color: hsla(0, 0%, 20%);
+  background-color: hsla(0, 0%, 20%);
 
-    transform: scale(1.5);
+  transform: scale(1.5);
 }
 
 .task__details_container {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 
-    font-size: 1.2em;
-    font-weight: 400;
-    flex-basis: 10%;
+  font-size: 1.2em;
+  font-weight: 400;
+  flex-basis: 10%;
 }
 
 .task:hover .task__description_container {
-    transform: translateY(0%);
-    opacity: 1;
+  transform: translateY(0%);
+  opacity: 1;
 }
 
 .task__description_container {
-    flex-basis: 60%;
-    opacity: 0;
+  flex-basis: 60%;
+  opacity: 0;
 
-    overflow: hidden;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-    transform: translateY(75%);
-    transform-origin: bottom;
-    transition: all 1s;
+  transform: translateY(75%);
+  transform-origin: bottom;
+  transition: all 1s;
 }
 
 .task__description {
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 }

@@ -1,30 +1,44 @@
-<div [@deleteTask]="deleteTaskState" (@deleteTask.done)="deleteTask()" [ngStyle]="{'background-color': color}"
-    class="task">
-    <div class="task__title_container">
-        <p class="task__title">{{task()?.title}}</p>
-        <div class="task__options">
-            <button (click)="updateTask()" class="task__option-button">
-                <span class="task__option">+</span>
-            </button>
-            <button (click)="startDeleteTaskAnimation()" class="task__option-button">
-                <span class="task__option">-</span>
-            </button>
-        </div>
+<div
+  [@deleteTask]="deleteTaskState"
+  (@deleteTask.done)="deleteTask()"
+  [ngStyle]="{ 'background-color': color }"
+  class="task"
+>
+  <div class="task__title_container">
+    <p class="task__title">{{ task()?.title }}</p>
+    <div class="task__options">
+      <button (click)="updateTask()" class="task__option-button">
+        <span class="task__option">+</span>
+      </button>
+      <button (click)="startDeleteTaskAnimation()" class="task__option-button">
+        <span class="task__option">-</span>
+      </button>
     </div>
-    <div class="task__description_container">
-        <p class="task__description">
-            {{task()?.description}}
-        </p>
-    </div>
-    <div class="task__details_container">
-        <p class="task__assigned_to">Assigned to:
-            <select #userAssignedTo (change)="updateAssignedUserToTask(userAssignedTo.value)" class="form__select">
-                @for (user of users(); track $index) {
-                <option class="form__select" [selected]="task()?.assignedTo === user.username" [value]="user.userId">
-                    {{user.username}}</option>
-                }
-            </select>
-        </p>
-        <p class="task__priority">{{priority}}</p>
-    </div>
+  </div>
+  <div class="task__description_container">
+    <p class="task__description">
+      {{ task()?.description }}
+    </p>
+  </div>
+  <div class="task__details_container">
+    <p class="task__assigned_to">
+      Assigned to:
+      <select
+        #userAssignedTo
+        (change)="updateAssignedUserToTask(userAssignedTo.value)"
+        class="form__select"
+      >
+        @for (user of users(); track $index) {
+        <option
+          class="form__select"
+          [selected]="task()?.assignedTo === user.username"
+          [value]="user.userId"
+        >
+          {{ user.username }}
+        </option>
+        }
+      </select>
+    </p>
+    <p class="task__priority">{{ priority }}</p>
+  </div>
 </div>
