@@ -14,6 +14,7 @@ import { PATHS } from '../../../app.routes';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import UserRole from '../models/user-role.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -100,7 +101,7 @@ export class UserService {
     email: string
   ): Observable<boolean> =>
     this.httpClient.get<boolean>(
-      'http://localhost:8080/api/v1/user-data-validator',
+      `${environment.backendURL}/api/v1/user-data-validator`,
       { params: { username, email } }
     );
 
