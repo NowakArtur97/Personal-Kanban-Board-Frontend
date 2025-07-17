@@ -90,7 +90,7 @@
 }
 
 .form__button--error {
-  background-color: rgb(134, 0, 0);
+  background-color: hsl(0, 100%, 26%);
   color: hsl(0, 0%, 100%);
 }
 
@@ -107,7 +107,7 @@
 }
 
 .form__error {
-  color: rgb(255, 0, 0);
+  color: hsl(0, 100%, 50%);
   font-size: 1.25rem;
   text-align: center;
 }
