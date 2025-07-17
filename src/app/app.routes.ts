@@ -3,6 +3,7 @@ import { KanbanBoardComponent } from './kanban-board/kanban-board.component';
 import { UserAuthComponent } from './kanban-board/user/user-auth/user-auth.component';
 import { tasksResolver } from './kanban-board/task/resolvers/tasks.resolver';
 import { isAuthenticated } from './kanban-board/user/guards/is-authenticated.guard';
+import { usersResolver } from './kanban-board/user/resolvers/users.resolver';
 
 const title = 'Personal Kanban Board';
 
@@ -21,7 +22,7 @@ export const routes: Routes = [
     path: PATHS.KANBAN_BOARD,
     component: KanbanBoardComponent,
     title,
-    resolve: { tasks: tasksResolver },
+    resolve: { tasks: tasksResolver, users: usersResolver },
     canActivate: [isAuthenticated],
   },
 ];

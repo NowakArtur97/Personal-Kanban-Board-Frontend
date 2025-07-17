@@ -1,5 +1,5 @@
 import { NgClass, NgStyle } from '@angular/common';
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -23,13 +23,9 @@ import {
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.css', '../../common/form.styles.css'],
 })
-export class TaskFormComponent implements OnInit {
+export class TaskFormComponent {
   private taskService = inject(TaskService);
   private userService = inject(UserService);
-
-  ngOnInit(): void {
-    this.userService.findAllUsers();
-  }
 
   constructor() {
     effect(() => {

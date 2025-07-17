@@ -75,7 +75,7 @@ export class UserService {
       .watchQuery({
         query: FIND_ALL_USERS,
         context: {
-          headers: this.getAuthorizationHeader(),
+          headers: this.createAuthorizationHeader(),
         },
       })
       .valueChanges.subscribe(
@@ -118,6 +118,6 @@ export class UserService {
     }
   }
 
-  getAuthorizationHeader = (): HttpHeaders =>
+  createAuthorizationHeader = (): HttpHeaders =>
     new HttpHeaders().set('Authorization', 'Bearer ' + this.user().token);
 }

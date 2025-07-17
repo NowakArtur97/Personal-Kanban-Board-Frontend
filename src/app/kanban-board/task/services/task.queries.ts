@@ -66,8 +66,8 @@ const DELETE_ALL_TASKS = gql`
   }
 `;
 
-const FIND_ALL_USER_TASKS = gql`
-  query FIND_ALL_USER_TASKS {
+const FIND_ALL_TASKS = gql`
+  query FIND_ALL_TASKS {
     tasks {
       taskId
       title
@@ -90,5 +90,5 @@ export {
   UPDATE_USER_ASSIGNED_TO_TASK,
   DELETE_TASK,
   DELETE_ALL_TASKS,
-  FIND_ALL_USER_TASKS,
+  FIND_ALL_TASKS,
 };

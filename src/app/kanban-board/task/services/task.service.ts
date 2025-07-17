@@ -5,7 +5,7 @@ import {
   CREATE_TASK,
   DELETE_ALL_TASKS,
   DELETE_TASK,
-  FIND_ALL_USER_TASKS,
+  FIND_ALL_TASKS,
   UPDATE_TASK,
   UPDATE_USER_ASSIGNED_TO_TASK,
 } from './task.queries';
@@ -51,7 +51,7 @@ export class TaskService {
           taskDTO,
         },
         context: {
-          headers: this.userService.getAuthorizationHeader(),
+          headers: this.userService.createAuthorizationHeader(),
         },
       })
       .subscribe(
@@ -73,7 +73,7 @@ export class TaskService {
           taskDTO,
         },
         context: {
-          headers: this.userService.getAuthorizationHeader(),
+          headers: this.userService.createAuthorizationHeader(),
         },
       })
       .subscribe(
@@ -100,7 +100,7 @@ export class TaskService {
           assignedToId,
         },
         context: {
-          headers: this.userService.getAuthorizationHeader(),
+          headers: this.userService.createAuthorizationHeader(),
         },
       })
       .subscribe(
@@ -125,7 +125,7 @@ export class TaskService {
           taskId,
         },
         context: {
-          headers: this.userService.getAuthorizationHeader(),
+          headers: this.userService.createAuthorizationHeader(),
         },
       })
       .subscribe(
@@ -144,19 +144,19 @@ export class TaskService {
       .mutate({
         mutation: DELETE_ALL_TASKS,
         context: {
-          headers: this.userService.getAuthorizationHeader(),
+          headers: this.userService.createAuthorizationHeader(),
         },
       })
       .subscribe(() => this.#shouldDeleteAllTasks.set(false));
     // TODO: Display errors?
   }
 
-  getUserTasks(): void {
+  findAllTasks(): void {
     this.apollo
       .watchQuery({
-        query: FIND_ALL_USER_TASKS,
+        query: FIND_ALL_TASKS,
         context: {
-          headers: this.userService.getAuthorizationHeader(),
+          headers: this.userService.createAuthorizationHeader(),
         },
       })
       .valueChanges.subscribe(({ data, error }: any) =>
