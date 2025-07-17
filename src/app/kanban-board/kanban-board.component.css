@@ -59,5 +59,6 @@
 @media (min-width: 750px) {
   .kanban-board {
     flex-direction: row;
+    justify-content: space-evenly;
   }
 }

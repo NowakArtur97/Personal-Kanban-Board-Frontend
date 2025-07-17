@@ -1,1 +1,7 @@
-<p>task-user-selection works!</p>
+<div class="task-user-selection">
+  @for (user of users(); track $index) {
+  <div class="task-user-selection__user">
+    <p class="task-user-selection__username">{{ user.username }}</p>
+  </div>
+  }
+</div>
