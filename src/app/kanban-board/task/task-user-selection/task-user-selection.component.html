@@ -1,7 +1,17 @@
 <div class="task-user-selection">
-  @for (user of users(); track $index) {
   <div class="task-user-selection__user">
-    <p class="task-user-selection__username">{{ user.username }}</p>
+    <p class="task-user-selection__username task-user-selection__username--big">
+      Select user:
+    </p>
+  </div>
+  @for (user of users(); track $index) {
+  <div class="task-user-selection__user task-user-selection__user--selectable">
+    <p
+      [ngStyle]="{ color: getRandomColor() }"
+      class="task-user-selection__username"
+    >
+      {{ user.username }}
+    </p>
   </div>
   }
 </div>

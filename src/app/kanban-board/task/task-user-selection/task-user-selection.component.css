@@ -1,0 +1,35 @@
+.task-user-selection {
+  display: flex;
+  flex-wrap: wrap;
+
+  width: 100%;
+  padding: 3.5% 0;
+}
+
+.task-user-selection__user {
+  margin: 0 2%;
+}
+
+.task-user-selection__user--selectable {
+  cursor: pointer;
+}
+
+.task-user-selection__username {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.task-user-selection__username--big {
+  font-size: 1.4em;
+  font-weight: bolder;
+}
+
+@media (min-width: 750px) {
+  .task-user-selection {
+    padding: 1.5% 0;
+  }
+
+  .task-user-selection__user {
+    margin: 0 1.5%;
+  }
+}

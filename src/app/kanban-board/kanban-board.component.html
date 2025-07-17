@@ -11,9 +11,7 @@
     }
   </div>
 </header>
-<div class="kanban-board__user-selection">
-  <app-task-user-selection></app-task-user-selection>
-</div>
+<app-task-user-selection></app-task-user-selection>
 <main class="kanban-board">
   @for (taskStatus of taskStatuses; track $index) {
   <app-task-column
