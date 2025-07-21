@@ -4,8 +4,22 @@
       Select user:
     </p>
   </div>
+  <div
+    (click)="findAllTasksAssignedToUser(ALL_TASKS_SELECTION)"
+    class="task-user-selection__user task-user-selection__user--selectable"
+  >
+    <p
+      [ngStyle]="{ color: getRandomColor() }"
+      class="task-user-selection__username"
+    >
+      All tasks
+    </p>
+  </div>
   @for (user of users(); track $index) {
-  <div class="task-user-selection__user task-user-selection__user--selectable">
+  <div
+    (click)="findAllTasksAssignedToUser(user.userId)"
+    class="task-user-selection__user task-user-selection__user--selectable"
+  >
     <p
       [ngStyle]="{ color: getRandomColor() }"
       class="task-user-selection__username"

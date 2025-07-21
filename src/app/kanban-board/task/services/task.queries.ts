@@ -84,6 +84,24 @@ const FIND_ALL_TASKS = gql`
   }
 `;
 
+const FIND_ALL_TASKS_ASSIGNED_TO = gql`
+  query FIND_ALL_TASKS_ASSIGNED_TO($assignedToId: UUID!) {
+    tasksAssignedTo(assignedToId: $assignedToId) {
+      taskId
+      title
+      description
+      status
+      priority
+      targetEndDate
+      assignedTo
+      createdBy
+      createdOn
+      updatedBy
+      updatedOn
+    }
+  }
+`;
+
 export {
   CREATE_TASK,
   UPDATE_TASK,
@@ -91,4 +109,5 @@ export {
   DELETE_TASK,
   DELETE_ALL_TASKS,
   FIND_ALL_TASKS,
+  FIND_ALL_TASKS_ASSIGNED_TO,
 };

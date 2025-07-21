@@ -6,6 +6,7 @@ import {
   DELETE_ALL_TASKS,
   DELETE_TASK,
   FIND_ALL_TASKS,
+  FIND_ALL_TASKS_ASSIGNED_TO,
   UPDATE_TASK,
   UPDATE_USER_ASSIGNED_TO_TASK,
 } from './task.queries';
@@ -161,6 +162,23 @@ export class TaskService {
       })
       .valueChanges.subscribe(({ data, error }: any) =>
         this.#tasks.set(data.tasks)
+      );
+  }
+
+  // TODO: Refactor with method findAllTasks
+  findAllTasksAssignedToUser(assignedToId: String): void {
+    this.apollo
+      .watchQuery({
+        query: FIND_ALL_TASKS_ASSIGNED_TO,
+        variables: {
+          assignedToId,
+        },
+        context: {
+          headers: this.userService.createAuthorizationHeader(),
+        },
+      })
+      .valueChanges.subscribe(({ data, error }: any) =>
+        this.#tasks.set(data.tasksAssignedTo)
       );
   }
 

@@ -27,7 +27,7 @@ export class KanbanBoardComponent {
     this.taskService.setTaskToUpdate(null);
   }
 
-  deleteAllTasks() {
+  deleteAllTasks(): void {
     this.taskService.deleteAllTasks();
   }
 
