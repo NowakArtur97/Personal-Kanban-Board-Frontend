@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { UserService } from '../../user/services/user.service';
 import TaskColorUtil from '../../utils/task-color.util';
 import { NgStyle } from '@angular/common';
@@ -18,10 +18,10 @@ export class TaskUserSelectionComponent {
   private taskService = inject(TaskService);
 
   users = this.userService.users;
-
-  getRandomColor(): String {
-    return TaskColorUtil.randomColor();
-  }
+  colors = computed(() => [
+    ...this.userService.users().map(() => TaskColorUtil.randomColor()),
+    TaskColorUtil.randomColor(),
+  ]);
 
   findAllTasksAssignedToUser(assignedToId: String): void {
     if (assignedToId === this.ALL_TASKS_SELECTION) {

@@ -9,7 +9,7 @@
     class="task-user-selection__user task-user-selection__user--selectable"
   >
     <p
-      [ngStyle]="{ color: getRandomColor() }"
+      [ngStyle]="{ color: colors()[users().length - 1] }"
       class="task-user-selection__username"
     >
       All tasks
@@ -21,7 +21,7 @@
     class="task-user-selection__user task-user-selection__user--selectable"
   >
     <p
-      [ngStyle]="{ color: getRandomColor() }"
+      [ngStyle]="{ color: colors()[$index] }"
       class="task-user-selection__username"
     >
       {{ user.username }}

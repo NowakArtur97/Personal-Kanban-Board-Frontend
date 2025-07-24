@@ -45,7 +45,7 @@ export class TaskComponent {
   private userService = inject(UserService);
 
   task = input<Task>();
-  color = TaskColorUtil.randomColor();
+  color = TaskColorUtil.randomRareColor();
   deleteTaskState = 'default';
   isDeletingTask = false;
   users = this.userService.users;
