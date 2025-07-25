@@ -31,7 +31,7 @@ export class TaskColumnComponent {
           (task) =>
             this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
         );
-      if (tasks.length > 0) {
+      if (tasks.length > 0 && this.displayedTasks.length !== tasks.length) {
         this.displayTasks(tasks);
       }
     });
