@@ -19,7 +19,7 @@ export class TaskColumnComponent {
   displayedTasks: Task[] = [];
 
   color: string = '';
-  #tasksInterval: any = null;
+  #tasksInterval: null | ReturnType<typeof setInterval> = null;
 
   // TODO: Remove
   constructor() {
@@ -50,7 +50,7 @@ export class TaskColumnComponent {
     this.#tasksInterval = setInterval(() => {
       this.displayedTasks.push(tasks[counter++]);
       if (counter >= tasks.length) {
-        clearInterval(this.#tasksInterval);
+        clearInterval(this.#tasksInterval!!);
       }
     }, 100);
   }
