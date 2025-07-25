@@ -36,6 +36,10 @@ import { UserService } from '../../user/services/user.service';
           display: 'none',
         })
       ),
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)' }),
+        animate('500ms', style({ transform: 'translateX(0)' })),
+      ]),
       transition('default => delete', [animate('1s')]),
     ]),
   ],
