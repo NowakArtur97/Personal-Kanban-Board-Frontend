@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { TaskStatus } from '../models/task-status.model';
 import { TaskService } from '../services/task.service';
 import Task from '../models/task.model';
@@ -16,24 +16,43 @@ export class TaskColumnComponent {
   private taskService = inject(TaskService);
 
   taskStatus = input<TaskStatus>();
-  tasks = computed(() =>
-    this.taskService
-      .tasks()
-      .filter(
-        (task) =>
-          this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
-      )
-  );
+  displayedTasks: Task[] = [];
 
   color: string = '';
+  #tasksInterval: any = null;
 
   // TODO: Remove
   constructor() {
     effect(() => this.randomColor(this.taskStatus() ?? 0));
+    effect(() => {
+      const tasks = this.taskService
+        .tasks()
+        .filter(
+          (task) =>
+            this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
+        );
+      if (tasks.length > 0) {
+        this.displayTasks(tasks);
+      }
+    });
   }
 
   get status(): string {
     return TaskStatus[this.taskStatus()!];
+  }
+
+  private displayTasks(tasks: Task[]) {
+    let counter = 0;
+    this.displayedTasks = [];
+    if (this.#tasksInterval) {
+      clearInterval(this.#tasksInterval);
+    }
+    this.#tasksInterval = setInterval(() => {
+      this.displayedTasks.push(tasks[counter++]);
+      if (counter >= tasks.length) {
+        clearInterval(this.#tasksInterval);
+      }
+    }, 100);
   }
 
   private hasSameStatusInAnySubtask = ({ subtasks }: Task): boolean =>
