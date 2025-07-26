@@ -27,21 +27,6 @@ export class TaskFormComponent {
   private taskService = inject(TaskService);
   private userService = inject(UserService);
 
-  constructor() {
-    effect(() => {
-      if (this.taskToUpdate()) {
-        const task = this.taskToUpdate()!!;
-        this.taskForm.setValue({
-          title: task.title,
-          description: task.description,
-          status: task.status,
-          priority: task.priority,
-          targetEndDate: task.targetEndDate,
-          assignedTo: task.assignedTo,
-        });
-      }
-    });
-  }
   taskToUpdate = this.taskService.taskToUpdate;
   users = this.userService.users;
   errors = this.taskService.errors;
@@ -67,6 +52,22 @@ export class TaskFormComponent {
   minTargetEndDate = new Date().toISOString().split('T')[0];
   taskStatuses = ALL_TASK_STATUSES;
   taskPriorities = ALL_TASKS_PRIORITIES;
+
+  constructor() {
+    effect(() => {
+      if (this.taskToUpdate()) {
+        const task = this.taskToUpdate()!!;
+        this.taskForm.setValue({
+          title: task.title,
+          description: task.description,
+          status: task.status,
+          priority: task.priority,
+          targetEndDate: task.targetEndDate,
+          assignedTo: task.assignedTo,
+        });
+      }
+    });
+  }
 
   submitForm(): void {
     if (!this.taskForm.valid) {
@@ -95,6 +96,7 @@ export class TaskFormComponent {
       );
       this.taskService.createTask(taskDTO);
     }
+    this.taskForm.reset();
   }
 
   private createTaskDTO(
