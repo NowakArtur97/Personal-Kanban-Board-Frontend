@@ -33,6 +33,7 @@ export class TaskService {
     targetEndDate: new Date().toISOString().substring(0, 10),
     assignedTo: this.userService.user().userId,
   });
+  #taskWithUpdatedStatus = signal<Task | null>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
   #shouldDeleteAllTasks = signal<boolean>(false);
@@ -42,6 +43,7 @@ export class TaskService {
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   taskIdToUpdate = this.#taskIdToUpdate.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
+  taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
 
   createTask(taskDTO: TaskDTO): void {
@@ -79,13 +81,19 @@ export class TaskService {
       })
       .subscribe(
         ({ data }: any) => {
+          const updatedTask = data.updateTask;
+          const taskBeforeUpdate = this.#taskToUpdate();
+          if (taskDTO.status !== taskBeforeUpdate!!.status) {
+            this.#taskWithUpdatedStatus.set(updatedTask);
+          }
           this.#tasks.set([
             ...this.tasks().filter(
-              (task) => task.taskId !== data.updateTask.taskId
+              (task) => task.taskId !== updatedTask.taskId
             ),
-            data.updateTask,
+            updatedTask,
           ]);
           this.changeTaskFormVisibility(false);
+          this.setTaskToUpdate(null);
         },
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
