@@ -96,7 +96,8 @@ export class TaskFormComponent {
       );
       this.taskService.createTask(taskDTO);
     }
-    this.taskForm.reset();
+    // TODO: After failed update it still resets form
+    // this.taskForm.reset();
   }
 
   private createTaskDTO(

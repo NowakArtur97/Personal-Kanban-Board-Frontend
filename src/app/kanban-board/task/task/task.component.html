@@ -1,6 +1,6 @@
 <div
-  [@deleteTask]="deleteTaskState"
-  (@deleteTask.done)="deleteTask()"
+  [@taskState]="taskAnimationState"
+  (@taskState.done)="finishAnimation()"
   [ngStyle]="{ 'background-color': color }"
   class="task"
 >

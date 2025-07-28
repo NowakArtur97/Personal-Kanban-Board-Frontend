@@ -3,12 +3,12 @@ import { TaskStatus } from '../models/task-status.model';
 import { TaskService } from '../services/task.service';
 import Task from '../models/task.model';
 import { TaskComponent } from '../task/task.component';
-import { NgStyle } from '@angular/common';
+import { NgFor, NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-task-column',
   standalone: true,
-  imports: [NgStyle, TaskComponent],
+  imports: [NgStyle, TaskComponent, NgFor],
   templateUrl: './task-column.component.html',
   styleUrl: './task-column.component.css',
 })
@@ -20,6 +20,7 @@ export class TaskColumnComponent {
 
   color: string = '';
   #tasksInterval: null | ReturnType<typeof setInterval> = null;
+  #tasksTimeout: number | undefined | ReturnType<typeof setTimeout> = undefined;
 
   // TODO: Remove
   constructor() {
@@ -31,8 +32,30 @@ export class TaskColumnComponent {
           (task) =>
             this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
         );
-      if (tasks.length > 0 && this.displayedTasks.length !== tasks.length) {
+      if (tasks.length > 0 && this.displayedTasks.length === 0) {
         this.displayTasks(tasks);
+      }
+    });
+    effect(() => {
+      const taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus();
+      if (!taskWithUpdatedStatus) {
+        return;
+      }
+      const taskInColumn = this.displayedTasks.find(
+        (task) => task.taskId === taskWithUpdatedStatus.taskId
+      );
+      const hasSameTaskStatus = this.hasSameTaskStatus(taskWithUpdatedStatus);
+      if (hasSameTaskStatus) {
+        console.log('NEW: ' + this.status);
+        this.displayedTasks.push(taskWithUpdatedStatus);
+      } else if (taskInColumn) {
+        console.log('OLD: ' + this.status);
+        this.#tasksTimeout = setTimeout(() => {
+          this.displayedTasks = this.displayedTasks.filter(
+            (task) => task.taskId !== taskWithUpdatedStatus.taskId
+          );
+          clearTimeout(this.#tasksTimeout);
+        }, 1000);
       }
     });
   }

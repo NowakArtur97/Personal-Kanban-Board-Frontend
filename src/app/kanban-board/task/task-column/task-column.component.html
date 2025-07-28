@@ -1,8 +1,10 @@
 <div [ngStyle]="{ 'background-color': color }" class="task-column">
   <h2 class="task-column__status">{{ formattedStatus() }}</h2>
   <div class="task-column__tasks">
-    @for (task of displayedTasks; track $index) {
-    <app-task [task]="task" class="task-column__task" />
-    }
+    <app-task
+      *ngFor="let task of displayedTasks"
+      [task]="task"
+      class="task-column__task"
+    />
   </div>
 </div>

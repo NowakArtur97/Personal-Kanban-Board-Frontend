@@ -11,6 +11,7 @@ import {
   animate,
 } from '@angular/animations';
 import { UserService } from '../../user/services/user.service';
+import { TaskStatus } from '../models/task-status.model';
 
 @Component({
   selector: 'app-task',
@@ -19,11 +20,21 @@ import { UserService } from '../../user/services/user.service';
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css', '../../common/form.styles.css'],
   animations: [
-    trigger('deleteTask', [
+    trigger('taskState', [
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)' }),
+        animate('500ms', style({ transform: 'translateX(0)' })),
+      ]),
       state(
         'default',
         style({
           transform: 'translateY(0)',
+        })
+      ),
+      state(
+        'removeFromColumn',
+        style({
+          transform: 'translateX(200%)',
         })
       ),
       state(
@@ -36,10 +47,7 @@ import { UserService } from '../../user/services/user.service';
           display: 'none',
         })
       ),
-      transition(':enter', [
-        style({ transform: 'translateX(-100%)' }),
-        animate('500ms', style({ transform: 'translateX(0)' })),
-      ]),
+      transition('default => removeFromColumn', [animate('1s')]),
       transition('default => delete', [animate('1s')]),
     ]),
   ],
@@ -49,16 +57,27 @@ export class TaskComponent {
   private userService = inject(UserService);
 
   task = input<Task>();
+  taskStatus: TaskStatus | undefined = this.task()?.status;
   color = TaskColorUtil.randomRareColor();
-  deleteTaskState = 'default';
+  taskAnimationState = 'default';
   isDeletingTask = false;
   users = this.userService.users;
+  taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus;
   shouldDeleteAllTasks = this.taskService.shouldDeleteAllTasks;
 
   constructor() {
     effect(() => {
       if (this.shouldDeleteAllTasks()) {
-        this.deleteTaskState = 'delete';
+        this.taskAnimationState = 'delete';
+      }
+    });
+    effect(() => {
+      const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
+      if (
+        taskWithUpdatedStatus &&
+        taskWithUpdatedStatus.taskId === this.task()!.taskId
+      ) {
+        // this.taskAnimationState = 'removeFromColumn';
       }
     });
   }
@@ -73,13 +92,15 @@ export class TaskComponent {
   }
 
   startDeleteTaskAnimation(): void {
-    this.deleteTaskState = 'delete';
+    this.taskAnimationState = 'delete';
     this.isDeletingTask = true;
   }
 
-  deleteTask(): void {
+  finishAnimation(): void {
     if (this.isDeletingTask) {
       this.taskService.deleteTask(this.task()!!.taskId);
+    } else if (this.taskAnimationState === 'removeFromColumn') {
+      // this.taskAnimationState = 'default';
     }
   }
 
