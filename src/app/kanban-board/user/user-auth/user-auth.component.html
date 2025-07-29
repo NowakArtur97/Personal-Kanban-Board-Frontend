@@ -33,6 +33,7 @@
         type="text"
         placeholder="Username or email"
         class="form__input"
+        autocomplete="username email"
       />
       @if (loginForm.controls.usernameOrEmail.touched) { @for (error of
       formErrors(loginForm.controls.usernameOrEmail, "Username/email"); track
@@ -47,6 +48,7 @@
         id="login-password"
         type="password"
         placeholder="*****"
+        autocomplete="on"
         class="form__input"
       />
       @if (loginForm.controls.password.touched) { @for (error of
@@ -85,6 +87,7 @@
         type="text"
         placeholder="Username"
         class="form__input"
+        autocomplete="username"
       />
       @if (registerForm.controls.username.touched) { @for (error of
       formErrors(registerForm.controls.username, "Username", 4, 100); track
@@ -100,6 +103,7 @@
         type="email"
         placeholder="Email"
         class="form__input"
+        autocomplete="email"
       />
       @if (registerForm.controls.email.touched) { @for (error of
       formErrors(registerForm.controls.email, "Email"); track $index) {
@@ -114,6 +118,7 @@
         type="password"
         placeholder="*****"
         class="form__input"
+        autocomplete="new-password"
       />
       @if (registerForm.controls.password.touched) { @for (error of
       formErrors(registerForm.controls.password, "Password"); track $index) {
@@ -130,6 +135,7 @@
         placeholder="*****"
         type="password"
         class="form__input"
+        autocomplete="new-password"
       />
       @if (registerForm.controls.matchingPassword.touched) { @for (error of
       formErrors(registerForm.controls.matchingPassword, "Password"); track
