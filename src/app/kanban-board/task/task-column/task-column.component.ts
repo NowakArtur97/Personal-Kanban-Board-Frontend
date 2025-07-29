@@ -20,11 +20,9 @@ export class TaskColumnComponent {
 
   color: string = '';
   #tasksInterval: null | ReturnType<typeof setInterval> = null;
-  #tasksTimeout: number | undefined | ReturnType<typeof setTimeout> = undefined;
 
-  // TODO: Remove
   constructor() {
-    effect(() => this.randomColor(this.taskStatus() ?? 0));
+    effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
     effect(() => {
       const tasks = this.taskService
         .tasks()
@@ -41,27 +39,21 @@ export class TaskColumnComponent {
       if (!taskWithUpdatedStatus) {
         return;
       }
-      const taskInColumn = this.displayedTasks.find(
-        (task) => task.taskId === taskWithUpdatedStatus.taskId
-      );
       const hasSameTaskStatus = this.hasSameTaskStatus(taskWithUpdatedStatus);
       if (hasSameTaskStatus) {
-        console.log('NEW: ' + this.status);
         this.displayedTasks.push(taskWithUpdatedStatus);
-      } else if (taskInColumn) {
-        console.log('OLD: ' + this.status);
-        this.#tasksTimeout = setTimeout(() => {
-          this.displayedTasks = this.displayedTasks.filter(
-            (task) => task.taskId !== taskWithUpdatedStatus.taskId
-          );
-          clearTimeout(this.#tasksTimeout);
-        }, 1000);
       }
     });
   }
 
   get status(): string {
     return TaskStatus[this.taskStatus()!];
+  }
+
+  removeFromColumn(taskId: string): void {
+    this.displayedTasks = this.displayedTasks.filter(
+      (task) => task.taskId !== taskId
+    );
   }
 
   private displayTasks(tasks: Task[]) {

@@ -3,6 +3,8 @@ import { TaskPriority } from '../models/task-priority.model';
 import { TaskStatus } from '../models/task-status.model';
 import Task from '../models/task.model';
 
+// TODO: Remove examples
+
 const EXAMPLE_TASK: Task = {
   taskId: '3e0fb254-60ad-4614-8972-f783e4f62170',
   title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',

@@ -4,6 +4,7 @@
     <app-task
       *ngFor="let task of displayedTasks"
       [task]="task"
+      (removedFromColumn)="removeFromColumn($event)"
       class="task-column__task"
     />
   </div>
