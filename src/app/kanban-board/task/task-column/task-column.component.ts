@@ -24,15 +24,15 @@ export class TaskColumnComponent {
   constructor() {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
     effect(() => {
-      const tasks = this.taskService
-        .tasks()
-        .filter(
-          (task) =>
-            this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
-        );
-      if (tasks.length > 0 && this.displayedTasks.length === 0) {
-        this.displayTasks(tasks);
-      }
+      this.displayTasks(
+        this.taskService
+          .tasks()
+          .filter(
+            (task) =>
+              this.hasSameTaskStatus(task) ||
+              this.hasSameStatusInAnySubtask(task)
+          )
+      );
     });
     effect(() => {
       const taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus();
@@ -59,6 +59,9 @@ export class TaskColumnComponent {
   private displayTasks(tasks: Task[]) {
     let counter = 0;
     this.displayedTasks = [];
+    if (tasks.length === 0) {
+      return;
+    }
     if (this.#tasksInterval) {
       clearInterval(this.#tasksInterval);
     }
