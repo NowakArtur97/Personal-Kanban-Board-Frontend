@@ -67,6 +67,12 @@ export class TaskFormComponent {
         });
       }
     });
+    effect(() => {
+      const isTaskFormVisible = this.taskService.isTaskFormVisible();
+      if (!isTaskFormVisible) {
+        this.taskForm.reset();
+      }
+    });
   }
 
   submitForm(): void {
