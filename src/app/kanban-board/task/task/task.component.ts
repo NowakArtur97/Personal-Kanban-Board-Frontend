@@ -79,17 +79,7 @@ export class TaskComponent {
         this.taskAnimationState = 'delete';
       }
     });
-    effect(() => {
-      const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
-      if (
-        taskWithUpdatedStatus &&
-        taskWithUpdatedStatus.taskId === this.task()!.taskId &&
-        this.taskStatus !== taskWithUpdatedStatus.status
-      ) {
-        this.taskAnimationState = 'removeFromColumn';
-        this.isRemovingTaskFromColumn = true;
-      }
-    });
+    effect(() => this.handleTaskAnimation());
   }
 
   ngOnInit() {
@@ -108,6 +98,18 @@ export class TaskComponent {
   startDeleteTaskAnimation(): void {
     this.taskAnimationState = 'delete';
     this.isDeletingTask = true;
+  }
+
+  private handleTaskAnimation() {
+    const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
+    if (
+      taskWithUpdatedStatus &&
+      taskWithUpdatedStatus.taskId === this.task()!.taskId &&
+      this.taskStatus !== taskWithUpdatedStatus.status
+    ) {
+      this.taskAnimationState = 'removeFromColumn';
+      this.isRemovingTaskFromColumn = true;
+    }
   }
 
   finishAnimation(): void {

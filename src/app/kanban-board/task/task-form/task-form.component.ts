@@ -55,21 +55,13 @@ export class TaskFormComponent {
 
   constructor() {
     effect(() => {
-      if (this.taskToUpdate()) {
-        const task = this.taskToUpdate()!!;
-        this.taskForm.setValue({
-          title: task.title,
-          description: task.description,
-          status: task.status,
-          priority: task.priority,
-          targetEndDate: task.targetEndDate,
-          assignedTo: task.assignedTo,
-        });
+      const taskToUpdate = this.taskToUpdate();
+      if (taskToUpdate) {
+        this.setTaskFormBasedOnTaskToUpdate(taskToUpdate);
       }
     });
     effect(() => {
-      const isTaskFormVisible = this.taskService.isTaskFormVisible();
-      if (!isTaskFormVisible) {
+      if (!this.taskService.isTaskFormVisible()) {
         this.taskForm.reset();
       }
     });
@@ -124,6 +116,17 @@ export class TaskFormComponent {
         targetEndDate!! === '' ? this.minTargetEndDate : targetEndDate!!,
       assignedTo: assignedTo!!,
     };
+  }
+
+  private setTaskFormBasedOnTaskToUpdate(task: TaskDTO) {
+    this.taskForm.setValue({
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority!!!,
+      targetEndDate: task.targetEndDate,
+      assignedTo: task.assignedTo,
+    });
   }
 
   emitHideCeateTaskFormEvent(): void {

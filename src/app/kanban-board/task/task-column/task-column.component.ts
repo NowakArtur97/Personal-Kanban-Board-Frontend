@@ -23,27 +23,8 @@ export class TaskColumnComponent {
 
   constructor() {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
-    effect(() => {
-      this.displayTasks(
-        this.taskService
-          .tasks()
-          .filter(
-            (task) =>
-              this.hasSameTaskStatus(task) ||
-              this.hasSameStatusInAnySubtask(task)
-          )
-      );
-    });
-    effect(() => {
-      const taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus();
-      if (!taskWithUpdatedStatus) {
-        return;
-      }
-      const hasSameTaskStatus = this.hasSameTaskStatus(taskWithUpdatedStatus);
-      if (hasSameTaskStatus) {
-        this.displayedTasks.push(taskWithUpdatedStatus);
-      }
-    });
+    effect(() => this.displayTasks(this.filterTasksForColumn()));
+    effect(() => this.addUpdatedTaskToColumnIfHasSameStatus());
   }
 
   get status(): string {
@@ -71,6 +52,25 @@ export class TaskColumnComponent {
         clearInterval(this.#tasksInterval!!);
       }
     }, 100);
+  }
+
+  private filterTasksForColumn = (): Task[] =>
+    this.taskService
+      .tasks()
+      .filter(
+        (task) =>
+          this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
+      );
+
+  private addUpdatedTaskToColumnIfHasSameStatus() {
+    const taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus();
+    if (!taskWithUpdatedStatus) {
+      return;
+    }
+    const hasSameTaskStatus = this.hasSameTaskStatus(taskWithUpdatedStatus);
+    if (hasSameTaskStatus) {
+      this.displayedTasks.push(taskWithUpdatedStatus);
+    }
   }
 
   private hasSameStatusInAnySubtask = ({ subtasks }: Task): boolean =>

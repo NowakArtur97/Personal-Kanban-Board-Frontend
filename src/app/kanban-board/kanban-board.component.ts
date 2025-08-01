@@ -25,8 +25,7 @@ export class KanbanBoardComponent {
 
   constructor() {
     effect(() => {
-      const isTaskFormVisible = this.taskService.isTaskFormVisible();
-      if (isTaskFormVisible) {
+      if (this.taskService.isTaskFormVisible()) {
         this.hideScrollbar(true);
       } else {
         this.hideScrollbar(false);
