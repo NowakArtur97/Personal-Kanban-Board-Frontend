@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { TaskColumnComponent } from './task/task-column/task-column.component';
 import { ALL_TASK_STATUSES } from './task/models/task-status.model';
 import { TaskFormComponent } from './task/task-form/task-form.component';
@@ -21,6 +21,29 @@ export class KanbanBoardComponent {
   taskStatuses = ALL_TASK_STATUSES;
   isCeateTaskFormVisible = false;
   user = this.userService.user;
+  lastScrollYPosition = 0;
+
+  constructor() {
+    effect(() => {
+      const isTaskFormVisible = this.taskService.isTaskFormVisible();
+      if (isTaskFormVisible) {
+        this.hideScrollbar(true);
+      } else {
+        this.hideScrollbar(false);
+      }
+    });
+  }
+
+  private hideScrollbar(shouldHideScrollbar: boolean): void {
+    if (shouldHideScrollbar) {
+      this.lastScrollYPosition = window.scrollY;
+      window.scrollTo(0, 0);
+      document.body.style.overflow = 'hidden';
+    } else {
+      window.scrollTo(0, this.lastScrollYPosition);
+      document.body.style.overflow = 'auto';
+    }
+  }
 
   showCreateTaskForm(): void {
     this.taskService.changeTaskFormVisibility(true);

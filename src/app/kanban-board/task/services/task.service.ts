@@ -209,7 +209,7 @@ export class TaskService {
     }
   }
 
-  changeTaskFormVisibility(isVisible: boolean): void {
-    this.#isTaskFormVisible.set(isVisible);
+  changeTaskFormVisibility(isTaskFormVisible: boolean): void {
+    this.#isTaskFormVisible.set(isTaskFormVisible);
   }
 }
