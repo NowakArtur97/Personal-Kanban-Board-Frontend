@@ -91,11 +91,11 @@
 .task:hover .task__description_container {
   transform: translateY(0%);
   opacity: 1;
+  overflow: auto;
 }
 
 .task__description_container {
   flex-basis: 60%;
-  opacity: 0;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -103,6 +103,8 @@
   transform: translateY(75%);
   transform-origin: bottom;
   transition: all 1s;
+
+  opacity: 0;
 }
 
 .task__description {
