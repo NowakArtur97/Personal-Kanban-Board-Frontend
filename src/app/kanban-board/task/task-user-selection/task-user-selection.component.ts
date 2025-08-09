@@ -19,8 +19,12 @@ export class TaskUserSelectionComponent {
 
   users = this.userService.users;
   colors = computed(() => [
-    ...this.userService.users().map(() => TaskColorUtil.randomColor()),
-    TaskColorUtil.randomColor(),
+    ...this.userService
+      .users()
+      .map(() =>
+        TaskColorUtil.randomColor(TaskColorUtil.PALETTE.PRIMARY_PALETTE)
+      ),
+    TaskColorUtil.randomColor(TaskColorUtil.PALETTE.PRIMARY_PALETTE),
   ]);
 
   findAllTasksAssignedToUser(assignedToId: String): void {

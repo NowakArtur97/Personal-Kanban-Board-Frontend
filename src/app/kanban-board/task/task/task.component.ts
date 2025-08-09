@@ -67,7 +67,7 @@ export class TaskComponent {
   task = input<BaseTask>();
   @Output() removedFromColumn = new EventEmitter<string>();
   taskStatus: TaskStatus | null = null;
-  color = TaskColorUtil.randomRareColor();
+  color: string = '';
   taskAnimationState = 'default';
   isDeletingTask = false;
   users = this.userService.users;
@@ -86,6 +86,11 @@ export class TaskComponent {
 
   ngOnInit() {
     this.taskStatus = this.task()!!.status;
+    this.color = TaskColorUtil.randomRareColor(
+      this.isTask()
+        ? TaskColorUtil.PALETTE.PRIMARY_PALETTE
+        : TaskColorUtil.PALETTE.SECONDARY_PALETTe
+    );
   }
 
   updateTask(): void {
