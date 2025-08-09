@@ -90,7 +90,7 @@
 }
 
 .task__description_container {
-  height: 0px;
+  max-height: 0px;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -104,7 +104,7 @@
 
 .task:hover .task__description_container {
   transform: translateY(0%);
-  height: 70px;
+  max-height: 70px;
   opacity: 1;
   overflow: auto;
 }
@@ -114,15 +114,9 @@
 }
 
 .task__subtasks_container {
-  flex-basis: 50%;
-
-  display: none;
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
 
   width: 100%;
-}
-
-.task:hover .task__subtasks_container {
-  display: flex;
 }
