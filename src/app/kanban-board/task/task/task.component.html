@@ -2,6 +2,7 @@
   [@taskState]="taskAnimationState"
   (@taskState.done)="finishAnimation()"
   [ngStyle]="{ 'background-color': color }"
+  [ngClass]="{ subtask: !isTask() }"
   class="task"
 >
   <div class="task__title_container">
@@ -14,11 +15,6 @@
         <span class="task__option">-</span>
       </button>
     </div>
-  </div>
-  <div class="task__description_container">
-    <p class="task__description">
-      {{ task()?.description }}
-    </p>
   </div>
   <div class="task__details_container">
     <p class="task__assigned_to">
@@ -41,4 +37,14 @@
     </p>
     <p class="task__priority">{{ priority }}</p>
   </div>
+  <div class="task__description_container">
+    <p class="task__description">
+      {{ task()?.description }}
+    </p>
+  </div>
+  @if(isTask()) {
+  <div class="task__subtasks_container">
+    <app-task *ngFor="let subtask of getSubtasks()" [task]="subtask" />
+  </div>
+  }
 </div>

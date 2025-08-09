@@ -6,8 +6,7 @@ import {
   input,
   Output,
 } from '@angular/core';
-import Task from '../models/task.model';
-import { NgStyle } from '@angular/common';
+import { NgClass, NgFor, NgStyle } from '@angular/common';
 import TaskColorUtil from '../../utils/task-color.util';
 import { TaskService } from '../services/task.service';
 import {
@@ -19,11 +18,14 @@ import {
 } from '@angular/animations';
 import { UserService } from '../../user/services/user.service';
 import { TaskStatus } from '../models/task-status.model';
+import BaseTask from '../models/task-basic.model';
+import Subtask from '../models/subtask.model';
+import Task from '../models/task.model';
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [NgStyle],
+  imports: [NgStyle, NgFor, NgClass],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css', '../../common/form.styles.css'],
   animations: [
@@ -62,7 +64,7 @@ export class TaskComponent {
   private taskService = inject(TaskService);
   private userService = inject(UserService);
 
-  task = input<Task>();
+  task = input<BaseTask>();
   @Output() removedFromColumn = new EventEmitter<string>();
   taskStatus: TaskStatus | null = null;
   color = TaskColorUtil.randomRareColor();
@@ -126,4 +128,8 @@ export class TaskComponent {
     const priority = this.task()?.priority.toString() ?? '';
     return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
   }
+
+  getSubtasks = (): Subtask[] => (this.task() as Task)?.subtasks ?? [];
+
+  isTask = (): boolean => 'subtasks' in this.task()!;
 }
