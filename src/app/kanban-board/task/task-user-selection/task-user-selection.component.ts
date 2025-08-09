@@ -27,7 +27,7 @@ export class TaskUserSelectionComponent {
     TaskColorUtil.randomColor(TaskColorUtil.PALETTE.PRIMARY_PALETTE),
   ]);
 
-  findAllTasksAssignedToUser(assignedToId: String): void {
+  findAllTasksAssignedToUser(assignedToId: string): void {
     if (assignedToId === this.ALL_TASKS_SELECTION) {
       this.taskService.findAllTasks();
     } else {

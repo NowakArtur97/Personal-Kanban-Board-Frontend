@@ -24,7 +24,7 @@ export class TaskService {
   private userService = inject(UserService);
 
   #tasks = signal<Task[]>([]);
-  #taskIdToUpdate = signal<String | null>(null);
+  #taskIdToUpdate = signal<string | null>(null);
   #taskToUpdate = signal<TaskDTO | null>({
     title: '',
     description: '',
@@ -126,7 +126,7 @@ export class TaskService {
       );
   }
 
-  deleteTask(taskId: String): void {
+  deleteTask(taskId: string): void {
     this.apollo
       .mutate({
         mutation: DELETE_TASK,
@@ -174,7 +174,7 @@ export class TaskService {
   }
 
   // TODO: Refactor with method findAllTasks
-  findAllTasksAssignedToUser(assignedToId: String): void {
+  findAllTasksAssignedToUser(assignedToId: string): void {
     this.apollo
       .watchQuery({
         query: FIND_ALL_TASKS_ASSIGNED_TO,
