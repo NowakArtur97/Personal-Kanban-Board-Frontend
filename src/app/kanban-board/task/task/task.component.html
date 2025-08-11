@@ -44,7 +44,11 @@
   </div>
   @if(isTask()) {
   <div class="task__subtasks_container">
-    <app-task *ngFor="let subtask of getSubtasks()" [task]="subtask" />
+    <app-task
+      *ngFor="let subtask of getSubtasks()"
+      [task]="subtask"
+      class="subtask"
+    />
   </div>
   }
 </div>
