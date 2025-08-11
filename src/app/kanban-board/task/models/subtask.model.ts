@@ -1,5 +1,5 @@
-import BaseTask from './task-basic.model';
+import BaseTask from './base-task.model';
 
 export default interface Subtask extends BaseTask {
-  subtaskId: string;
+  readonly subtaskId: string;
 }

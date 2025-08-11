@@ -18,7 +18,7 @@ import {
 } from '@angular/animations';
 import { UserService } from '../../user/services/user.service';
 import { TaskStatus } from '../models/task-status.model';
-import BaseTask from '../models/task-basic.model';
+import BaseTask from '../models/base-task.model';
 import Subtask from '../models/subtask.model';
 import Task from '../models/task.model';
 import { SubtaskService } from '../services/subtask.service';
@@ -96,8 +96,11 @@ export class TaskComponent {
   }
 
   updateTask(): void {
-    this.taskService.setTaskToUpdate(this.task()!!);
-    this.taskService.changeTaskFormVisibility(true);
+    const task = this.task()!!;
+    if (this.isTaskType(task)) {
+      this.taskService.setTaskToUpdate(task);
+      this.taskService.changeTaskFormVisibility(true);
+    }
   }
 
   updateAssignedUserToTask(value: string): void {
@@ -124,8 +127,9 @@ export class TaskComponent {
   finishAnimation(): void {
     const task = this.task()!;
     if (this.isDeletingTask) {
-      if (this.isSubtask(task)) {
+      if (this.isSubtaskType(task)) {
         this.subtaskService.deleteSubtask(task.subtaskId);
+        this.taskService.deleteSubtask(task.taskId, task.subtaskId);
       } else {
         this.taskService.deleteTask(task.taskId);
         this.removedFromColumn.emit(task.taskId);
@@ -145,7 +149,11 @@ export class TaskComponent {
 
   isTask = (): boolean => 'subtasks' in this.task()!;
 
-  isSubtask(task: BaseTask): task is Subtask {
+  private isTaskType(task: BaseTask): task is Task {
+    return (task as Task).subtasks !== undefined;
+  }
+
+  private isSubtaskType(task: BaseTask): task is Subtask {
     return (task as Subtask).subtaskId !== undefined;
   }
 }

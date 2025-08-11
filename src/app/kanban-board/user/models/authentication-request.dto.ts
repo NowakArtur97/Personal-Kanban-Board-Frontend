@@ -1,4 +1,4 @@
 export default interface AuthenticationRequest {
-  usernameOrEmail: string;
-  password: string;
+  readonly usernameOrEmail: string;
+  readonly password: string;
 }

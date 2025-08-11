@@ -1,8 +1,8 @@
 export default interface TaskDTO {
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-  targetEndDate: string;
-  assignedTo: string;
+  readonly title: string;
+  readonly description: string;
+  readonly status: string;
+  readonly priority: string;
+  readonly targetEndDate: string;
+  readonly assignedTo: string;
 }
