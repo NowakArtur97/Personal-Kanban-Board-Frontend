@@ -21,6 +21,7 @@ import { TaskStatus } from '../models/task-status.model';
 import BaseTask from '../models/task-basic.model';
 import Subtask from '../models/subtask.model';
 import Task from '../models/task.model';
+import { SubtaskService } from '../services/subtask.service';
 
 @Component({
   selector: 'app-task',
@@ -62,6 +63,7 @@ import Task from '../models/task.model';
 })
 export class TaskComponent {
   private taskService = inject(TaskService);
+  private subtaskService = inject(SubtaskService);
   private userService = inject(UserService);
 
   task = input<BaseTask>();
@@ -120,12 +122,17 @@ export class TaskComponent {
   }
 
   finishAnimation(): void {
+    const task = this.task()!;
     if (this.isDeletingTask) {
-      this.taskService.deleteTask(this.task()!!.taskId);
-      this.removedFromColumn.emit(this.task()!!.taskId);
+      if (this.isSubtask(task)) {
+        this.subtaskService.deleteSubtask(task.subtaskId);
+      } else {
+        this.taskService.deleteTask(task.taskId);
+        this.removedFromColumn.emit(task.taskId);
+      }
     }
     if (this.isRemovingTaskFromColumn) {
-      this.removedFromColumn.emit(this.task()!!.taskId);
+      this.removedFromColumn.emit(task.taskId);
     }
   }
 
@@ -137,4 +144,8 @@ export class TaskComponent {
   getSubtasks = (): Subtask[] => (this.task() as Task)?.subtasks ?? [];
 
   isTask = (): boolean => 'subtasks' in this.task()!;
+
+  isSubtask(task: BaseTask): task is Subtask {
+    return (task as Subtask).subtaskId !== undefined;
+  }
 }

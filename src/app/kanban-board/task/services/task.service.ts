@@ -41,7 +41,6 @@ export class TaskService {
   tasks = this.#tasks.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
-  taskIdToUpdate = this.#taskIdToUpdate.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
@@ -72,7 +71,7 @@ export class TaskService {
       .mutate({
         mutation: UPDATE_TASK,
         variables: {
-          taskId: this.taskIdToUpdate(),
+          taskId: this.#taskIdToUpdate(),
           taskDTO,
         },
         context: {
@@ -142,6 +141,7 @@ export class TaskService {
           // TODO: Remove or try to fix
           // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
         },
+        // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
