@@ -24,7 +24,7 @@ export class TaskService {
   private userService = inject(UserService);
 
   #tasks = signal<Task[]>([]);
-  #taskIdToUpdate = signal<string | null>(null);
+  #taskIdToUpdate: string | null = null;
   #taskToUpdate = signal<TaskDTO | null>({
     title: '',
     description: '',
@@ -39,11 +39,41 @@ export class TaskService {
   #shouldDeleteAllTasks = signal<boolean>(false);
 
   tasks = this.#tasks.asReadonly();
-  errors = this.#errors.asReadonly();
-  isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
+  errors = this.#errors.asReadonly();
+  isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
+
+  findAllTasks(): void {
+    this.apollo
+      .watchQuery({
+        query: FIND_ALL_TASKS,
+        context: {
+          headers: this.userService.createAuthorizationHeader(),
+        },
+      })
+      .valueChanges.subscribe(({ data, error }: any) =>
+        this.#tasks.set(data.tasks)
+      );
+  }
+
+  // TODO: Refactor with method findAllTasks
+  findAllTasksAssignedToUser(assignedToId: string): void {
+    this.apollo
+      .watchQuery({
+        query: FIND_ALL_TASKS_ASSIGNED_TO,
+        variables: {
+          assignedToId,
+        },
+        context: {
+          headers: this.userService.createAuthorizationHeader(),
+        },
+      })
+      .valueChanges.subscribe(({ data, error }: any) =>
+        this.#tasks.set(data.tasksAssignedTo)
+      );
+  }
 
   createTask(taskDTO: TaskDTO): void {
     this.apollo
@@ -71,7 +101,7 @@ export class TaskService {
       .mutate({
         mutation: UPDATE_TASK,
         variables: {
-          taskId: this.#taskIdToUpdate(),
+          taskId: this.#taskIdToUpdate,
           taskDTO,
         },
         context: {
@@ -160,42 +190,12 @@ export class TaskService {
     // TODO: Display errors?
   }
 
-  findAllTasks(): void {
-    this.apollo
-      .watchQuery({
-        query: FIND_ALL_TASKS,
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
-      })
-      .valueChanges.subscribe(({ data, error }: any) =>
-        this.#tasks.set(data.tasks)
-      );
-  }
-
-  // TODO: Refactor with method findAllTasks
-  findAllTasksAssignedToUser(assignedToId: string): void {
-    this.apollo
-      .watchQuery({
-        query: FIND_ALL_TASKS_ASSIGNED_TO,
-        variables: {
-          assignedToId,
-        },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
-      })
-      .valueChanges.subscribe(({ data, error }: any) =>
-        this.#tasks.set(data.tasksAssignedTo)
-      );
-  }
-
   setTaskToUpdate(task: Task | null): void {
     if (task === null) {
-      this.#taskIdToUpdate.set(null);
+      this.#taskIdToUpdate = null;
       this.#taskToUpdate.set(null);
     } else {
-      this.#taskIdToUpdate.set(task.taskId);
+      this.#taskIdToUpdate = task.taskId;
       this.#taskToUpdate.set({
         title: task.title,
         description: task.description,
