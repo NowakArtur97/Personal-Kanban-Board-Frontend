@@ -4,6 +4,7 @@ import { TaskService } from '../services/task.service';
 import Task from '../models/task.model';
 import { TaskComponent } from '../task/task.component';
 import { NgFor, NgStyle } from '@angular/common';
+import Subtask from '../models/subtask.model';
 
 @Component({
   selector: 'app-task-column',
@@ -25,10 +26,6 @@ export class TaskColumnComponent {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
     effect(() => this.displayTasks(this.filterTasksForColumn()));
     effect(() => this.addUpdatedTaskToColumnIfHasSameStatus());
-  }
-
-  get status(): string {
-    return TaskStatus[this.taskStatus()!];
   }
 
   removeFromColumn(taskId: string): void {
@@ -59,7 +56,8 @@ export class TaskColumnComponent {
       .tasks()
       .filter(
         (task) =>
-          this.hasSameTaskStatus(task) || this.hasSameStatusInAnySubtask(task)
+          this.hasSameTaskStatus(task) ||
+          this.hasSameStatusInAnySubtask(task.subtasks)
       );
 
   private addUpdatedTaskToColumnIfHasSameStatus() {
@@ -73,10 +71,12 @@ export class TaskColumnComponent {
     }
   }
 
-  private hasSameStatusInAnySubtask = ({ subtasks }: Task): boolean =>
-    subtasks
-      ? subtasks.some((subtask) => TaskStatus[subtask.status] === this.status)
-      : false;
+  private hasSameStatusInAnySubtask(subtasks: Subtask[]): boolean {
+    const taskStatusAsString = TaskStatus[this.taskStatus()!];
+    return subtasks.some(
+      (subtask) => subtask.status + '' === taskStatusAsString
+    );
+  }
 
   private hasSameTaskStatus = (task: Task): boolean =>
     task.status.toString() === TaskStatus[this.taskStatus()!];
