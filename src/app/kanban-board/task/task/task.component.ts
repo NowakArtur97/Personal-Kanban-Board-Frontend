@@ -67,6 +67,7 @@ export class TaskComponent {
   private userService = inject(UserService);
 
   task = input<BaseTask>();
+  columnStatus = input<TaskStatus>();
   @Output() removedFromColumn = new EventEmitter<string>();
   taskStatus: TaskStatus | null = null;
   color: string = '';
@@ -145,7 +146,11 @@ export class TaskComponent {
     return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
   }
 
-  getSubtasks = (): Subtask[] => (this.task() as Task)?.subtasks ?? [];
+  getSubtasks = (): Subtask[] =>
+    (this.task() as Task)?.subtasks.filter(
+      (subtask) =>
+        subtask.status.toString() === TaskStatus[this.columnStatus()!]
+    );
 
   isTask = (): boolean => 'subtasks' in this.task()!;
 

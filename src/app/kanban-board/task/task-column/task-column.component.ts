@@ -71,14 +71,10 @@ export class TaskColumnComponent {
     }
   }
 
-  private hasSameStatusInAnySubtask(subtasks: Subtask[]): boolean {
-    const taskStatusAsString = TaskStatus[this.taskStatus()!];
-    return subtasks.some(
-      (subtask) => subtask.status + '' === taskStatusAsString
-    );
-  }
+  private hasSameStatusInAnySubtask = (subtasks: Subtask[]): boolean =>
+    subtasks?.some((subtask) => this.hasSameTaskStatus(subtask));
 
-  private hasSameTaskStatus = (task: Task): boolean =>
+  private hasSameTaskStatus = (task: Task | Subtask): boolean =>
     task.status.toString() === TaskStatus[this.taskStatus()!];
 
   private randomColor(index: number): void {
