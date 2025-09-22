@@ -33,6 +33,7 @@ export class TaskService {
     targetEndDate: new Date().toISOString().substring(0, 10),
     assignedTo: this.userService.user().userId,
   });
+  #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
@@ -40,6 +41,7 @@ export class TaskService {
 
   tasks = this.#tasks.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
+  taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
@@ -202,6 +204,7 @@ export class TaskService {
   }
 
   setTaskToUpdate(task: Task | null): void {
+    this.#taskIdToAddSubtask.set(null);
     if (task === null) {
       this.#taskIdToUpdate = null;
       this.#taskToUpdate.set(null);
@@ -218,6 +221,12 @@ export class TaskService {
           .find((user) => user.username === task.assignedTo)!!.userId,
       });
     }
+  }
+
+  setTaskIdToAddSubtask(id: string | null): void {
+    this.#taskIdToUpdate = null;
+    this.#taskToUpdate.set(null);
+    this.#taskIdToAddSubtask.set(id);
   }
 
   changeTaskFormVisibility(isTaskFormVisible: boolean): void {

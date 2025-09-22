@@ -104,6 +104,14 @@ export class TaskComponent {
     }
   }
 
+  addSubtask(): void {
+    const task = this.task()!!;
+    if (this.isTaskType(task)) {
+      this.taskService.setTaskIdToAddSubtask(task.taskId);
+      this.taskService.changeTaskFormVisibility(true);
+    }
+  }
+
   updateAssignedUserToTask(value: string): void {
     this.taskService.updateAssignedUserToTask(this.task()!!.taskId, value);
   }

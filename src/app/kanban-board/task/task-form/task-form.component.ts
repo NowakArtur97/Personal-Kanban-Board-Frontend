@@ -28,6 +28,7 @@ export class TaskFormComponent {
   private userService = inject(UserService);
 
   taskToUpdate = this.taskService.taskToUpdate;
+  taskIdToAddSubtask = this.taskService.taskIdToAddSubtask;
   users = this.userService.users;
   errors = this.taskService.errors;
   isCeateTaskFormVisible = this.taskService.isTaskFormVisible;
@@ -73,25 +74,19 @@ export class TaskFormComponent {
     }
     const { title, description, status, priority, targetEndDate, assignedTo } =
       this.taskForm.value;
-    if (this.taskToUpdate()) {
-      const taskDTO: TaskDTO = this.createTaskDTO(
-        title,
-        description,
-        status,
-        priority,
-        targetEndDate,
-        assignedTo
-      );
+    const taskDTO: TaskDTO = this.createTaskDTO(
+      title,
+      description,
+      status,
+      priority,
+      targetEndDate,
+      assignedTo
+    );
+    if (this.taskIdToAddSubtask()) {
+      console.log(taskDTO);
+    } else if (this.taskToUpdate()) {
       this.taskService.updateTask(taskDTO);
     } else {
-      const taskDTO: TaskDTO = this.createTaskDTO(
-        title,
-        description,
-        status,
-        priority,
-        targetEndDate,
-        assignedTo
-      );
       this.taskService.createTask(taskDTO);
     }
     // TODO: After failed update it still resets form
