@@ -96,6 +96,20 @@ const UPDATE_TASK = gql`
       createdOn
       updatedBy
       updatedOn
+      subtasks {
+        subtaskId
+        taskId
+        title
+        description
+        status
+        priority
+        targetEndDate
+        assignedTo
+        createdBy
+        createdOn
+        updatedBy
+        updatedOn
+      }
     }
   }
 `;
@@ -114,6 +128,20 @@ const UPDATE_USER_ASSIGNED_TO_TASK = gql`
       createdOn
       updatedBy
       updatedOn
+      subtasks {
+        subtaskId
+        taskId
+        title
+        description
+        status
+        priority
+        targetEndDate
+        assignedTo
+        createdBy
+        createdOn
+        updatedBy
+        updatedOn
+      }
     }
   }
 `;
