@@ -130,7 +130,7 @@ export class TaskComponent {
     if (this.isDeletingTask) {
       if (this.isSubtaskType(task)) {
         this.subtaskService.deleteSubtask(task.subtaskId);
-        this.taskService.deleteSubtask(task.taskId, task.subtaskId);
+        this.taskService.deleteSubtaskFromTask(task.taskId, task.subtaskId);
       } else {
         this.taskService.deleteTask(task.taskId);
         this.removedFromColumn.emit(task.taskId);

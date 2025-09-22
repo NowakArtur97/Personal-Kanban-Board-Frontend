@@ -177,6 +177,17 @@ export class TaskService {
       );
   }
 
+  deleteSubtaskFromTask(taskId: string, subtaskId: string): void {
+    const task = { ...this.tasks().find((task) => task.taskId === taskId)!! };
+    task.subtasks = task.subtasks.filter(
+      (subtask) => subtask.subtaskId !== subtaskId
+    );
+    this.#tasks.set([
+      ...this.tasks().filter((task) => task.taskId !== taskId),
+      task,
+    ]);
+  }
+
   deleteAllTasks(): void {
     this.#shouldDeleteAllTasks.set(true);
     this.apollo
