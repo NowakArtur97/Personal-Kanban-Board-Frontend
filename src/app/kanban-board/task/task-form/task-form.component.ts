@@ -15,6 +15,7 @@ import {
   TaskPriority,
   ALL_TASKS_PRIORITIES,
 } from '../models/task-priority.model';
+import { SubtaskService } from '../services/subtask.service';
 
 @Component({
   selector: 'app-task-form',
@@ -25,12 +26,14 @@ import {
 })
 export class TaskFormComponent {
   private taskService = inject(TaskService);
+  private subtaskService = inject(SubtaskService);
   private userService = inject(UserService);
 
   taskToUpdate = this.taskService.taskToUpdate;
   taskIdToAddSubtask = this.taskService.taskIdToAddSubtask;
   users = this.userService.users;
-  errors = this.taskService.errors;
+  taskErrors = this.taskService.errors;
+  subtaskErrors = this.subtaskService.errors;
   isCeateTaskFormVisible = this.taskService.isTaskFormVisible;
 
   taskForm = new FormGroup({
@@ -83,7 +86,7 @@ export class TaskFormComponent {
       assignedTo
     );
     if (this.taskIdToAddSubtask()) {
-      console.log(taskDTO);
+      this.subtaskService.createSubtask(taskDTO);
     } else if (this.taskToUpdate()) {
       this.taskService.updateTask(taskDTO);
     } else {

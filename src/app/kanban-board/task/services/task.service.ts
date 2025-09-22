@@ -13,6 +13,7 @@ import {
 import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
+import Subtask from '../models/subtask.model';
 
 @Injectable({
   providedIn: 'root',
@@ -155,6 +156,21 @@ export class TaskService {
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
+  }
+
+  addTaskToSubtask(subtask: Subtask) {
+    const taskWithNewSubtask = this.tasks().filter(
+      (task) => task.taskId === this.taskIdToAddSubtask()
+    )[0];
+    taskWithNewSubtask.subtasks.push(...taskWithNewSubtask.subtasks, subtask);
+    this.#tasks.set([
+      ...this.tasks().filter(
+        (task) => task.taskId !== this.taskIdToAddSubtask()
+      ),
+      taskWithNewSubtask,
+    ]);
+    this.changeTaskFormVisibility(false);
+    this.setTaskIdToAddSubtask(null);
   }
 
   deleteTask(taskId: string): void {
