@@ -85,6 +85,12 @@ export class TaskComponent {
       }
     });
     effect(() => this.handleTaskAnimation());
+    effect(() => {
+      const deletedTaskId = this.taskService.deletedTaskId();
+      if (deletedTaskId === this.task()?.taskId) {
+        this.startDeleteTaskAnimation();
+      }
+    });
   }
 
   ngOnInit() {
@@ -112,9 +118,8 @@ export class TaskComponent {
     }
   }
 
-  updateAssignedUserToTask(value: string): void {
+  updateAssignedUserToTask = (value: string): void =>
     this.taskService.updateAssignedUserToTask(this.task()!!.taskId, value);
-  }
 
   startDeleteTaskAnimation(): void {
     this.taskAnimationState = 'delete';
@@ -162,11 +167,9 @@ export class TaskComponent {
 
   isTask = (): boolean => 'subtasks' in this.task()!;
 
-  private isTaskType(task: BaseTask): task is Task {
-    return (task as Task).subtasks !== undefined;
-  }
+  private isTaskType = (task: BaseTask): task is Task =>
+    (task as Task).subtasks !== undefined;
 
-  private isSubtaskType(task: BaseTask): task is Subtask {
-    return (task as Subtask).subtaskId !== undefined;
-  }
+  private isSubtaskType = (task: BaseTask): task is Subtask =>
+    (task as Subtask).subtaskId !== undefined;
 }

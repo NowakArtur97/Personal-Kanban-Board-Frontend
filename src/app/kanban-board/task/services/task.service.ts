@@ -36,6 +36,7 @@ export class TaskService {
   });
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
+  #deletedTaskId = signal<string | null>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
   #shouldDeleteAllTasks = signal<boolean>(false);
@@ -44,6 +45,7 @@ export class TaskService {
   taskToUpdate = this.#taskToUpdate.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
+  deletedTaskId = this.#deletedTaskId.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
@@ -186,6 +188,7 @@ export class TaskService {
       })
       .subscribe(
         () => {
+          this.#deletedTaskId.set(taskId);
           // TODO: Remove or try to fix
           // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
         },
