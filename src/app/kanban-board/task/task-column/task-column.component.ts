@@ -35,14 +35,14 @@ export class TaskColumnComponent {
   }
 
   private displayTasks(tasks: Task[]) {
-    let counter = 0;
-    this.displayedTasks = [];
-    if (tasks.length === 0) {
+    if (tasks.length === 0 || this.displayedTasks.length > 0) {
       return;
     }
     if (this.#tasksInterval) {
       clearInterval(this.#tasksInterval);
     }
+    this.displayedTasks = [];
+    let counter = 0;
     this.#tasksInterval = setInterval(() => {
       this.displayedTasks.push(tasks[counter++]);
       if (counter >= tasks.length) {
