@@ -21,7 +21,6 @@ import { TaskStatus } from '../models/task-status.model';
 import BaseTask from '../models/base-task.model';
 import Subtask from '../models/subtask.model';
 import Task from '../models/task.model';
-import { SubtaskService } from '../services/subtask.service';
 
 @Component({
   selector: 'app-task',
@@ -63,7 +62,6 @@ import { SubtaskService } from '../services/subtask.service';
 })
 export class TaskComponent {
   private taskService = inject(TaskService);
-  private subtaskService = inject(SubtaskService);
   private userService = inject(UserService);
 
   task = input<BaseTask>();
@@ -124,13 +122,13 @@ export class TaskComponent {
   startDeleteTaskAnimation(): void {
     this.taskAnimationState = 'delete';
     this.isDeletingTask = true;
+    this.taskService.setDeletedTaskId(this.task()!.taskId);
   }
 
   private handleTaskAnimation() {
     const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
     if (
-      taskWithUpdatedStatus &&
-      taskWithUpdatedStatus.taskId === this.task()!.taskId &&
+      taskWithUpdatedStatus?.taskId === this.task()!.taskId &&
       this.taskStatus !== taskWithUpdatedStatus.status
     ) {
       this.taskAnimationState = 'removeFromColumn';
@@ -142,7 +140,7 @@ export class TaskComponent {
     const task = this.task()!;
     if (this.isDeletingTask) {
       if (this.isSubtaskType(task)) {
-        this.subtaskService.deleteSubtask(task.subtaskId);
+        this.taskService.deleteSubtask(task.subtaskId);
         this.taskService.deleteSubtaskFromTask(task.taskId, task.subtaskId);
       } else {
         this.taskService.deleteTask(task.taskId);

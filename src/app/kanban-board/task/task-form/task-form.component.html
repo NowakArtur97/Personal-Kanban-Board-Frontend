@@ -122,9 +122,7 @@
       </button>
     </div>
     <div class="form__controls_wrapper">
-      @for (error of taskErrors(); track $index) {
-      <p class="form__error">{{ error }}</p>
-      } @for (error of subtaskErrors(); track $index) {
+      @for (error of errors(); track $index) {
       <p class="form__error">{{ error }}</p>
       }
     </div>

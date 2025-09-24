@@ -14,6 +14,7 @@ import TaskDTO from '../models/task.dto';
 import { ApolloError } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
 import Subtask from '../models/subtask.model';
+import { CREATE_SUBTASK, DELETE_SUBTASK } from './subtask.queries';
 
 @Injectable({
   providedIn: 'root',
@@ -188,7 +189,6 @@ export class TaskService {
       })
       .subscribe(
         () => {
-          this.#deletedTaskId.set(taskId);
           // TODO: Remove or try to fix
           // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
         },
@@ -222,6 +222,46 @@ export class TaskService {
     // TODO: Display errors?
   }
 
+  createSubtask(subtaskDTO: TaskDTO): void {
+    this.apollo
+      .mutate({
+        mutation: CREATE_SUBTASK,
+        variables: {
+          taskId: this.taskIdToAddSubtask(),
+          subtaskDTO,
+        },
+        context: {
+          headers: this.userService.createAuthorizationHeader(),
+        },
+      })
+      .subscribe(
+        ({ data }: any) => this.addTaskToSubtask(data.createSubtask),
+        (error: ApolloError) =>
+          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+      );
+  }
+
+  deleteSubtask(subtaskId: string): void {
+    this.apollo
+      .mutate({
+        mutation: DELETE_SUBTASK,
+        variables: {
+          subtaskId,
+        },
+        context: {
+          headers: this.userService.createAuthorizationHeader(),
+        },
+      })
+      .subscribe(
+        () => {
+          // TODO: Remove or try to fix
+          // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
+        },
+        // TODO: Remove or create popup message with errors instead of displaying on task form
+        (error: ApolloError) => {}
+      );
+  }
+
   setTaskToUpdate(task: Task | null): void {
     this.#taskIdToAddSubtask.set(null);
     if (task === null) {
@@ -246,6 +286,10 @@ export class TaskService {
     this.#taskIdToUpdate = null;
     this.#taskToUpdate.set(null);
     this.#taskIdToAddSubtask.set(id);
+  }
+
+  setDeletedTaskId(taskId: string): void {
+    this.#deletedTaskId.set(taskId);
   }
 
   changeTaskFormVisibility(isTaskFormVisible: boolean): void {
