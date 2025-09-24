@@ -11,7 +11,7 @@ import {
   UPDATE_USER_ASSIGNED_TO_TASK,
 } from './task.queries';
 import TaskDTO from '../models/task.dto';
-import { ApolloError } from '@apollo/client';
+import { ApolloError, DocumentNode } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
 import Subtask from '../models/subtask.model';
 import { CREATE_SUBTASK, DELETE_SUBTASK } from './subtask.queries';
@@ -81,25 +81,52 @@ export class TaskService {
       );
   }
 
-  createTask(taskDTO: TaskDTO): void {
+  // TODO: Move to parent basic service and create again subtask service
+  private createBaseTask(
+    mutation: DocumentNode,
+    variables:
+      | { taskDTO: TaskDTO }
+      | { taskId: string | null; subtaskDTO: TaskDTO },
+    onSuccess: (data: any) => void
+  ): void {
     this.apollo
       .mutate({
-        mutation: CREATE_TASK,
-        variables: {
-          taskDTO,
-        },
+        mutation,
+        variables,
         context: {
           headers: this.userService.createAuthorizationHeader(),
         },
       })
       .subscribe(
-        ({ data }: any) => {
-          this.#tasks.set([...this.tasks(), data.createTask]);
-          this.changeTaskFormVisibility(false);
-        },
+        (data: any) => onSuccess(data),
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
+  }
+
+  createTask(taskDTO: TaskDTO): void {
+    this.createBaseTask(
+      CREATE_TASK,
+      {
+        taskDTO,
+      },
+      ({ data }: any) => {
+        // TODO: Add signal to add task to column
+        this.#tasks.set([...this.tasks(), data.createTask]);
+        this.changeTaskFormVisibility(false);
+      }
+    );
+  }
+
+  createSubtask(subtaskDTO: TaskDTO): void {
+    this.createBaseTask(
+      CREATE_SUBTASK,
+      {
+        taskId: this.taskIdToAddSubtask(),
+        subtaskDTO,
+      },
+      ({ data }: any) => this.addTaskToSubtask(data.createSubtask)
+    );
   }
 
   updateTask(taskDTO: TaskDTO): void {
@@ -220,25 +247,6 @@ export class TaskService {
       })
       .subscribe(() => this.#shouldDeleteAllTasks.set(false));
     // TODO: Display errors?
-  }
-
-  createSubtask(subtaskDTO: TaskDTO): void {
-    this.apollo
-      .mutate({
-        mutation: CREATE_SUBTASK,
-        variables: {
-          taskId: this.taskIdToAddSubtask(),
-          subtaskDTO,
-        },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
-      })
-      .subscribe(
-        ({ data }: any) => this.addTaskToSubtask(data.createSubtask),
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
-      );
   }
 
   deleteSubtask(subtaskId: string): void {
