@@ -3,7 +3,7 @@
   (@taskState.done)="finishAnimation()"
   [ngStyle]="{ 'background-color': color }"
   [ngClass]="{ subtask: !isTask() }"
-  (dblclick)="updateTask()"
+  (dblclick)="updateTask($event)"
   class="task"
 >
   <div class="task__title_container">

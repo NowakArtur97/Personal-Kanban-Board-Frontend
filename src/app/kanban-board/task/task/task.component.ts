@@ -100,7 +100,8 @@ export class TaskComponent {
     );
   }
 
-  updateTask(): void {
+  updateTask(event: Event): void {
+    event.stopPropagation();
     const task = this.task()!!;
     if (this.isTaskType(task)) {
       this.taskService.setTaskToUpdate(task);
