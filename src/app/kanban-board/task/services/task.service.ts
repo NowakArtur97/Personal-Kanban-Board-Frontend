@@ -14,7 +14,12 @@ import TaskDTO from '../models/task.dto';
 import { ApolloError, DocumentNode } from '@apollo/client';
 import { UserService } from '../../user/services/user.service';
 import Subtask from '../models/subtask.model';
-import { CREATE_SUBTASK, DELETE_SUBTASK } from './subtask.queries';
+import {
+  CREATE_SUBTASK,
+  DELETE_SUBTASK,
+  UPDATE_SUBTASK,
+} from './subtask.queries';
+import BaseTask from '../models/base-task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,14 +31,21 @@ export class TaskService {
   private userService = inject(UserService);
 
   #tasks = signal<Task[]>([]);
-  #taskIdToUpdate: string | null = null;
-  #taskToUpdate = signal<TaskDTO | null>({
-    title: '',
-    description: '',
-    status: 'READY_TO_START',
-    priority: 'LOW',
-    targetEndDate: new Date().toISOString().substring(0, 10),
-    assignedTo: this.userService.user().userId,
+  #taskToUpdate = signal<{
+    taskId: string;
+    taskDTO: TaskDTO;
+    isTask: boolean;
+  } | null>({
+    taskId: '',
+    taskDTO: {
+      title: '',
+      description: '',
+      status: 'READY_TO_START',
+      priority: 'LOW',
+      targetEndDate: new Date().toISOString().substring(0, 10),
+      assignedTo: this.userService.user().userId,
+    },
+    isTask: true,
   });
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
@@ -55,9 +67,7 @@ export class TaskService {
     this.apollo
       .watchQuery({
         query: FIND_ALL_TASKS,
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .valueChanges.subscribe(({ data, error }: any) =>
         this.#tasks.set(data.tasks)
@@ -72,9 +82,7 @@ export class TaskService {
         variables: {
           assignedToId,
         },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .valueChanges.subscribe(({ data, error }: any) =>
         this.#tasks.set(data.tasksAssignedTo)
@@ -93,9 +101,7 @@ export class TaskService {
       .mutate({
         mutation,
         variables,
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .subscribe(
         (data: any) => onSuccess(data),
@@ -129,37 +135,84 @@ export class TaskService {
     );
   }
 
-  updateTask(taskDTO: TaskDTO): void {
+  private updateBaseTask(
+    mutation: DocumentNode,
+    variables:
+      | { taskId: string | null; taskDTO: TaskDTO }
+      | { subtaskId: string | null; subtaskDTO: TaskDTO },
+    onSuccess: (data: any) => void
+  ): void {
     this.apollo
       .mutate({
-        mutation: UPDATE_TASK,
-        variables: {
-          taskId: this.#taskIdToUpdate,
-          taskDTO,
-        },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        mutation,
+        variables,
+        context: this.createContext(),
       })
       .subscribe(
-        ({ data }: any) => {
-          const updatedTask = data.updateTask;
-          const taskBeforeUpdate = this.#taskToUpdate();
-          if (taskDTO.status !== taskBeforeUpdate!!.status) {
-            this.#taskWithUpdatedStatus.set(updatedTask);
-          }
-          this.#tasks.set([
-            ...this.tasks().filter(
-              (task) => task.taskId !== updatedTask.taskId
-            ),
-            updatedTask,
-          ]);
-          this.changeTaskFormVisibility(false);
-          this.setTaskToUpdate(null);
-        },
+        (data: any) => onSuccess(data),
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
+  }
+
+  updateTask(taskDTO: TaskDTO): void {
+    this.updateBaseTask(
+      UPDATE_TASK,
+      {
+        taskId: this.#taskToUpdate()?.taskId!,
+        taskDTO,
+      },
+      ({ data }: { data: { updateTask: Task } }) => {
+        const updatedTask: Task = data.updateTask;
+        const taskBeforeUpdate = this.#taskToUpdate()?.taskDTO;
+        if (taskDTO.status !== taskBeforeUpdate!!.status) {
+          this.#taskWithUpdatedStatus.set(updatedTask);
+        }
+        this.#tasks.set([
+          ...this.tasks().filter((task) => task.taskId !== updatedTask.taskId),
+          updatedTask,
+        ]);
+        this.changeTaskFormVisibility(false);
+        this.setTaskToUpdate(null, false);
+      }
+    );
+  }
+
+  updateSubtask(subtaskDTO: TaskDTO): void {
+    this.updateBaseTask(
+      UPDATE_SUBTASK,
+      {
+        subtaskId: this.#taskToUpdate()?.taskId!,
+        subtaskDTO,
+      },
+      ({ data }: { data: { updateSubtask: Subtask } }) => {
+        const updatedSubtask = data.updateSubtask;
+        const subtaskBeforeUpdate = this.#taskToUpdate()?.taskDTO;
+        const subtaskTask = this.tasks().find((task) =>
+          task.subtasks.some(
+            (subtask) => subtask.subtaskId !== updatedSubtask.subtaskId
+          )
+        )!;
+        if (subtaskDTO.status !== subtaskBeforeUpdate!!.status) {
+          // TODO: Update column
+          this.#taskWithUpdatedStatus.set(subtaskTask);
+        }
+        this.#tasks.set([
+          ...this.tasks().filter((task) => task.taskId !== subtaskTask.taskId),
+          {
+            ...subtaskTask,
+            subtasks: [
+              ...subtaskTask.subtasks.filter(
+                (subtask) => subtask.subtaskId !== updatedSubtask.subtaskId
+              ),
+              updatedSubtask,
+            ],
+          },
+        ]);
+        this.changeTaskFormVisibility(false);
+        this.setTaskToUpdate(null, false);
+      }
+    );
   }
 
   updateAssignedUserToTask(taskId: string, assignedToId: string): void {
@@ -170,9 +223,7 @@ export class TaskService {
           taskId,
           assignedToId,
         },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .subscribe(
         ({ data }: any) => {
@@ -210,9 +261,7 @@ export class TaskService {
         variables: {
           taskId,
         },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .subscribe(
         () => {
@@ -241,9 +290,7 @@ export class TaskService {
     this.apollo
       .mutate({
         mutation: DELETE_ALL_TASKS,
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .subscribe(() => this.#shouldDeleteAllTasks.set(false));
     // TODO: Display errors?
@@ -256,9 +303,7 @@ export class TaskService {
         variables: {
           subtaskId,
         },
-        context: {
-          headers: this.userService.createAuthorizationHeader(),
-        },
+        context: this.createContext(),
       })
       .subscribe(
         () => {
@@ -270,28 +315,29 @@ export class TaskService {
       );
   }
 
-  setTaskToUpdate(task: Task | null): void {
+  setTaskToUpdate(task: BaseTask | null, isTask: boolean): void {
     this.#taskIdToAddSubtask.set(null);
     if (task === null) {
-      this.#taskIdToUpdate = null;
       this.#taskToUpdate.set(null);
     } else {
-      this.#taskIdToUpdate = task.taskId;
       this.#taskToUpdate.set({
-        title: task.title,
-        description: task.description,
-        status: task.status + '',
-        priority: task.priority + '',
-        targetEndDate: task.targetEndDate,
-        assignedTo: this.userService
-          .users()
-          .find((user) => user.username === task.assignedTo)!!.userId,
+        taskId: isTask ? task.taskId : (task as Subtask).subtaskId,
+        taskDTO: {
+          title: task.title,
+          description: task.description,
+          status: task.status + '',
+          priority: task.priority + '',
+          targetEndDate: task.targetEndDate,
+          assignedTo: this.userService
+            .users()
+            .find((user) => user.username === task.assignedTo)!!.userId,
+        },
+        isTask,
       });
     }
   }
 
   setTaskIdToAddSubtask(id: string | null): void {
-    this.#taskIdToUpdate = null;
     this.#taskToUpdate.set(null);
     this.#taskIdToAddSubtask.set(id);
   }
@@ -302,5 +348,11 @@ export class TaskService {
 
   changeTaskFormVisibility(isTaskFormVisible: boolean): void {
     this.#isTaskFormVisible.set(isTaskFormVisible);
+  }
+
+  private createContext() {
+    return {
+      headers: this.userService.createAuthorizationHeader(),
+    };
   }
 }

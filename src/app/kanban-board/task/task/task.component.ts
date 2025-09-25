@@ -103,10 +103,8 @@ export class TaskComponent {
   updateTask(event: Event): void {
     event.stopPropagation();
     const task = this.task()!!;
-    if (this.isTaskType(task)) {
-      this.taskService.setTaskToUpdate(task);
-      this.taskService.changeTaskFormVisibility(true);
-    }
+    this.taskService.setTaskToUpdate(task, this.isTaskType(task));
+    this.taskService.changeTaskFormVisibility(true);
   }
 
   addSubtask(): void {

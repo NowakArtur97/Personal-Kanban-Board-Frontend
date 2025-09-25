@@ -19,10 +19,29 @@ const CREATE_SUBTASK = gql`
   }
 `;
 
+const UPDATE_SUBTASK = gql`
+  mutation UPDATE_SUBTASK($subtaskId: UUID!, $subtaskDTO: TaskDTO!) {
+    updateSubtask(subtaskId: $subtaskId, subtaskDTO: $subtaskDTO) {
+      subtaskId
+      taskId
+      title
+      description
+      status
+      priority
+      targetEndDate
+      assignedTo
+      createdBy
+      createdOn
+      updatedBy
+      updatedOn
+    }
+  }
+`;
+
 const DELETE_SUBTASK = gql`
   mutation DELETE_SUBTASK($subtaskId: UUID!) {
     deleteSubtask(subtaskId: $subtaskId)
   }
 `;
 
-export { CREATE_SUBTASK, DELETE_SUBTASK };
+export { CREATE_SUBTASK, UPDATE_SUBTASK, DELETE_SUBTASK };

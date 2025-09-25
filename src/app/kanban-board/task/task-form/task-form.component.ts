@@ -58,7 +58,7 @@ export class TaskFormComponent {
     effect(() => {
       const taskToUpdate = this.taskToUpdate();
       if (taskToUpdate) {
-        this.setTaskFormBasedOnTaskToUpdate(taskToUpdate);
+        this.setTaskFormBasedOnTaskToUpdate(taskToUpdate.taskDTO);
       }
     });
     effect(() => {
@@ -82,10 +82,12 @@ export class TaskFormComponent {
       targetEndDate,
       assignedTo
     );
-    if (this.taskIdToAddSubtask()) {
-      this.taskService.createSubtask(taskDTO);
-    } else if (this.taskToUpdate()) {
+    if (this.taskToUpdate()?.isTask) {
       this.taskService.updateTask(taskDTO);
+    } else if (!this.taskToUpdate()?.isTask) {
+      this.taskService.updateSubtask(taskDTO);
+    } else if (this.taskIdToAddSubtask()) {
+      this.taskService.createSubtask(taskDTO);
     } else {
       this.taskService.createTask(taskDTO);
     }
