@@ -65,8 +65,10 @@ export class TaskColumnComponent {
     if (!taskWithUpdatedStatus) {
       return;
     }
-    const hasSameTaskStatus = this.hasSameTaskStatus(taskWithUpdatedStatus);
-    if (hasSameTaskStatus) {
+    if (
+      this.taskService.isTask(taskWithUpdatedStatus) &&
+      this.hasSameTaskStatus(taskWithUpdatedStatus)
+    ) {
       this.displayedTasks.push(taskWithUpdatedStatus);
     }
   }

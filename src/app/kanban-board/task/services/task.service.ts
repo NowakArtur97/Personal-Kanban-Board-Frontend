@@ -355,4 +355,6 @@ export class TaskService {
       headers: this.userService.createAuthorizationHeader(),
     };
   }
+
+  isTask = (task: BaseTask): boolean => 'subtasks' in task!;
 }

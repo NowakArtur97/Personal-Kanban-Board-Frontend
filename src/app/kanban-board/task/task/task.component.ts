@@ -83,16 +83,20 @@ export class TaskComponent {
       }
     });
     effect(() => this.handleTaskAnimation());
-    effect(() => {
-      const deletedTaskId = this.taskService.deletedTaskId();
-      if (deletedTaskId === this.task()?.taskId) {
-        this.startDeleteTaskAnimation();
-      }
-    });
+    effect(
+      () => {
+        const deletedTaskId = this.taskService.deletedTaskId();
+        if (deletedTaskId === this.task()?.taskId) {
+          this.startDeleteTaskAnimation();
+        }
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   ngOnInit() {
-    this.taskStatus = this.task()!!.status;
+    const task = this.task()!!;
+    this.taskStatus = task.status;
     this.color = TaskColorUtil.randomRareColor(
       this.isTask()
         ? TaskColorUtil.PALETTE.PRIMARY_PALETTE
@@ -103,13 +107,13 @@ export class TaskComponent {
   updateTask(event: Event): void {
     event.stopPropagation();
     const task = this.task()!!;
-    this.taskService.setTaskToUpdate(task, this.isTaskType(task));
+    this.taskService.setTaskToUpdate(task, this.isTask());
     this.taskService.changeTaskFormVisibility(true);
   }
 
   addSubtask(): void {
     const task = this.task()!!;
-    if (this.isTaskType(task)) {
+    if (this.isTask()) {
       this.taskService.setTaskIdToAddSubtask(task.taskId);
       this.taskService.changeTaskFormVisibility(true);
     }
@@ -128,7 +132,8 @@ export class TaskComponent {
     const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
     if (
       taskWithUpdatedStatus?.taskId === this.task()!.taskId &&
-      this.taskStatus !== taskWithUpdatedStatus.status
+      this.taskStatus !== taskWithUpdatedStatus.status &&
+      this.isTask()
     ) {
       this.taskAnimationState = 'removeFromColumn';
       this.isRemovingTaskFromColumn = true;
@@ -138,12 +143,15 @@ export class TaskComponent {
   finishAnimation(): void {
     const task = this.task()!;
     if (this.isDeletingTask) {
-      if (this.isSubtaskType(task)) {
-        this.taskService.deleteSubtask(task.subtaskId);
-        this.taskService.deleteSubtaskFromTask(task.taskId, task.subtaskId);
-      } else {
+      if (this.isTask()) {
         this.taskService.deleteTask(task.taskId);
         this.removedFromColumn.emit(task.taskId);
+      } else {
+        this.taskService.deleteSubtask((task as Subtask).subtaskId);
+        this.taskService.deleteSubtaskFromTask(
+          task.taskId,
+          (task as Subtask).subtaskId
+        );
       }
     }
     if (this.isRemovingTaskFromColumn) {
@@ -162,11 +170,5 @@ export class TaskComponent {
         subtask.status.toString() === TaskStatus[this.columnStatus()!]
     );
 
-  isTask = (): boolean => 'subtasks' in this.task()!;
-
-  private isTaskType = (task: BaseTask): task is Task =>
-    (task as Task).subtasks !== undefined;
-
-  private isSubtaskType = (task: BaseTask): task is Subtask =>
-    (task as Subtask).subtaskId !== undefined;
+  isTask = (): boolean => this.taskService.isTask(this.task()!);
 }
