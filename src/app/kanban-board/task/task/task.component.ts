@@ -77,21 +77,11 @@ export class TaskComponent {
   isRemovingTaskFromColumn = false;
 
   constructor() {
-    effect(() => {
-      if (this.shouldDeleteAllTasks()) {
-        this.taskAnimationState = 'delete';
-      }
-    });
+    effect(() => this.startRemoveTaskAnimationWhenRemovingAllTasks());
     effect(() => this.handleTaskAnimation());
-    effect(
-      () => {
-        const deletedTaskId = this.taskService.deletedTaskId();
-        if (deletedTaskId === this.task()?.taskId) {
-          this.startDeleteTaskAnimation();
-        }
-      },
-      { allowSignalWrites: true }
-    );
+    effect(() => this.startRemoveTaskAnimationWhenRemovedTask(), {
+      allowSignalWrites: true,
+    });
   }
 
   ngOnInit() {
@@ -125,7 +115,7 @@ export class TaskComponent {
   startDeleteTaskAnimation(): void {
     this.taskAnimationState = 'delete';
     this.isDeletingTask = true;
-    this.taskService.setDeletedTaskId(this.task()!.taskId);
+    this.taskService.setDeletedTask(this.task()!);
   }
 
   private handleTaskAnimation() {
@@ -171,4 +161,28 @@ export class TaskComponent {
     );
 
   isTask = (): boolean => this.taskService.isTask(this.task()!);
+
+  private startRemoveTaskAnimationWhenRemovedTask(): void {
+    const deletedTask = this.taskService.deletedTask();
+    if (!deletedTask) {
+      return;
+    }
+    const task = this.task()!;
+    if (
+      (this.isTask() &&
+        this.taskService.isTask(deletedTask) &&
+        deletedTask.taskId === task.taskId) ||
+      (this.taskService.isSubtask(task) &&
+        this.taskService.isSubtask(deletedTask) &&
+        deletedTask.subtaskId === task.subtaskId)
+    ) {
+      this.startDeleteTaskAnimation();
+    }
+  }
+
+  private startRemoveTaskAnimationWhenRemovingAllTasks(): void {
+    if (this.shouldDeleteAllTasks()) {
+      this.taskAnimationState = 'delete';
+    }
+  }
 }

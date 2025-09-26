@@ -49,7 +49,7 @@ export class TaskService {
   });
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
-  #deletedTaskId = signal<string | null>(null);
+  #deletedTask = signal<null | BaseTask>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
   #shouldDeleteAllTasks = signal<boolean>(false);
@@ -58,7 +58,7 @@ export class TaskService {
   taskToUpdate = this.#taskToUpdate.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
-  deletedTaskId = this.#deletedTaskId.asReadonly();
+  deletedTask = this.#deletedTask.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
@@ -342,8 +342,8 @@ export class TaskService {
     this.#taskIdToAddSubtask.set(id);
   }
 
-  setDeletedTaskId(taskId: string): void {
-    this.#deletedTaskId.set(taskId);
+  setDeletedTask(task: BaseTask): void {
+    this.#deletedTask.set(task);
   }
 
   changeTaskFormVisibility(isTaskFormVisible: boolean): void {
@@ -356,5 +356,9 @@ export class TaskService {
     };
   }
 
-  isTask = (task: BaseTask): boolean => 'subtasks' in task!;
+  isTask = (task: BaseTask): task is Task =>
+    (task as Task).subtasks !== undefined;
+
+  isSubtask = (task: BaseTask): task is Subtask =>
+    (task as Subtask).subtaskId !== undefined;
 }
