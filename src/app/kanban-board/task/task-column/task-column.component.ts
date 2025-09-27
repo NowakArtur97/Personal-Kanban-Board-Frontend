@@ -30,7 +30,7 @@ export class TaskColumnComponent {
 
   removeFromColumn(taskId: string): void {
     this.displayedTasks = this.displayedTasks.filter(
-      (task) => task.taskId !== taskId
+      ({ taskId: id }) => id !== taskId
     );
   }
 

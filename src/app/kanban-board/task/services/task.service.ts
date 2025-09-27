@@ -169,7 +169,7 @@ export class TaskService {
           this.#taskWithUpdatedStatus.set(updatedTask);
         }
         this.#tasks.set([
-          ...this.tasks().filter((task) => task.taskId !== updatedTask.taskId),
+          ...this.tasks().filter(({ taskId }) => taskId !== updatedTask.taskId),
           updatedTask,
         ]);
         this.changeTaskFormVisibility(false);
@@ -198,12 +198,12 @@ export class TaskService {
           this.#taskWithUpdatedStatus.set(subtaskTask);
         }
         this.#tasks.set([
-          ...this.tasks().filter((task) => task.taskId !== subtaskTask.taskId),
+          ...this.tasks().filter(({ taskId }) => taskId !== subtaskTask.taskId),
           {
             ...subtaskTask,
             subtasks: [
               ...subtaskTask.subtasks.filter(
-                (subtask) => subtask.subtaskId !== updatedSubtask.subtaskId
+                ({ subtaskId }) => subtaskId !== updatedSubtask.subtaskId
               ),
               updatedSubtask,
             ],
@@ -229,7 +229,7 @@ export class TaskService {
         ({ data }: any) => {
           this.#tasks.set([
             ...this.tasks().filter(
-              (task) => task.taskId !== data.updateUserAssignedToTask.taskId
+              ({ taskId }) => taskId !== data.updateUserAssignedToTask.taskId
             ),
             data.updateUserAssignedToTask,
           ]);
@@ -241,12 +241,12 @@ export class TaskService {
 
   addTaskToSubtask(subtask: Subtask) {
     const taskWithNewSubtask = this.tasks().filter(
-      (task) => task.taskId === this.taskIdToAddSubtask()
+      ({ taskId }) => taskId === this.taskIdToAddSubtask()
     )[0];
     taskWithNewSubtask.subtasks.push(...taskWithNewSubtask.subtasks, subtask);
     this.#tasks.set([
       ...this.tasks().filter(
-        (task) => task.taskId !== this.taskIdToAddSubtask()
+        ({ taskId }) => taskId !== this.taskIdToAddSubtask()
       ),
       taskWithNewSubtask,
     ]);
@@ -267,7 +267,7 @@ export class TaskService {
         () => {
           // TODO: Remove or try to fix
           this.#tasks.set([
-            ...this.tasks().filter((task) => task.taskId !== taskId),
+            ...this.tasks().filter(({ taskId: id }) => id !== taskId),
           ]);
         },
         // TODO: Remove or create popup message with errors instead of displaying on task form
@@ -305,11 +305,11 @@ export class TaskService {
           };
           taskWithRemovedSubtask.subtasks =
             taskWithRemovedSubtask.subtasks.filter(
-              (subtask) => subtask.subtaskId !== subtaskId
+              ({ subtaskId: id }) => id !== subtaskId
             );
           this.#tasks.set([
             ...this.tasks().filter(
-              (task) => task.taskId !== taskWithRemovedSubtask.taskId
+              ({ taskId }) => taskId !== taskWithRemovedSubtask.taskId
             ),
             taskWithRemovedSubtask,
           ]);

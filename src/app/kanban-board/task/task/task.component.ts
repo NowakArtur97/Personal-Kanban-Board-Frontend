@@ -117,10 +117,8 @@ export class TaskComponent {
     this.taskService.setDeletedTask(task);
     setTimeout(() => {
       if (this.isTask()) {
-        console.log('a');
         this.taskService.deleteTask(task.taskId);
       } else {
-        console.log('b');
         this.taskService.deleteSubtask((task as Subtask).subtaskId);
       }
     }, 1000);
