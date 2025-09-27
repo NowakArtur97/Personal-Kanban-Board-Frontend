@@ -266,23 +266,14 @@ export class TaskService {
       .subscribe(
         () => {
           // TODO: Remove or try to fix
-          // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
+          this.#tasks.set([
+            ...this.tasks().filter((task) => task.taskId !== taskId),
+          ]);
         },
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
-  }
-
-  deleteSubtaskFromTask(taskId: string, subtaskId: string): void {
-    const task = { ...this.tasks().find((task) => task.taskId === taskId)!! };
-    task.subtasks = task.subtasks.filter(
-      (subtask) => subtask.subtaskId !== subtaskId
-    );
-    this.#tasks.set([
-      ...this.tasks().filter((task) => task.taskId !== taskId),
-      task,
-    ]);
   }
 
   deleteAllTasks(): void {
@@ -307,8 +298,21 @@ export class TaskService {
       })
       .subscribe(
         () => {
-          // TODO: Remove or try to fix
-          // this.#tasks.set([...this.tasks().filter(task => task.taskId !== taskId)]);
+          const taskWithRemovedSubtask = {
+            ...this.tasks().find((task) =>
+              task.subtasks.some((subtask) => subtask.subtaskId === subtaskId)
+            )!!,
+          };
+          taskWithRemovedSubtask.subtasks =
+            taskWithRemovedSubtask.subtasks.filter(
+              (subtask) => subtask.subtaskId !== subtaskId
+            );
+          this.#tasks.set([
+            ...this.tasks().filter(
+              (task) => task.taskId !== taskWithRemovedSubtask.taskId
+            ),
+            taskWithRemovedSubtask,
+          ]);
         },
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) => {}
