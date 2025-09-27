@@ -48,8 +48,9 @@
   @if(isTask()) {
   <div class="task__subtasks_container">
     <app-task
-      *ngFor="let subtask of getSubtasks()"
+      *ngFor="let subtask of displayedSubtasks"
       [task]="subtask"
+      (removedFromSubtasks)="removeFromSubtasks(subtask.subtaskId)"
       class="subtask"
     />
   </div>

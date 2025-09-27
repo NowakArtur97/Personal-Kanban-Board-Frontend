@@ -7,8 +7,6 @@ import {
   Output,
 } from '@angular/core';
 import { NgClass, NgFor, NgStyle } from '@angular/common';
-import TaskColorUtil from '../../utils/task-color.util';
-import { TaskService } from '../services/task.service';
 import {
   trigger,
   state,
@@ -17,10 +15,11 @@ import {
   animate,
 } from '@angular/animations';
 import { UserService } from '../../user/services/user.service';
-import { TaskStatus } from '../models/task-status.model';
-import BaseTask from '../models/base-task.model';
 import Subtask from '../models/subtask.model';
-import Task from '../models/task.model';
+import TaskColorUtil from '../../utils/task-color.util';
+import BaseTask from '../models/base-task.model';
+import { TaskStatus } from '../models/task-status.model';
+import { TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-task',
@@ -67,6 +66,7 @@ export class TaskComponent {
   task = input<BaseTask>();
   columnStatus = input<TaskStatus>();
   @Output() removedFromColumn = new EventEmitter<string>();
+  @Output() removedFromSubtasks = new EventEmitter<string>();
   private taskStatus: TaskStatus | null = null;
   color: string = '';
   taskAnimationState = 'default';
@@ -75,11 +75,14 @@ export class TaskComponent {
   private taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus;
   private shouldDeleteAllTasks = this.taskService.shouldDeleteAllTasks;
   private isRemovingTaskFromColumn = false;
+  displayedSubtasks: Subtask[] = [];
 
   constructor() {
-    // effect(() => this.startRemoveTaskFromColumnAnimationOnUpdateStatus());
     effect(() => this.startRemoveTaskAnimationOnDeleteTask());
     effect(() => this.startRemoveTaskAnimationOnDeleteAllTasks());
+    effect(() =>
+      this.startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn()
+    );
   }
 
   ngOnInit() {
@@ -90,6 +93,11 @@ export class TaskComponent {
         ? TaskColorUtil.PALETTE.PRIMARY_PALETTE
         : TaskColorUtil.PALETTE.SECONDARY_PALETTe
     );
+    if (this.taskService.isTask(task)) {
+      this.displayedSubtasks = task.subtasks.filter(
+        ({ status }) => status.toString() === TaskStatus[this.columnStatus()!]
+      );
+    }
   }
 
   updateTask(event: Event): void {
@@ -126,30 +134,26 @@ export class TaskComponent {
 
   finishAnimation(): void {
     if (this.isDeletingTask || this.isRemovingTaskFromColumn) {
-      this.removedFromColumn.emit(this.task()!.taskId);
+      const task = this.task()!;
+      this.removedFromColumn.emit(task.taskId);
+      if (this.taskService.isSubtask(task)) {
+        this.removedFromSubtasks.emit(task.subtaskId);
+      }
     }
   }
 
-  get priority() {
-    const priority = this.task()?.priority.toString() ?? '';
-    return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
+  removeFromSubtasks(subtaskId: string): void {
+    this.displayedSubtasks = this.displayedSubtasks.filter(
+      ({ subtaskId: id }) => id !== subtaskId
+    );
   }
 
-  getSubtasks = (): Subtask[] =>
-    (this.task() as Task)?.subtasks.filter(
-      (subtask) =>
-        subtask.status.toString() === TaskStatus[this.columnStatus()!]
-    );
-
-  isTask = (): boolean => this.taskService.isTask(this.task()!);
-
-  private startRemoveTaskFromColumnAnimationOnUpdateStatus() {
+  private startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn() {
     const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
-    if (
+    const isSameTaskWithUpdatedStatus =
       taskWithUpdatedStatus?.taskId === this.task()!.taskId &&
-      this.taskStatus !== taskWithUpdatedStatus.status &&
-      this.isTask()
-    ) {
+      taskWithUpdatedStatus.status !== this.taskStatus;
+    if (this.isTask() && isSameTaskWithUpdatedStatus) {
       this.taskAnimationState = 'removeFromColumn';
       this.isRemovingTaskFromColumn = true;
     }
@@ -180,4 +184,11 @@ export class TaskComponent {
       this.taskAnimationState = 'delete';
     }
   }
+
+  get priority() {
+    const priority = this.task()?.priority.toString() ?? '';
+    return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
+  }
+
+  isTask = (): boolean => this.taskService.isTask(this.task()!);
 }
