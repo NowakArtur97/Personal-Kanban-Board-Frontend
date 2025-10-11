@@ -47,7 +47,7 @@ export class TaskService {
     },
     isTask: true,
   });
-  #updatedTask = signal<BaseTask | null>(null);
+  #updatedTask = signal<Task | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
   #deletedTask = signal<null | BaseTask>(null);

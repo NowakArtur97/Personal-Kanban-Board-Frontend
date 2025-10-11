@@ -74,7 +74,7 @@ export class TaskColumnComponent {
     }
   }
 
-  private addUpdatedTaskToColumnIfHasSameStatus() {
+  private addUpdatedTaskToColumnIfHasSameStatus(): void {
     const taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus();
     if (!taskWithUpdatedStatus) {
       return;
@@ -83,11 +83,7 @@ export class TaskColumnComponent {
       this.displayedTasks.findIndex(
         ({ taskId }) => taskId === taskWithUpdatedStatus.taskId
       ) === -1;
-    if (
-      isNotInColumn &&
-      this.taskService.isTask(taskWithUpdatedStatus) &&
-      this.hasSameTaskStatus(taskWithUpdatedStatus)
-    ) {
+    if (isNotInColumn && this.hasSameTaskStatus(taskWithUpdatedStatus)) {
       this.displayedTasks.push(taskWithUpdatedStatus);
     }
   }
