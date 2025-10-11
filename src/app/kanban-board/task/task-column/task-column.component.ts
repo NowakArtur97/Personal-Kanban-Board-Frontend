@@ -69,7 +69,14 @@ export class TaskColumnComponent {
       this.taskService.isTask(taskWithUpdatedStatus) &&
       this.hasSameTaskStatus(taskWithUpdatedStatus)
     ) {
-      this.displayedTasks.push(taskWithUpdatedStatus);
+      const indexInColumn = this.displayedTasks.findIndex(
+        ({ taskId }) => taskId === taskWithUpdatedStatus.taskId
+      );
+      if (indexInColumn >= 0) {
+        this.displayedTasks[indexInColumn] = taskWithUpdatedStatus; //TODO: Update not only when status is updated
+      } else {
+        this.displayedTasks.push(taskWithUpdatedStatus);
+      }
     }
   }
 

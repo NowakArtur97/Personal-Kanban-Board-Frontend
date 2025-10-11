@@ -145,17 +145,6 @@ export class TaskComponent {
     );
   }
 
-  private startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn() {
-    const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
-    const isSameTaskWithUpdatedStatus =
-      taskWithUpdatedStatus?.taskId === this.task()!.taskId &&
-      taskWithUpdatedStatus.status !== this.taskStatus;
-    if (this.isTask() && isSameTaskWithUpdatedStatus) {
-      this.taskAnimationState = 'removeFromColumn';
-      this.isRemovingTaskFromColumn = true;
-    }
-  }
-
   private startRemoveTaskAnimationOnDeleteTask(): void {
     const deletedTask = this.taskService.deletedTask();
     if (!deletedTask) {
@@ -179,6 +168,24 @@ export class TaskComponent {
   private startRemoveTaskAnimationOnDeleteAllTasks(): void {
     if (this.shouldDeleteAllTasks()) {
       this.taskAnimationState = 'delete';
+    }
+  }
+
+  private startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn() {
+    const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
+    const isSameTaskWithUpdatedStatus =
+      taskWithUpdatedStatus?.taskId === this.task()!.taskId &&
+      taskWithUpdatedStatus.status !== this.taskStatus;
+    const task = this.task()!;
+    if (
+      this.taskService.isTask(task) &&
+      !task.subtasks.some(
+        ({ status }) => status.toString() === TaskStatus[this.columnStatus()!]
+      ) &&
+      isSameTaskWithUpdatedStatus
+    ) {
+      this.taskAnimationState = 'removeFromColumn';
+      this.isRemovingTaskFromColumn = true;
     }
   }
 
