@@ -47,6 +47,7 @@ export class TaskService {
     },
     isTask: true,
   });
+  #updatedTask = signal<BaseTask | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
   #deletedTask = signal<null | BaseTask>(null);
@@ -56,6 +57,7 @@ export class TaskService {
 
   tasks = this.#tasks.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
+  updatedTask = this.#updatedTask.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   deletedTask = this.#deletedTask.asReadonly();
@@ -172,6 +174,7 @@ export class TaskService {
           ...this.tasks().filter(({ taskId }) => taskId !== updatedTask.taskId),
           updatedTask,
         ]);
+        this.#updatedTask.set(updatedTask);
         this.changeTaskFormVisibility(false);
         this.setTaskToUpdate(null, false);
       }

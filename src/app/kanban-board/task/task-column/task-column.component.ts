@@ -25,6 +25,7 @@ export class TaskColumnComponent {
   constructor() {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
     effect(() => this.displayTasks(this.filterTasksForColumn()));
+    effect(() => this.updateTaskInColumn());
     effect(() => this.addUpdatedTaskToColumnIfHasSameStatus());
   }
 
@@ -60,23 +61,34 @@ export class TaskColumnComponent {
           this.hasSameStatusInAnySubtask(task.subtasks)
       );
 
+  private updateTaskInColumn() {
+    const updatedTask = this.taskService.updatedTask();
+    if (!updatedTask) {
+      return;
+    }
+    const indexInColumn = this.displayedTasks.findIndex(
+      ({ taskId }) => taskId === updatedTask.taskId
+    );
+    if (this.taskService.isTask(updatedTask) && indexInColumn >= 0) {
+      this.displayedTasks[indexInColumn] = updatedTask;
+    }
+  }
+
   private addUpdatedTaskToColumnIfHasSameStatus() {
     const taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus();
     if (!taskWithUpdatedStatus) {
       return;
     }
+    const isNotInColumn =
+      this.displayedTasks.findIndex(
+        ({ taskId }) => taskId === taskWithUpdatedStatus.taskId
+      ) === -1;
     if (
+      isNotInColumn &&
       this.taskService.isTask(taskWithUpdatedStatus) &&
       this.hasSameTaskStatus(taskWithUpdatedStatus)
     ) {
-      const indexInColumn = this.displayedTasks.findIndex(
-        ({ taskId }) => taskId === taskWithUpdatedStatus.taskId
-      );
-      if (indexInColumn >= 0) {
-        this.displayedTasks[indexInColumn] = taskWithUpdatedStatus; //TODO: Update not only when status is updated
-      } else {
-        this.displayedTasks.push(taskWithUpdatedStatus);
-      }
+      this.displayedTasks.push(taskWithUpdatedStatus);
     }
   }
 
