@@ -48,14 +48,11 @@ import { TaskService } from '../services/task.service';
       state(
         'delete',
         style({
-          transform: 'translateY(500px)',
-          margin: 0,
-          padding: 0,
-          height: '0px',
+          transform: 'translateX(100%)',
         })
       ),
       transition('default => removeFromColumn', [animate('500ms')]),
-      transition('default => delete', [animate('1s')]),
+      transition('default => delete', [animate('500ms')]),
     ]),
   ],
 })
@@ -129,7 +126,7 @@ export class TaskComponent {
       } else {
         this.taskService.deleteSubtask((task as Subtask).subtaskId);
       }
-    }, 1000);
+    }, 500);
   }
 
   finishAnimation(): void {
