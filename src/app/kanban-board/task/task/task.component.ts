@@ -92,8 +92,8 @@ export class TaskComponent {
         : TaskColorUtil.PALETTE.SECONDARY_PALETTe
     );
     if (this.taskService.isTask(task)) {
-      this.displayedSubtasks = task.subtasks.filter(
-        ({ status }) => status.toString() === TaskStatus[this.columnStatus()!]
+      this.displayedSubtasks = task.subtasks.filter(({ status }) =>
+        this.hasSameStatusAsColumn(status)
       );
     }
   }
@@ -157,13 +157,8 @@ export class TaskComponent {
           ({ subtaskId }) => subtaskId === updatedSubtask?.subtaskId
         )
       : -1;
-    const hasSameStatus =
-      updatedSubtask.status.toString() === TaskStatus[this.columnStatus()!];
-    if (
-      this.taskService.isTask(task) &&
-      indexOfSubtaskInSubtasks >= 0 &&
-      hasSameStatus
-    ) {
+    const hasSameStatus = this.hasSameStatusAsColumn(updatedSubtask.status);
+    if (indexOfSubtaskInSubtasks >= 0 && hasSameStatus) {
       this.displayedSubtasks[indexOfSubtaskInSubtasks] = updatedSubtask;
     }
   }
@@ -204,9 +199,7 @@ export class TaskComponent {
     const task = this.task()!;
     if (
       this.taskService.isTask(task) &&
-      !task.subtasks.some(
-        ({ status }) => status.toString() === TaskStatus[this.columnStatus()!]
-      ) &&
+      !task.subtasks.some(({ status }) => this.hasSameStatusAsColumn(status)) &&
       isSameTaskWithUpdatedStatus
     ) {
       this.taskAnimationState = 'removeFromColumn';
@@ -220,4 +213,7 @@ export class TaskComponent {
   }
 
   isTask = (): boolean => this.taskService.isTask(this.task()!);
+
+  private hasSameStatusAsColumn = (status: TaskStatus): boolean =>
+    status.toString() === TaskStatus[this.columnStatus()!];
 }
