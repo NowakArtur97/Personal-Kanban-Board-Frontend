@@ -157,10 +157,19 @@ export class TaskComponent {
           ({ subtaskId }) => subtaskId === updatedSubtask?.subtaskId
         )
       : -1;
-    if (this.taskService.isTask(task) && indexOfSubtaskInSubtasks >= 0) {
+    const hasSameStatus =
+      updatedSubtask.status.toString() === TaskStatus[this.columnStatus()!];
+    if (
+      this.taskService.isTask(task) &&
+      indexOfSubtaskInSubtasks >= 0 &&
+      hasSameStatus
+    ) {
       this.displayedSubtasks[indexOfSubtaskInSubtasks] = updatedSubtask;
     }
   }
+
+  // TODO: Effect for removing subtask from subtasks if status changed
+  // TODO: Effect for removing task from column when there are no subtasks with column status and task has different status than column
 
   private startRemoveTaskAnimationOnDeleteTask(): void {
     const deletedTask = this.taskService.deletedTask();
