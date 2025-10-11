@@ -195,11 +195,10 @@ export class TaskService {
         const subtaskBeforeUpdate = this.#taskToUpdate()?.taskDTO;
         const subtaskTask = this.tasks().find((task) =>
           task.subtasks.some(
-            (subtask) => subtask.subtaskId !== updatedSubtask.subtaskId
+            (subtask) => subtask.subtaskId === updatedSubtask.subtaskId
           )
         )!;
         if (subtaskDTO.status !== subtaskBeforeUpdate!!.status) {
-          // TODO: Update column
           this.#taskWithUpdatedStatus.set(subtaskTask);
         }
         this.#tasks.set([
