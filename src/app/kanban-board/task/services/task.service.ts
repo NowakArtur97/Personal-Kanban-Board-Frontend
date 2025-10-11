@@ -48,6 +48,7 @@ export class TaskService {
     isTask: true,
   });
   #updatedTask = signal<Task | null>(null);
+  #updatedSubtask = signal<Subtask | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
   #deletedTask = signal<null | BaseTask>(null);
@@ -58,6 +59,7 @@ export class TaskService {
   tasks = this.#tasks.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
   updatedTask = this.#updatedTask.asReadonly();
+  updatedSubtask = this.#updatedSubtask.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   deletedTask = this.#deletedTask.asReadonly();
@@ -214,6 +216,7 @@ export class TaskService {
         ]);
         this.changeTaskFormVisibility(false);
         this.setTaskToUpdate(null, false);
+        this.#updatedSubtask.set(updatedSubtask);
       }
     );
   }

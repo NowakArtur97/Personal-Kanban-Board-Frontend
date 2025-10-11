@@ -75,6 +75,7 @@ export class TaskComponent {
   displayedSubtasks: Subtask[] = [];
 
   constructor() {
+    effect(() => this.updateSubtask());
     effect(() => this.startRemoveTaskAnimationOnDeleteTask());
     effect(() => this.startRemoveTaskAnimationOnDeleteAllTasks());
     effect(() =>
@@ -145,6 +146,22 @@ export class TaskComponent {
     );
   }
 
+  private updateSubtask(): void {
+    const updatedSubtask = this.taskService.updatedSubtask();
+    if (!updatedSubtask) {
+      return;
+    }
+    const task = this.task()!;
+    const indexOfSubtaskInSubtasks = this.taskService.isTask(task)
+      ? this.displayedSubtasks.findIndex(
+          ({ subtaskId }) => subtaskId === updatedSubtask?.subtaskId
+        )
+      : -1;
+    if (this.taskService.isTask(task) && indexOfSubtaskInSubtasks >= 0) {
+      this.displayedSubtasks[indexOfSubtaskInSubtasks] = updatedSubtask;
+    }
+  }
+
   private startRemoveTaskAnimationOnDeleteTask(): void {
     const deletedTask = this.taskService.deletedTask();
     if (!deletedTask) {
@@ -152,7 +169,6 @@ export class TaskComponent {
     }
     const task = this.task()!;
     const isSameTask =
-      this.isTask() &&
       this.taskService.isTask(deletedTask) &&
       deletedTask.taskId === task.taskId;
     const isSameSubtask =
