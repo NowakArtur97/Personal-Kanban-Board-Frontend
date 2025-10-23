@@ -70,6 +70,7 @@ export class TaskComponent {
   private isDeletingTask = false;
   users = this.userService.users;
   private taskWithUpdatedStatus = this.taskService.taskWithUpdatedStatus;
+  private subtaskWithUpdatedStatus = this.taskService.subtaskWithUpdatedStatus;
   private shouldDeleteAllTasks = this.taskService.shouldDeleteAllTasks;
   private isRemovingTaskFromColumn = false;
   displayedSubtasks: Subtask[] = [];
@@ -80,6 +81,9 @@ export class TaskComponent {
     effect(() => this.startRemoveTaskAnimationOnDeleteAllTasks());
     effect(() =>
       this.startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn()
+    );
+    effect(() =>
+      this.startRemoveSubtaskFromColumnAnimationOnRemoveSubtaskFromColumn()
     );
   }
 
@@ -163,7 +167,6 @@ export class TaskComponent {
     }
   }
 
-  // TODO: Effect for removing subtask from subtasks if status changed
   // TODO: Effect for removing task from column when there are no subtasks with column status and task has different status than column
 
   private startRemoveTaskAnimationOnDeleteTask(): void {
@@ -193,14 +196,27 @@ export class TaskComponent {
 
   private startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn() {
     const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
-    const isSameTaskWithUpdatedStatus =
-      taskWithUpdatedStatus?.taskId === this.task()!.taskId &&
-      taskWithUpdatedStatus.status !== this.taskStatus;
     const task = this.task()!;
+    const isSameTaskWithUpdatedStatus =
+      taskWithUpdatedStatus?.taskId === task.taskId &&
+      taskWithUpdatedStatus.status !== this.taskStatus;
     if (
       this.taskService.isTask(task) &&
       !task.subtasks.some(({ status }) => this.hasSameStatusAsColumn(status)) &&
       isSameTaskWithUpdatedStatus
+    ) {
+      this.taskAnimationState = 'removeFromColumn';
+      this.isRemovingTaskFromColumn = true;
+    }
+  }
+
+  private startRemoveSubtaskFromColumnAnimationOnRemoveSubtaskFromColumn() {
+    const subtaskWithUpdatedStatus = this.subtaskWithUpdatedStatus();
+    const subtask = this.task()!;
+    if (
+      this.taskService.isSubtask(subtask) &&
+      subtaskWithUpdatedStatus?.subtaskId === subtask.subtaskId &&
+      subtaskWithUpdatedStatus.status !== this.taskStatus
     ) {
       this.taskAnimationState = 'removeFromColumn';
       this.isRemovingTaskFromColumn = true;

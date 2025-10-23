@@ -51,6 +51,7 @@ export class TaskService {
   #updatedSubtask = signal<Subtask | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
+  #subtaskWithUpdatedStatus = signal<Subtask | null>(null);
   #deletedTask = signal<null | BaseTask>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
@@ -62,6 +63,7 @@ export class TaskService {
   updatedSubtask = this.#updatedSubtask.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
+  subtaskWithUpdatedStatus = this.#subtaskWithUpdatedStatus.asReadonly();
   deletedTask = this.#deletedTask.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
@@ -199,7 +201,7 @@ export class TaskService {
           )
         )!;
         if (subtaskDTO.status !== subtaskBeforeUpdate!!.status) {
-          this.#taskWithUpdatedStatus.set(subtaskTask);
+          this.#subtaskWithUpdatedStatus.set(updatedSubtask);
         }
         this.#tasks.set([
           ...this.tasks().filter(({ taskId }) => taskId !== subtaskTask.taskId),
