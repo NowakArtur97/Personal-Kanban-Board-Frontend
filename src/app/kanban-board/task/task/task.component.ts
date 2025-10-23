@@ -148,6 +148,12 @@ export class TaskComponent {
     this.displayedSubtasks = this.displayedSubtasks.filter(
       ({ subtaskId: id }) => id !== subtaskId
     );
+    const isTaskWithoutSubtasksWithDifferentStatusTahnColumn =
+      this.displayedSubtasks.length === 0 &&
+      !this.hasSameStatusAsColumn(this.task()!.status);
+    if (isTaskWithoutSubtasksWithDifferentStatusTahnColumn) {
+      this.startRemoveTaskFromColumnAnimation();
+    }
   }
 
   private updateSubtask(): void {
@@ -166,8 +172,6 @@ export class TaskComponent {
       this.displayedSubtasks[indexOfSubtaskInSubtasks] = updatedSubtask;
     }
   }
-
-  // TODO: Effect for removing task from column when there are no subtasks with column status and task has different status than column
 
   private startRemoveTaskAnimationOnDeleteTask(): void {
     const deletedTask = this.taskService.deletedTask();
@@ -205,8 +209,7 @@ export class TaskComponent {
       !task.subtasks.some(({ status }) => this.hasSameStatusAsColumn(status)) &&
       isSameTaskWithUpdatedStatus
     ) {
-      this.taskAnimationState = 'removeFromColumn';
-      this.isRemovingTaskFromColumn = true;
+      this.startRemoveTaskFromColumnAnimation();
     }
   }
 
@@ -218,9 +221,13 @@ export class TaskComponent {
       subtaskWithUpdatedStatus?.subtaskId === subtask.subtaskId &&
       subtaskWithUpdatedStatus.status !== this.taskStatus
     ) {
-      this.taskAnimationState = 'removeFromColumn';
-      this.isRemovingTaskFromColumn = true;
+      this.startRemoveTaskFromColumnAnimation();
     }
+  }
+
+  private startRemoveTaskFromColumnAnimation() {
+    this.taskAnimationState = 'removeFromColumn';
+    this.isRemovingTaskFromColumn = true;
   }
 
   get priority() {
