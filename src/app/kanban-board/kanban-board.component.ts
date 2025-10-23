@@ -49,9 +49,7 @@ export class KanbanBoardComponent {
     this.taskService.setTaskToUpdate(null, false);
   }
 
-  deleteAllTasks(): void {
-    this.taskService.deleteAllTasks();
-  }
+  deleteAllTasks = (): void => this.taskService.deleteAllTasks();
 
   isAdmin = (): boolean => this.user().role + '' === UserRole[UserRole.ADMIN];
 }
