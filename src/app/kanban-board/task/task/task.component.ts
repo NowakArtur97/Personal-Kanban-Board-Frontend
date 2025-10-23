@@ -195,7 +195,7 @@ export class TaskComponent {
   private startRemoveTaskAnimationOnDeleteAllTasks(): void {
     if (this.shouldDeleteAllTasks()) {
       this.taskAnimationState = 'delete';
-      this. = true;
+      this.isDeletingTask = true;
     }
   }
 

@@ -27,6 +27,7 @@ export class TaskColumnComponent {
     effect(() => this.displayTasks(this.filterTasksForColumn()));
     effect(() => this.updateTaskInColumn());
     effect(() => this.addUpdatedTaskToColumnIfHasSameStatus());
+    effect(() => this.addTaskToColumnIfSubtaskUpdatedHasSameStatus());
   }
 
   removeFromColumn(taskId: string): void {
@@ -79,12 +80,28 @@ export class TaskColumnComponent {
     if (!taskWithUpdatedStatus) {
       return;
     }
-    const isNotInColumn =
-      this.displayedTasks.findIndex(
-        ({ taskId }) => taskId === taskWithUpdatedStatus.taskId
-      ) === -1;
-    if (isNotInColumn && this.hasSameTaskStatus(taskWithUpdatedStatus)) {
+    if (
+      this.hasSameTaskStatus(taskWithUpdatedStatus) &&
+      this.isTaskInColun(taskWithUpdatedStatus.taskId)
+    ) {
       this.displayedTasks.push(taskWithUpdatedStatus);
+    }
+  }
+
+  private addTaskToColumnIfSubtaskUpdatedHasSameStatus(): void {
+    const subtaskWithUpdatedStatus =
+      this.taskService.subtaskWithUpdatedStatus();
+    if (
+      !subtaskWithUpdatedStatus ||
+      !this.hasSameTaskStatus(subtaskWithUpdatedStatus)
+    ) {
+      return;
+    }
+    const subtaskTask = this.taskService
+      .tasks()
+      .find(({ taskId }) => taskId === subtaskWithUpdatedStatus.taskId);
+    if (subtaskTask && this.isTaskInColun(subtaskTask?.taskId)) {
+      this.displayedTasks.push(subtaskTask);
     }
   }
 
@@ -98,6 +115,9 @@ export class TaskColumnComponent {
     const colors = ['#ef7d57', '#41a6f6', '#566c86'];
     this.color = colors[index];
   }
+
+  private isTaskInColun = (id: string | undefined) =>
+    this.displayedTasks.findIndex(({ taskId }) => taskId === id) === -1;
 
   formattedStatus = (): string =>
     TaskStatus[this.taskStatus()!]
