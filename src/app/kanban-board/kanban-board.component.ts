@@ -22,6 +22,7 @@ export class KanbanBoardComponent {
   isCeateTaskFormVisible = false;
   user = this.userService.user;
   lastScrollYPosition = 0;
+  isAdmin = false;
 
   constructor() {
     effect(() => {
@@ -30,6 +31,13 @@ export class KanbanBoardComponent {
       } else {
         this.hideScrollbar(false);
       }
+    });
+    // TODO: Remove when removing mocked user
+    effect(() => {
+      const userRole = isNaN(Number(this.user().role))
+        ? this.user().role
+        : UserRole[this.user().role];
+      this.isAdmin = userRole + '' === UserRole[UserRole.ADMIN];
     });
   }
 
@@ -50,6 +58,4 @@ export class KanbanBoardComponent {
   }
 
   deleteAllTasks = (): void => this.taskService.deleteAllTasks();
-
-  isAdmin = (): boolean => this.user().role + '' === UserRole[UserRole.ADMIN];
 }
