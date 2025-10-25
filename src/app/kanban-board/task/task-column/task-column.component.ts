@@ -24,7 +24,7 @@ export class TaskColumnComponent {
 
   constructor() {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
-    effect(() => this.displayTasks(this.filterTasksForColumn()));
+    effect(() => this.displayTasks());
     effect(() => this.updateTaskInColumn());
     effect(() => this.addUpdatedTaskToColumnIfHasSameStatus());
     effect(() => this.addTaskToColumnIfSubtaskUpdatedHasSameStatus());
@@ -36,31 +36,28 @@ export class TaskColumnComponent {
     );
   }
 
-  private displayTasks(tasks: Task[]) {
-    if (tasks.length === 0 || this.displayedTasks.length > 0) {
+  private displayTasks() {
+    const { shouldUpdateView, tasks } = this.taskService.tasksView();
+    if (!shouldUpdateView || tasks.length === 0) {
       return;
     }
+    const tasksInColumn = tasks.filter(
+      (task) =>
+        this.hasSameTaskStatus(task) ||
+        this.hasSameStatusInAnySubtask(task.subtasks)
+    );
     if (this.#tasksInterval) {
       clearInterval(this.#tasksInterval);
     }
     this.displayedTasks = [];
     let counter = 0;
     this.#tasksInterval = setInterval(() => {
-      this.displayedTasks.push(tasks[counter++]);
-      if (counter >= tasks.length) {
+      this.displayedTasks.push(tasksInColumn[counter++]);
+      if (counter >= tasksInColumn.length) {
         clearInterval(this.#tasksInterval!!);
       }
     }, 100);
   }
-
-  private filterTasksForColumn = (): Task[] =>
-    this.taskService
-      .tasks()
-      .filter(
-        (task) =>
-          this.hasSameTaskStatus(task) ||
-          this.hasSameStatusInAnySubtask(task.subtasks)
-      );
 
   private updateTaskInColumn() {
     const updatedTask = this.taskService.updatedTask();
@@ -98,8 +95,8 @@ export class TaskColumnComponent {
       return;
     }
     const subtaskTask = this.taskService
-      .tasks()
-      .find(({ taskId }) => taskId === subtaskWithUpdatedStatus.taskId);
+      .tasksView()
+      .tasks.find(({ taskId }) => taskId === subtaskWithUpdatedStatus.taskId);
     if (subtaskTask && this.isTaskInColun(subtaskTask?.taskId)) {
       this.displayedTasks.push(subtaskTask);
     }

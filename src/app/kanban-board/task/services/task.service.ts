@@ -30,7 +30,10 @@ export class TaskService {
   private apollo = inject(Apollo);
   private userService = inject(UserService);
 
-  #tasks = signal<Task[]>([]);
+  #tasksView = signal<{ tasks: Task[]; shouldUpdateView: boolean }>({
+    tasks: [],
+    shouldUpdateView: false,
+  });
   #taskToUpdate = signal<{
     taskId: string;
     taskDTO: TaskDTO;
@@ -57,7 +60,7 @@ export class TaskService {
   #isTaskFormVisible = signal<boolean>(false);
   #shouldDeleteAllTasks = signal<boolean>(false);
 
-  tasks = this.#tasks.asReadonly();
+  tasksView = this.#tasksView.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
   updatedTask = this.#updatedTask.asReadonly();
   updatedSubtask = this.#updatedSubtask.asReadonly();
@@ -71,7 +74,10 @@ export class TaskService {
 
   findAllTasks(): void {
     this.findAllTasksBy(FIND_ALL_TASKS, {}, ({ data }: any) =>
-      this.#tasks.set(data.tasks)
+      this.#tasksView.set({
+        tasks: data.tasks,
+        shouldUpdateView: true,
+      })
     );
   }
 
@@ -79,7 +85,11 @@ export class TaskService {
     this.findAllTasksBy(
       FIND_ALL_TASKS_ASSIGNED_TO,
       { assignedToId },
-      ({ data }: any) => this.#tasks.set(data.tasksAssignedTo)
+      ({ data }: any) =>
+        this.#tasksView.set({
+          tasks: data.tasksAssignedTo,
+          shouldUpdateView: true,
+        })
     );
   }
 
@@ -126,7 +136,10 @@ export class TaskService {
       },
       ({ data }: any) => {
         // TODO: Add signal to add task to column
-        this.#tasks.set([...this.tasks(), data.createTask]);
+        this.#tasksView.set({
+          tasks: [...this.tasksView().tasks, data.createTask],
+          shouldUpdateView: false,
+        });
         this.changeTaskFormVisibility(false);
       }
     );
@@ -176,10 +189,15 @@ export class TaskService {
         if (taskDTO.status !== taskBeforeUpdate!!.status) {
           this.#taskWithUpdatedStatus.set(updatedTask);
         }
-        this.#tasks.set([
-          ...this.tasks().filter(({ taskId }) => taskId !== updatedTask.taskId),
-          updatedTask,
-        ]);
+        this.#tasksView.set({
+          tasks: [
+            ...this.tasksView().tasks.filter(
+              ({ taskId }) => taskId !== updatedTask.taskId
+            ),
+            updatedTask,
+          ],
+          shouldUpdateView: false,
+        });
         this.#updatedTask.set(updatedTask);
         this.changeTaskFormVisibility(false);
         this.setTaskToUpdate(null, false);
@@ -197,7 +215,7 @@ export class TaskService {
       ({ data }: { data: { updateSubtask: Subtask } }) => {
         const updatedSubtask = data.updateSubtask;
         const subtaskBeforeUpdate = this.#taskToUpdate()?.taskDTO;
-        const subtaskTask = this.tasks().find((task) =>
+        const subtaskTask = this.tasksView().tasks.find((task) =>
           task.subtasks.some(
             (subtask) => subtask.subtaskId === updatedSubtask.subtaskId
           )
@@ -205,18 +223,23 @@ export class TaskService {
         if (subtaskDTO.status !== subtaskBeforeUpdate!!.status) {
           this.#subtaskWithUpdatedStatus.set(updatedSubtask);
         }
-        this.#tasks.set([
-          ...this.tasks().filter(({ taskId }) => taskId !== subtaskTask.taskId),
-          {
-            ...subtaskTask,
-            subtasks: [
-              ...subtaskTask.subtasks.filter(
-                ({ subtaskId }) => subtaskId !== updatedSubtask.subtaskId
-              ),
-              updatedSubtask,
-            ],
-          },
-        ]);
+        this.#tasksView.set({
+          tasks: [
+            ...this.tasksView().tasks.filter(
+              ({ taskId }) => taskId !== subtaskTask.taskId
+            ),
+            {
+              ...subtaskTask,
+              subtasks: [
+                ...subtaskTask.subtasks.filter(
+                  ({ subtaskId }) => subtaskId !== updatedSubtask.subtaskId
+                ),
+                updatedSubtask,
+              ],
+            },
+          ],
+          shouldUpdateView: false,
+        });
         this.changeTaskFormVisibility(false);
         this.setTaskToUpdate(null, false);
         this.#updatedSubtask.set(updatedSubtask);
@@ -236,12 +259,15 @@ export class TaskService {
       })
       .subscribe(
         ({ data }: any) => {
-          this.#tasks.set([
-            ...this.tasks().filter(
-              ({ taskId }) => taskId !== data.updateUserAssignedToTask.taskId
-            ),
-            data.updateUserAssignedToTask,
-          ]);
+          this.#tasksView.set({
+            tasks: [
+              ...this.tasksView().tasks.filter(
+                ({ taskId }) => taskId !== data.updateUserAssignedToTask.taskId
+              ),
+              data.updateUserAssignedToTask,
+            ],
+            shouldUpdateView: false,
+          });
         },
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
@@ -249,16 +275,19 @@ export class TaskService {
   }
 
   addTaskToSubtask(subtask: Subtask) {
-    const taskWithNewSubtask = this.tasks().filter(
+    const taskWithNewSubtask = this.tasksView().tasks.filter(
       ({ taskId }) => taskId === this.taskIdToAddSubtask()
     )[0];
     taskWithNewSubtask.subtasks.push(...taskWithNewSubtask.subtasks, subtask);
-    this.#tasks.set([
-      ...this.tasks().filter(
-        ({ taskId }) => taskId !== this.taskIdToAddSubtask()
-      ),
-      taskWithNewSubtask,
-    ]);
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(
+          ({ taskId }) => taskId !== this.taskIdToAddSubtask()
+        ),
+        taskWithNewSubtask,
+      ],
+      shouldUpdateView: false,
+    });
     this.changeTaskFormVisibility(false);
     this.setTaskIdToAddSubtask(null);
   }
@@ -275,9 +304,14 @@ export class TaskService {
       .subscribe(
         () => {
           // TODO: Remove or try to fix
-          this.#tasks.set([
-            ...this.tasks().filter(({ taskId: id }) => id !== taskId),
-          ]);
+          this.#tasksView.set({
+            tasks: [
+              ...this.tasksView().tasks.filter(
+                ({ taskId: id }) => id !== taskId
+              ),
+            ],
+            shouldUpdateView: false,
+          });
         },
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) =>
@@ -308,7 +342,7 @@ export class TaskService {
       .subscribe(
         () => {
           const taskWithRemovedSubtask = {
-            ...this.tasks().find((task) =>
+            ...this.tasksView().tasks.find((task) =>
               task.subtasks.some((subtask) => subtask.subtaskId === subtaskId)
             )!!,
           };
@@ -316,12 +350,15 @@ export class TaskService {
             taskWithRemovedSubtask.subtasks.filter(
               ({ subtaskId: id }) => id !== subtaskId
             );
-          this.#tasks.set([
-            ...this.tasks().filter(
-              ({ taskId }) => taskId !== taskWithRemovedSubtask.taskId
-            ),
-            taskWithRemovedSubtask,
-          ]);
+          this.#tasksView.set({
+            tasks: [
+              ...this.tasksView().tasks.filter(
+                ({ taskId }) => taskId !== taskWithRemovedSubtask.taskId
+              ),
+              taskWithRemovedSubtask,
+            ],
+            shouldUpdateView: false,
+          });
         },
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) => {}
