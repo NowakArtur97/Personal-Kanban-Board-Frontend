@@ -70,29 +70,31 @@ export class TaskService {
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
 
   findAllTasks(): void {
-    this.apollo
-      .watchQuery({
-        query: FIND_ALL_TASKS,
-        context: this.createContext(),
-      })
-      .valueChanges.subscribe(({ data, error }: any) =>
-        this.#tasks.set(data.tasks)
-      );
+    this.findAllTasksBy(FIND_ALL_TASKS, {}, ({ data }: any) =>
+      this.#tasks.set(data.tasks)
+    );
   }
 
-  // TODO: Refactor with method findAllTasks
   findAllTasksAssignedToUser(assignedToId: string): void {
+    this.findAllTasksBy(
+      FIND_ALL_TASKS_ASSIGNED_TO,
+      { assignedToId },
+      ({ data }: any) => this.#tasks.set(data.tasksAssignedTo)
+    );
+  }
+
+  private findAllTasksBy(
+    query: DocumentNode,
+    variables: { assignedToId: string } | {},
+    onSuccess: (data: any) => void
+  ): void {
     this.apollo
       .watchQuery({
-        query: FIND_ALL_TASKS_ASSIGNED_TO,
-        variables: {
-          assignedToId,
-        },
+        query,
+        variables,
         context: this.createContext(),
       })
-      .valueChanges.subscribe(({ data, error }: any) =>
-        this.#tasks.set(data.tasksAssignedTo)
-      );
+      .valueChanges.subscribe((data: any) => onSuccess(data));
   }
 
   // TODO: Move to parent basic service and create again subtask service
