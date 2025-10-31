@@ -67,7 +67,16 @@ export class TaskColumnComponent {
     const indexInColumn = this.displayedTasks.findIndex(
       ({ taskId }) => taskId === updatedTask.taskId
     );
-    if (this.taskService.isTask(updatedTask) && indexInColumn >= 0) {
+    const isTaskOrAnySubtaskInColumn =
+      this.hasSameStatusAsColumn(updatedTask.status) ||
+      updatedTask.subtasks.some(({ status }) =>
+        this.hasSameStatusAsColumn(status)
+      );
+    if (
+      indexInColumn >= 0 &&
+      this.taskService.isTask(updatedTask) &&
+      isTaskOrAnySubtaskInColumn
+    ) {
       this.displayedTasks[indexInColumn] = updatedTask;
     }
   }
@@ -79,7 +88,7 @@ export class TaskColumnComponent {
     }
     if (
       this.hasSameTaskStatus(taskWithUpdatedStatus) &&
-      this.isTaskInColun(taskWithUpdatedStatus.taskId)
+      this.isTaskInColumn(taskWithUpdatedStatus.taskId)
     ) {
       this.displayedTasks.push(taskWithUpdatedStatus);
     }
@@ -97,7 +106,7 @@ export class TaskColumnComponent {
     const subtaskTask = this.taskService
       .tasksView()
       .tasks.find(({ taskId }) => taskId === subtaskWithUpdatedStatus.taskId);
-    if (subtaskTask && this.isTaskInColun(subtaskTask?.taskId)) {
+    if (subtaskTask && this.isTaskInColumn(subtaskTask?.taskId)) {
       this.displayedTasks.push(subtaskTask);
     }
   }
@@ -113,8 +122,11 @@ export class TaskColumnComponent {
     this.color = colors[index];
   }
 
-  private isTaskInColun = (id: string | undefined) =>
+  private isTaskInColumn = (id: string | undefined) =>
     this.displayedTasks.findIndex(({ taskId }) => taskId === id) === -1;
+
+  private hasSameStatusAsColumn = (status: TaskStatus): boolean =>
+    status.toString() === TaskStatus[this.taskStatus()!];
 
   formattedStatus = (): string =>
     TaskStatus[this.taskStatus()!]

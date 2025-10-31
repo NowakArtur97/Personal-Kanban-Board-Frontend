@@ -118,8 +118,8 @@ export class TaskComponent {
     }
   }
 
-  updateAssignedUserToTask = (value: string): void =>
-    this.taskService.updateAssignedUserToTask(this.task()!!.taskId, value);
+  updateAssignedUserToTask = (username: string): void =>
+    this.taskService.updateAssignedUserToTask(this.task()!!.taskId, username);
 
   startDeleteTaskAnimation(): void {
     this.taskAnimationState = 'delete';
