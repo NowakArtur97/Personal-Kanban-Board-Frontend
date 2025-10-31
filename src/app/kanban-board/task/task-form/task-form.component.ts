@@ -82,12 +82,12 @@ export class TaskFormComponent {
       targetEndDate,
       assignedTo
     );
-    if (this.taskToUpdate()?.isTask) {
+    if (this.taskToUpdate() && this.taskToUpdate()!.isTask) {
       this.taskService.updateTask(taskDTO);
-    } else if (!this.taskToUpdate()?.isTask) {
-      this.taskService.updateSubtask(taskDTO);
     } else if (this.taskIdToAddSubtask()) {
       this.taskService.createSubtask(taskDTO);
+    } else if (this.taskToUpdate() && !this.taskToUpdate()!.isTask) {
+      this.taskService.updateSubtask(taskDTO);
     } else {
       this.taskService.createTask(taskDTO);
     }
@@ -115,7 +115,7 @@ export class TaskFormComponent {
     };
   }
 
-  private setTaskFormBasedOnTaskToUpdate(task: TaskDTO) {
+  private setTaskFormBasedOnTaskToUpdate(task: TaskDTO): void {
     this.taskForm.setValue({
       title: task.title,
       description: task.description,

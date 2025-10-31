@@ -20,6 +20,7 @@ import {
   UPDATE_SUBTASK,
 } from './subtask.queries';
 import BaseTask from '../models/base-task.model';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -38,18 +39,8 @@ export class TaskService {
     taskId: string;
     taskDTO: TaskDTO;
     isTask: boolean;
-  } | null>({
-    taskId: '',
-    taskDTO: {
-      title: '',
-      description: '',
-      status: 'READY_TO_START',
-      priority: 'LOW',
-      targetEndDate: new Date().toISOString().substring(0, 10),
-      assignedTo: this.userService.user().userId,
-    },
-    isTask: true,
-  });
+  } | null>(null);
+  #createdTask = signal<Task | null>(null);
   #updatedTask = signal<Task | null>(null);
   #updatedSubtask = signal<Subtask | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
@@ -62,6 +53,7 @@ export class TaskService {
 
   tasksView = this.#tasksView.asReadonly();
   taskToUpdate = this.#taskToUpdate.asReadonly();
+  createdTask = this.#createdTask.asReadonly();
   updatedTask = this.#updatedTask.asReadonly();
   updatedSubtask = this.#updatedSubtask.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
@@ -140,6 +132,7 @@ export class TaskService {
           tasks: [...this.tasksView().tasks, data.createTask],
           shouldUpdateView: false,
         });
+        this.#createdTask.set(data.createTask);
         this.changeTaskFormVisibility(false);
       }
     );
@@ -274,7 +267,7 @@ export class TaskService {
       );
   }
 
-  addTaskToSubtask(subtask: Subtask) {
+  addTaskToSubtask(subtask: Subtask): void {
     const taskWithNewSubtask = this.tasksView().tasks.filter(
       ({ taskId }) => taskId === this.taskIdToAddSubtask()
     )[0];
@@ -400,7 +393,7 @@ export class TaskService {
     this.#isTaskFormVisible.set(isTaskFormVisible);
   }
 
-  private createContext() {
+  private createContext(): { headers: HttpHeaders } {
     return {
       headers: this.userService.createAuthorizationHeader(),
     };

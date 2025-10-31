@@ -87,12 +87,12 @@ export class UserService {
       );
   }
 
-  private handleUserResponse(userData: User) {
+  private handleUserResponse(userData: User): void {
     this.#user.set(userData);
     this.router.navigate([PATHS.KANBAN_BOARD]);
   }
 
-  private handleUsersResponse(usersData: User[]) {
+  private handleUsersResponse(usersData: User[]): void {
     this.#users.set(usersData);
   }
 

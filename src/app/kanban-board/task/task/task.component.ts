@@ -174,7 +174,7 @@ export class TaskComponent {
     }
   }
 
-  private addUpdatedSubtaskToDisplayedSubtasks() {
+  private addUpdatedSubtaskToDisplayedSubtasks(): void {
     const subtaskWithUpdatedStatus = this.subtaskWithUpdatedStatus();
     const task = this.task()!;
     if (!subtaskWithUpdatedStatus || !this.taskService.isTask(task)) {
@@ -215,7 +215,7 @@ export class TaskComponent {
     }
   }
 
-  private startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn() {
+  private startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn(): void {
     const taskWithUpdatedStatus = this.taskWithUpdatedStatus();
     const task = this.task()!;
     const isSameTaskWithUpdatedStatus =
@@ -230,7 +230,7 @@ export class TaskComponent {
     }
   }
 
-  private startRemoveSubtaskFromColumnAnimationOnRemoveSubtaskFromColumn() {
+  private startRemoveSubtaskFromColumnAnimationOnRemoveSubtaskFromColumn(): void {
     const subtaskWithUpdatedStatus = this.subtaskWithUpdatedStatus();
     const subtask = this.task()!;
     if (
@@ -242,12 +242,12 @@ export class TaskComponent {
     }
   }
 
-  private startRemoveTaskFromColumnAnimation() {
+  private startRemoveTaskFromColumnAnimation(): void {
     this.taskAnimationState = 'removeFromColumn';
     this.isRemovingTaskFromColumn = true;
   }
 
-  get priority() {
+  get priority(): string {
     const priority = this.task()?.priority.toString() ?? '';
     return priority.charAt(0).toUpperCase() + priority.slice(1).toLowerCase();
   }
