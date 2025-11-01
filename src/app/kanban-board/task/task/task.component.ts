@@ -193,10 +193,13 @@ export class TaskComponent {
     if (!subtaskWithUpdatedStatus || !this.taskService.isTask(task)) {
       return;
     }
+    const isNotAlreadyInColumn = !this.displayedSubtasks.some(
+      ({ subtaskId }) => subtaskId === subtaskWithUpdatedStatus.subtaskId
+    );
     if (
+      isNotAlreadyInColumn &&
       subtaskWithUpdatedStatus.taskId === task.taskId &&
-      subtaskWithUpdatedStatus.status === task.status &&
-      this.hasSameStatusAsColumn(task.status)
+      this.hasSameStatusAsColumn(subtaskWithUpdatedStatus.status)
     ) {
       this.displayedSubtasks.push(subtaskWithUpdatedStatus);
     }
