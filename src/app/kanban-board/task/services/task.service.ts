@@ -42,6 +42,7 @@ export class TaskService {
   } | null>(null);
   #createdTask = signal<Task | null>(null);
   #updatedTask = signal<Task | null>(null);
+  #createdSubtask = signal<Subtask | null>(null);
   #updatedSubtask = signal<Subtask | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
@@ -55,6 +56,7 @@ export class TaskService {
   taskToUpdate = this.#taskToUpdate.asReadonly();
   createdTask = this.#createdTask.asReadonly();
   updatedTask = this.#updatedTask.asReadonly();
+  createdSubtask = this.#createdSubtask.asReadonly();
   updatedSubtask = this.#updatedSubtask.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
@@ -145,7 +147,27 @@ export class TaskService {
         taskId: this.taskIdToAddSubtask(),
         subtaskDTO,
       },
-      ({ data }: any) => this.addTaskToSubtask(data.createSubtask)
+      ({ data }: any) => {
+        const task = this.tasksView().tasks.filter(
+          ({ taskId }) => taskId === this.taskIdToAddSubtask()
+        )[0];
+        const taskWithNewSubtask = {
+          ...task,
+          subtasks: [...task.subtasks, data.createSubtask],
+        };
+        this.#tasksView.set({
+          tasks: [
+            ...this.tasksView().tasks.filter(
+              ({ taskId }) => taskId !== this.taskIdToAddSubtask()
+            ),
+            taskWithNewSubtask,
+          ],
+          shouldUpdateView: false,
+        });
+        this.changeTaskFormVisibility(false);
+        this.setTaskIdToAddSubtask(null);
+        this.#createdSubtask.set(data.createSubtask);
+      }
     );
   }
 
@@ -265,24 +287,6 @@ export class TaskService {
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
-  }
-
-  addTaskToSubtask(subtask: Subtask): void {
-    const taskWithNewSubtask = this.tasksView().tasks.filter(
-      ({ taskId }) => taskId === this.taskIdToAddSubtask()
-    )[0];
-    taskWithNewSubtask.subtasks.push(...taskWithNewSubtask.subtasks, subtask);
-    this.#tasksView.set({
-      tasks: [
-        ...this.tasksView().tasks.filter(
-          ({ taskId }) => taskId !== this.taskIdToAddSubtask()
-        ),
-        taskWithNewSubtask,
-      ],
-      shouldUpdateView: false,
-    });
-    this.changeTaskFormVisibility(false);
-    this.setTaskIdToAddSubtask(null);
   }
 
   deleteTask(taskId: string): void {
