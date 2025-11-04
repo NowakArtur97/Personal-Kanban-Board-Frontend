@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   AUTHENTICATE_USER,
@@ -22,7 +22,8 @@ import { environment } from '../../../../environments/environment';
 export class UserService {
   private readonly ERROR_MESSAGE_DIVIDER = '\n';
 
-  private apollo = inject(Apollo);
+  private apollo: Apollo | undefined;
+  private injector = inject(Injector);
   private router = inject(Router);
   private httpClient = inject(HttpClient);
 
@@ -42,11 +43,15 @@ export class UserService {
   errors = this.#errors.asReadonly();
 
   loginUser(authenticationRequest: AuthenticationRequest): void {
-    this.apollo
+    this.getApollo()
+      .use('public')
       .watchQuery({
         query: AUTHENTICATE_USER,
         variables: {
           authenticationRequest,
+        },
+        context: {
+          clientName: 'public',
         },
       })
       .valueChanges.subscribe(
@@ -57,11 +62,15 @@ export class UserService {
   }
 
   registerUser(userDTO: UserDTO): void {
-    this.apollo
+    this.getApollo()
+      .use('public')
       .mutate({
         mutation: REGISTER_USER,
         variables: {
           userDTO,
+        },
+        context: {
+          clientName: 'public',
         },
       })
       .subscribe(
@@ -72,7 +81,7 @@ export class UserService {
   }
 
   findAllUsers(): void {
-    this.apollo
+    this.getApollo()
       .watchQuery({
         query: FIND_ALL_USERS,
         context: {
@@ -94,6 +103,13 @@ export class UserService {
 
   private handleUsersResponse(usersData: User[]): void {
     this.#users.set(usersData);
+  }
+
+  private getApollo(): Apollo {
+    if (!this.apollo) {
+      this.apollo = this.injector.get(Apollo);
+    }
+    return this.apollo;
   }
 
   isUsernameAndEmailAvailable = (
