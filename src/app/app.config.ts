@@ -2,14 +2,18 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { graphqlProvider } from './graphql.provider';
+import { APOLLO_PROVIDERS } from './graphql.provider';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { HttpLink } from 'apollo-angular/http';
+import { Apollo } from 'apollo-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
     provideAnimations(),
-    graphqlProvider,
+    provideHttpClient(),
+    Apollo,
+    HttpLink,
+    ...APOLLO_PROVIDERS,
   ],
 };

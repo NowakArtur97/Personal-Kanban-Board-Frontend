@@ -3,6 +3,7 @@ function generateEnvironmentContent() {
     production: ${process.env.IS_PRODUCTION || false},
     environment: "${process.env.ENVIRONMENT || "local"}",
     backendURL: "${process.env.BACKEND_URL || "http://localhost:8080"}"
+    wsURL: "${process.env.WS_URL || "ws://localhost:8080/graphql"}"
   };`;
 }
 
