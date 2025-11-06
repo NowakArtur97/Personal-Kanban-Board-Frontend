@@ -7,6 +7,7 @@ import {
   DELETE_TASK,
   FIND_ALL_TASKS,
   FIND_ALL_TASKS_ASSIGNED_TO,
+  TASK_EVENT,
   UPDATE_TASK,
   UPDATE_USER_ASSIGNED_TO_TASK,
 } from './task.queries';
@@ -99,6 +100,24 @@ export class TaskService {
         context: this.createContext(),
       })
       .valueChanges.subscribe((data: any) => onSuccess(data));
+  }
+
+  subscribeToTaskEvents(): void {
+    this.apollo
+      .subscribe<any>({
+        query: TASK_EVENT,
+        context: this.createContext(),
+      })
+      .subscribe(({ data }) => {
+        console.log(data);
+        if (!data || !data.taskEvent) {
+          return;
+        }
+        // this.#tasksView.set({
+        //   tasks: data.taskEvent,
+        //   shouldUpdateView: true,
+        // });
+      });
   }
 
   // TODO: Move to parent basic service and create again subtask service

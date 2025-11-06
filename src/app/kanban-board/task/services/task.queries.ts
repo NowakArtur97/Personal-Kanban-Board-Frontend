@@ -64,6 +64,38 @@ const FIND_ALL_TASKS_ASSIGNED_TO = gql`
   }
 `;
 
+const TASK_EVENT = gql`
+  subscription TASK_EVENT {
+    taskEvent {
+      taskId
+      title
+      description
+      status
+      priority
+      targetEndDate
+      assignedTo
+      createdBy
+      createdOn
+      updatedBy
+      updatedOn
+      subtasks {
+        subtaskId
+        taskId
+        title
+        description
+        status
+        priority
+        targetEndDate
+        assignedTo
+        createdBy
+        createdOn
+        updatedBy
+        updatedOn
+      }
+    }
+  }
+`;
+
 const CREATE_TASK = gql`
   mutation CREATE_TASK($taskDTO: TaskDTO!) {
     createTask(taskDTO: $taskDTO) {
@@ -175,6 +207,7 @@ const DELETE_ALL_TASKS = gql`
 export {
   FIND_ALL_TASKS,
   FIND_ALL_TASKS_ASSIGNED_TO,
+  TASK_EVENT,
   CREATE_TASK,
   UPDATE_TASK,
   UPDATE_USER_ASSIGNED_TO_TASK,

@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { TaskColumnComponent } from './task/task-column/task-column.component';
 import { ALL_TASK_STATUSES } from './task/models/task-status.model';
 import { TaskFormComponent } from './task/task-form/task-form.component';
@@ -14,7 +14,7 @@ import { TaskUserSelectionComponent } from './task/task-user-selection/task-user
   templateUrl: './kanban-board.component.html',
   styleUrl: './kanban-board.component.css',
 })
-export class KanbanBoardComponent {
+export class KanbanBoardComponent implements OnInit {
   private taskService = inject(TaskService);
   private userService = inject(UserService);
 
@@ -39,6 +39,10 @@ export class KanbanBoardComponent {
         : UserRole[this.user().role];
       this.isAdmin = userRole + '' === UserRole[UserRole.ADMIN];
     });
+  }
+
+  ngOnInit(): void {
+    this.taskService.subscribeToTaskEvents();
   }
 
   private hideScrollbar(shouldHideScrollbar: boolean): void {
