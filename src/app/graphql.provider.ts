@@ -37,12 +37,13 @@ export const APOLLO_PROVIDERS = [
           url: wsURL,
           lazy: true,
           retryAttempts: Infinity,
-          connectionParams: async () => {
+          connectionParams: () => {
             const token = userService.user().token;
-            console.log(token);
-            return {
-              Authorization: token ? `Bearer ${token}` : '',
-            };
+            return token
+              ? {
+                  Authorization: `Bearer ${token}`,
+                }
+              : {};
           },
         })
       );
