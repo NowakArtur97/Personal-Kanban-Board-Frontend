@@ -47,6 +47,9 @@ export class TaskColumnComponent {
         this.hasSameTaskStatus(task) ||
         this.hasSameStatusInAnySubtask(task.subtasks)
     );
+    if (tasksInColumn.length === 0) {
+      return;
+    }
     if (this.#tasksInterval) {
       clearInterval(this.#tasksInterval);
     }
