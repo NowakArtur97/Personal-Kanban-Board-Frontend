@@ -67,19 +67,7 @@ const FIND_ALL_TASKS_ASSIGNED_TO = gql`
 const TASK_EVENT = gql`
   subscription TASK_EVENT {
     taskEvent {
-      taskId
-      title
-      description
-      status
-      priority
-      targetEndDate
-      assignedTo
-      createdBy
-      createdOn
-      updatedBy
-      updatedOn
-      subtasks {
-        subtaskId
+      task {
         taskId
         title
         description
@@ -91,7 +79,22 @@ const TASK_EVENT = gql`
         createdOn
         updatedBy
         updatedOn
+        subtasks {
+          subtaskId
+          taskId
+          title
+          description
+          status
+          priority
+          targetEndDate
+          assignedTo
+          createdBy
+          createdOn
+          updatedBy
+          updatedOn
+        }
       }
+      taskEventType
     }
   }
 `;

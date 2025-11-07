@@ -43,6 +43,7 @@ export class KanbanBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.taskService.subscribeToTaskEvents();
+    this.taskService.subscribeToSubtaskEvents();
   }
 
   private hideScrollbar(shouldHideScrollbar: boolean): void {

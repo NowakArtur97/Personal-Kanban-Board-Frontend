@@ -1,5 +1,27 @@
 import { gql } from 'apollo-angular';
 
+const SUBTASK_EVENT = gql`
+  subscription SUBTASK_EVENT {
+    subtaskEvent {
+      task {
+        subtaskId
+        taskId
+        title
+        description
+        status
+        priority
+        targetEndDate
+        assignedTo
+        createdBy
+        createdOn
+        updatedBy
+        updatedOn
+      }
+      taskEventType
+    }
+  }
+`;
+
 const CREATE_SUBTASK = gql`
   mutation CREATE_SUBTASK($taskId: UUID!, $subtaskDTO: TaskDTO!) {
     createSubtask(taskId: $taskId, subtaskDTO: $subtaskDTO) {
@@ -44,4 +66,4 @@ const DELETE_SUBTASK = gql`
   }
 `;
 
-export { CREATE_SUBTASK, UPDATE_SUBTASK, DELETE_SUBTASK };
+export { SUBTASK_EVENT, CREATE_SUBTASK, UPDATE_SUBTASK, DELETE_SUBTASK };

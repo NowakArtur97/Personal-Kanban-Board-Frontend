@@ -18,6 +18,7 @@ import Subtask from '../models/subtask.model';
 import {
   CREATE_SUBTASK,
   DELETE_SUBTASK,
+  SUBTASK_EVENT,
   UPDATE_SUBTASK,
 } from './subtask.queries';
 import BaseTask from '../models/base-task.model';
@@ -109,10 +110,32 @@ export class TaskService {
         context: this.createContext(),
       })
       .subscribe(({ data }) => {
-        console.log(data);
         if (!data || !data.taskEvent) {
           return;
         }
+        console.log(data);
+        // console.log(this.isTask(data.taskEvent));
+        // console.log(this.isSubtask(data.taskEvent));
+        // this.#tasksView.set({
+        //   tasks: data.taskEvent,
+        //   shouldUpdateView: true,
+        // });
+      });
+  }
+
+  subscribeToSubtaskEvents(): void {
+    this.apollo
+      .subscribe<any>({
+        query: SUBTASK_EVENT,
+        context: this.createContext(),
+      })
+      .subscribe(({ data }) => {
+        if (!data || !data.subtaskEvent) {
+          return;
+        }
+        console.log(data);
+        // console.log(this.isTask(data.taskEvent));
+        // console.log(this.isSubtask(data.taskEvent));
         // this.#tasksView.set({
         //   tasks: data.taskEvent,
         //   shouldUpdateView: true,
