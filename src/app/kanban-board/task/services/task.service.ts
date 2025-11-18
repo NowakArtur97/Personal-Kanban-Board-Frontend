@@ -113,13 +113,14 @@ export class TaskService {
         if (!data || !data.taskEvent) {
           return;
         }
-        console.log(data);
-        // console.log(this.isTask(data.taskEvent));
-        // console.log(this.isSubtask(data.taskEvent));
-        // this.#tasksView.set({
-        //   tasks: data.taskEvent,
-        //   shouldUpdateView: true,
-        // });
+        switch (data.taskEvent.taskEventType) {
+          case 'CREATE':
+            this.handleNewTask(data.taskEvent.task);
+            break;
+          case 'UPDATE':
+            console.log('UPDATE');
+            break;
+        }
       });
   }
 
@@ -133,7 +134,6 @@ export class TaskService {
         if (!data || !data.subtaskEvent) {
           return;
         }
-        console.log(data);
         // console.log(this.isTask(data.taskEvent));
         // console.log(this.isSubtask(data.taskEvent));
         // this.#tasksView.set({
@@ -170,16 +170,20 @@ export class TaskService {
       {
         taskDTO,
       },
-      ({ data }: any) => {
-        // TODO: Add signal to add task to column
-        this.#tasksView.set({
-          tasks: [...this.tasksView().tasks, data.createTask],
-          shouldUpdateView: false,
-        });
-        this.#createdTask.set(data.createTask);
-        this.changeTaskFormVisibility(false);
-      }
+      ({ data }: any) => this.handleNewTask(data.createTask)
     );
+  }
+
+  private handleNewTask(task: Task): void {
+    if (this.tasksView().tasks.some(({ taskId }) => taskId === task.taskId)) {
+      return;
+    }
+    this.#tasksView.set({
+      tasks: [...this.tasksView().tasks, task],
+      shouldUpdateView: false,
+    });
+    this.#createdTask.set(task);
+    this.changeTaskFormVisibility(false);
   }
 
   createSubtask(subtaskDTO: TaskDTO): void {
