@@ -139,7 +139,7 @@ export class TaskService {
             this.handleNewSubtask(data.subtaskEvent.task);
             break;
           case 'UPDATE':
-            console.log('UPDATE');
+            this.handleSubtaskUpdate(data.subtaskEvent.task);
             break;
         }
       });
@@ -288,39 +288,46 @@ export class TaskService {
         subtaskId: this.#taskToUpdate()?.taskId!,
         subtaskDTO,
       },
-      ({ data }: { data: { updateSubtask: Subtask } }) => {
-        const updatedSubtask = data.updateSubtask;
-        const subtaskBeforeUpdate = this.#taskToUpdate()?.taskDTO;
-        const subtaskTask = this.tasksView().tasks.find((task) =>
-          task.subtasks.some(
-            (subtask) => subtask.subtaskId === updatedSubtask.subtaskId
-          )
-        )!;
-        if (subtaskDTO.status !== subtaskBeforeUpdate!!.status) {
-          this.#subtaskWithUpdatedStatus.set(updatedSubtask);
-        }
-        this.#tasksView.set({
-          tasks: [
-            ...this.tasksView().tasks.filter(
-              ({ taskId }) => taskId !== subtaskTask.taskId
-            ),
-            {
-              ...subtaskTask,
-              subtasks: [
-                ...subtaskTask.subtasks.filter(
-                  ({ subtaskId }) => subtaskId !== updatedSubtask.subtaskId
-                ),
-                updatedSubtask,
-              ],
-            },
-          ],
-          shouldUpdateView: false,
-        });
-        this.changeTaskFormVisibility(false);
-        this.setTaskToUpdate(null, false);
-        this.#updatedSubtask.set(updatedSubtask);
-      }
+      ({ data }: { data: { updateSubtask: Subtask } }) =>
+        this.handleSubtaskUpdate(data.updateSubtask)
     );
+  }
+
+  private handleSubtaskUpdate(updatedSubtask: Subtask): void {
+    const taskBeforeUpdate = this.tasksView().tasks.find(
+      ({ taskId }) => taskId === updatedSubtask.taskId
+    )!!;
+    const subtaskBeforeUpdate = taskBeforeUpdate.subtasks.find(
+      ({ subtaskId }) => subtaskId === updatedSubtask.subtaskId
+    );
+    const subtaskTask = this.tasksView().tasks.find((task) =>
+      task.subtasks.some(
+        (subtask) => subtask.subtaskId === updatedSubtask.subtaskId
+      )
+    )!;
+    if (updatedSubtask.status !== subtaskBeforeUpdate!!.status) {
+      this.#subtaskWithUpdatedStatus.set(updatedSubtask);
+    }
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(
+          ({ taskId }) => taskId !== subtaskTask.taskId
+        ),
+        {
+          ...subtaskTask,
+          subtasks: [
+            ...subtaskTask.subtasks.filter(
+              ({ subtaskId }) => subtaskId !== updatedSubtask.subtaskId
+            ),
+            updatedSubtask,
+          ],
+        },
+      ],
+      shouldUpdateView: false,
+    });
+    this.changeTaskFormVisibility(false);
+    this.setTaskToUpdate(null, false);
+    this.#updatedSubtask.set(updatedSubtask);
   }
 
   updateAssignedUserToTask(taskId: string, assignedToId: string): void {
