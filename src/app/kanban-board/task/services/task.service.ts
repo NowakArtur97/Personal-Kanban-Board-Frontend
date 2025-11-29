@@ -134,10 +134,9 @@ export class TaskService {
         if (!data || !data.subtaskEvent) {
           return;
         }
-        console.log(data.subtaskEvent.taskEventType);
         switch (data.subtaskEvent.taskEventType) {
           case 'CREATE':
-            console.log('CREATE');
+            this.handleNewSubtask(data.subtaskEvent.task);
             break;
           case 'UPDATE':
             console.log('UPDATE');
@@ -196,28 +195,37 @@ export class TaskService {
         taskId: this.taskIdToAddSubtask(),
         subtaskDTO,
       },
-      ({ data }: any) => {
-        const task = this.tasksView().tasks.filter(
-          ({ taskId }) => taskId === this.taskIdToAddSubtask()
-        )[0];
-        const taskWithNewSubtask = {
-          ...task,
-          subtasks: [...task.subtasks, data.createSubtask],
-        };
-        this.#tasksView.set({
-          tasks: [
-            ...this.tasksView().tasks.filter(
-              ({ taskId }) => taskId !== this.taskIdToAddSubtask()
-            ),
-            taskWithNewSubtask,
-          ],
-          shouldUpdateView: false,
-        });
-        this.changeTaskFormVisibility(false);
-        this.setTaskIdToAddSubtask(null);
-        this.#createdSubtask.set(data.createSubtask);
-      }
+      ({ data }: any) => this.handleNewSubtask(data.createSubtask)
     );
+  }
+
+  private handleNewSubtask(subtask: Subtask): void {
+    if (
+      this.tasksView().tasks.some(({ subtasks }) =>
+        subtasks.some(({ subtaskId }) => subtaskId === subtask.subtaskId)
+      )
+    ) {
+      return;
+    }
+    const task = this.tasksView().tasks.filter(
+      ({ taskId }) => taskId === subtask.taskId
+    )[0];
+    const taskWithNewSubtask = {
+      ...task,
+      subtasks: [...task.subtasks, subtask],
+    };
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(
+          ({ taskId }) => taskId !== subtask.taskId
+        ),
+        taskWithNewSubtask,
+      ],
+      shouldUpdateView: false,
+    });
+    this.changeTaskFormVisibility(false);
+    this.setTaskIdToAddSubtask(null);
+    this.#createdSubtask.set(subtask);
   }
 
   private updateBaseTask(
