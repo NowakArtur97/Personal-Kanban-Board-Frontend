@@ -118,7 +118,7 @@ export class TaskService {
             this.handleNewTask(data.taskEvent.task);
             break;
           case 'UPDATE':
-            console.log('UPDATE');
+            this.handleTaskUpdate(data.taskEvent.task);
             break;
         }
       });
@@ -134,12 +134,15 @@ export class TaskService {
         if (!data || !data.subtaskEvent) {
           return;
         }
-        // console.log(this.isTask(data.taskEvent));
-        // console.log(this.isSubtask(data.taskEvent));
-        // this.#tasksView.set({
-        //   tasks: data.taskEvent,
-        //   shouldUpdateView: true,
-        // });
+        console.log(data.subtaskEvent.taskEventType);
+        switch (data.subtaskEvent.taskEventType) {
+          case 'CREATE':
+            console.log('CREATE');
+            break;
+          case 'UPDATE':
+            console.log('UPDATE');
+            break;
+        }
       });
   }
 
@@ -244,26 +247,30 @@ export class TaskService {
         taskId: this.#taskToUpdate()?.taskId!,
         taskDTO,
       },
-      ({ data }: { data: { updateTask: Task } }) => {
-        const updatedTask: Task = data.updateTask;
-        const taskBeforeUpdate = this.#taskToUpdate()?.taskDTO;
-        if (taskDTO.status !== taskBeforeUpdate!!.status) {
-          this.#taskWithUpdatedStatus.set(updatedTask);
-        }
-        this.#tasksView.set({
-          tasks: [
-            ...this.tasksView().tasks.filter(
-              ({ taskId }) => taskId !== updatedTask.taskId
-            ),
-            updatedTask,
-          ],
-          shouldUpdateView: false,
-        });
-        this.#updatedTask.set(updatedTask);
-        this.changeTaskFormVisibility(false);
-        this.setTaskToUpdate(null, false);
-      }
+      ({ data }: { data: { updateTask: Task } }) =>
+        this.handleTaskUpdate(data.updateTask)
     );
+  }
+
+  private handleTaskUpdate(updatedTask: Task) {
+    const taskBeforeUpdate = this.tasksView().tasks.find(
+      ({ taskId }) => taskId === updatedTask.taskId
+    )!!;
+    if (updatedTask.status !== taskBeforeUpdate!!.status) {
+      this.#taskWithUpdatedStatus.set(updatedTask);
+    }
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(
+          ({ taskId }) => taskId !== updatedTask.taskId
+        ),
+        updatedTask,
+      ],
+      shouldUpdateView: false,
+    });
+    this.#updatedTask.set(updatedTask);
+    this.changeTaskFormVisibility(false);
+    this.setTaskToUpdate(null, false);
   }
 
   updateSubtask(subtaskDTO: TaskDTO): void {
