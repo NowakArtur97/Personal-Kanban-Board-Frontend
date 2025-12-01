@@ -117,7 +117,7 @@ export class TaskService {
         }
         switch (data.taskEvent.taskEventType) {
           case 'CREATE':
-            this.handleNewTask(data.taskEvent.task);
+            this.handleTaskCreation(data.taskEvent.task);
             break;
           case 'UPDATE':
             this.handleTaskUpdate(data.taskEvent.task);
@@ -136,7 +136,7 @@ export class TaskService {
         if (!data || !data.deleteTaskEvent) {
           return;
         }
-        console.log(data.deleteTaskEvent);
+        this.handleTaskDeletion(data.deleteTaskEvent);
       });
   }
 
@@ -152,7 +152,7 @@ export class TaskService {
         }
         switch (data.subtaskEvent.taskEventType) {
           case 'CREATE':
-            this.handleNewSubtask(data.subtaskEvent.task);
+            this.handleSubtaskCreation(data.subtaskEvent.task);
             break;
           case 'UPDATE':
             this.handleSubtaskUpdate(data.subtaskEvent.task);
@@ -172,6 +172,7 @@ export class TaskService {
           return;
         }
         console.log(data.deleteSubtaskEvent);
+        this.handleSubtaskDeletion(data.deleteSubtaskEvent);
       });
   }
 
@@ -202,11 +203,11 @@ export class TaskService {
       {
         taskDTO,
       },
-      ({ data }: any) => this.handleNewTask(data.createTask)
+      ({ data }: any) => this.handleTaskCreation(data.createTask)
     );
   }
 
-  private handleNewTask(task: Task): void {
+  private handleTaskCreation(task: Task): void {
     if (this.tasksView().tasks.some(({ taskId }) => taskId === task.taskId)) {
       return;
     }
@@ -225,11 +226,11 @@ export class TaskService {
         taskId: this.taskIdToAddSubtask(),
         subtaskDTO,
       },
-      ({ data }: any) => this.handleNewSubtask(data.createSubtask)
+      ({ data }: any) => this.handleSubtaskCreation(data.createSubtask)
     );
   }
 
-  private handleNewSubtask(subtask: Subtask): void {
+  private handleSubtaskCreation(subtask: Subtask): void {
     if (
       this.tasksView().tasks.some(({ subtasks }) =>
         subtasks.some(({ subtaskId }) => subtaskId === subtask.subtaskId)
@@ -290,7 +291,7 @@ export class TaskService {
     );
   }
 
-  private handleTaskUpdate(updatedTask: Task) {
+  private handleTaskUpdate(updatedTask: Task): void {
     const taskBeforeUpdate = this.tasksView().tasks.find(
       ({ taskId }) => taskId === updatedTask.taskId
     )!!;
@@ -397,21 +398,28 @@ export class TaskService {
         context: this.createContext(),
       })
       .subscribe(
-        () => {
-          // TODO: Remove or try to fix
-          this.#tasksView.set({
-            tasks: [
-              ...this.tasksView().tasks.filter(
-                ({ taskId: id }) => id !== taskId
-              ),
-            ],
-            shouldUpdateView: false,
-          });
-        },
+        () => this.handleTaskDeletion(taskId),
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
+  }
+
+  private handleTaskDeletion(taskId: string): void {
+    const deletedTask = this.tasksView().tasks.find(
+      ({ taskId: id }) => id === taskId
+    );
+    if (!deletedTask) {
+      return;
+    }
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(({ taskId: id }) => id !== taskId),
+      ],
+      shouldUpdateView: false,
+    });
+
+    this.setDeletedTask(deletedTask);
   }
 
   deleteAllTasks(): void {
@@ -435,29 +443,30 @@ export class TaskService {
         context: this.createContext(),
       })
       .subscribe(
-        () => {
-          const taskWithRemovedSubtask = {
-            ...this.tasksView().tasks.find((task) =>
-              task.subtasks.some((subtask) => subtask.subtaskId === subtaskId)
-            )!!,
-          };
-          taskWithRemovedSubtask.subtasks =
-            taskWithRemovedSubtask.subtasks.filter(
-              ({ subtaskId: id }) => id !== subtaskId
-            );
-          this.#tasksView.set({
-            tasks: [
-              ...this.tasksView().tasks.filter(
-                ({ taskId }) => taskId !== taskWithRemovedSubtask.taskId
-              ),
-              taskWithRemovedSubtask,
-            ],
-            shouldUpdateView: false,
-          });
-        },
+        () => this.handleSubtaskDeletion(subtaskId),
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) => {}
       );
+  }
+
+  private handleSubtaskDeletion(subtaskId: string): void {
+    const taskWithRemovedSubtask = {
+      ...this.tasksView().tasks.find((task) =>
+        task.subtasks.some((subtask) => subtask.subtaskId === subtaskId)
+      )!!,
+    };
+    taskWithRemovedSubtask.subtasks = taskWithRemovedSubtask.subtasks.filter(
+      ({ subtaskId: id }) => id !== subtaskId
+    );
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(
+          ({ taskId }) => taskId !== taskWithRemovedSubtask.taskId
+        ),
+        taskWithRemovedSubtask,
+      ],
+      shouldUpdateView: false,
+    });
   }
 
   setTaskToUpdate(task: BaseTask | null, isTask: boolean): void {
