@@ -66,4 +66,16 @@ const DELETE_SUBTASK = gql`
   }
 `;
 
-export { SUBTASK_EVENT, CREATE_SUBTASK, UPDATE_SUBTASK, DELETE_SUBTASK };
+const DELETE_SUBTASK_EVENT = gql`
+  subscription DELETE_SUBTASK_EVENT {
+    deleteSubtaskEvent
+  }
+`;
+
+export {
+  SUBTASK_EVENT,
+  CREATE_SUBTASK,
+  UPDATE_SUBTASK,
+  DELETE_SUBTASK,
+  DELETE_SUBTASK_EVENT,
+};

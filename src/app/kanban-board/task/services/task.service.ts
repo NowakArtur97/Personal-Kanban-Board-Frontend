@@ -5,6 +5,7 @@ import {
   CREATE_TASK,
   DELETE_ALL_TASKS,
   DELETE_TASK,
+  DELETE_TASK_EVENT,
   FIND_ALL_TASKS,
   FIND_ALL_TASKS_ASSIGNED_TO,
   TASK_EVENT,
@@ -18,6 +19,7 @@ import Subtask from '../models/subtask.model';
 import {
   CREATE_SUBTASK,
   DELETE_SUBTASK,
+  DELETE_SUBTASK_EVENT,
   SUBTASK_EVENT,
   UPDATE_SUBTASK,
 } from './subtask.queries';
@@ -124,6 +126,20 @@ export class TaskService {
       });
   }
 
+  subscribeToDeleteTaskEvents(): void {
+    this.apollo
+      .subscribe<any>({
+        query: DELETE_TASK_EVENT,
+        context: this.createContext(),
+      })
+      .subscribe(({ data }) => {
+        if (!data || !data.deleteTaskEvent) {
+          return;
+        }
+        console.log(data.deleteTaskEvent);
+      });
+  }
+
   subscribeToSubtaskEvents(): void {
     this.apollo
       .subscribe<any>({
@@ -142,6 +158,20 @@ export class TaskService {
             this.handleSubtaskUpdate(data.subtaskEvent.task);
             break;
         }
+      });
+  }
+
+  subscribeToDeleteSubtaskEvents(): void {
+    this.apollo
+      .subscribe<any>({
+        query: DELETE_SUBTASK_EVENT,
+        context: this.createContext(),
+      })
+      .subscribe(({ data }) => {
+        if (!data || !data.deleteSubtaskEvent) {
+          return;
+        }
+        console.log(data.deleteSubtaskEvent);
       });
   }
 

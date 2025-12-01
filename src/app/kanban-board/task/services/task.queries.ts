@@ -207,6 +207,12 @@ const DELETE_ALL_TASKS = gql`
   }
 `;
 
+const DELETE_TASK_EVENT = gql`
+  subscription DELETE_TASK_EVENT {
+    deleteTaskEvent
+  }
+`;
+
 export {
   FIND_ALL_TASKS,
   FIND_ALL_TASKS_ASSIGNED_TO,
@@ -216,4 +222,5 @@ export {
   UPDATE_USER_ASSIGNED_TO_TASK,
   DELETE_TASK,
   DELETE_ALL_TASKS,
+  DELETE_TASK_EVENT,
 };
