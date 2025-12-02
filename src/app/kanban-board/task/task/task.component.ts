@@ -78,6 +78,7 @@ export class TaskComponent {
   constructor() {
     effect(() => this.addNewSubtask());
     effect(() => this.updateSubtask());
+    effect(() => this.deleteSubtask());
     effect(() => this.addUpdatedSubtaskToDisplayedSubtasks());
     effect(() => this.startRemoveTaskAnimationOnDeleteTask());
     effect(() => this.startRemoveTaskAnimationOnDeleteAllTasks());
@@ -150,10 +151,10 @@ export class TaskComponent {
     this.displayedSubtasks = this.displayedSubtasks.filter(
       ({ subtaskId: id }) => id !== subtaskId
     );
-    const isTaskWithoutSubtasksWithDifferentStatusTahnColumn =
+    const isTaskWithoutSubtasksWithDifferentStatusThanColumn =
       this.displayedSubtasks.length === 0 &&
       !this.hasSameStatusAsColumn(this.task()!.status);
-    if (isTaskWithoutSubtasksWithDifferentStatusTahnColumn) {
+    if (isTaskWithoutSubtasksWithDifferentStatusThanColumn) {
       this.startRemoveTaskFromColumnAnimation();
     }
   }
@@ -184,6 +185,21 @@ export class TaskComponent {
     const hasSameStatus = this.hasSameStatusAsColumn(updatedSubtask.status);
     if (indexOfSubtaskInSubtasks >= 0 && hasSameStatus) {
       this.displayedSubtasks[indexOfSubtaskInSubtasks] = updatedSubtask;
+    }
+  }
+
+  private deleteSubtask(): void {
+    const deletedSubtaskId = this.taskService.deletedSubtaskId();
+    if (!deletedSubtaskId) {
+      return;
+    }
+    const task = this.task()!;
+    if (
+      this.taskService.isSubtask(task) &&
+      deletedSubtaskId === task.subtaskId
+    ) {
+      this.taskAnimationState = 'delete';
+      this.isDeletingTask = true;
     }
   }
 

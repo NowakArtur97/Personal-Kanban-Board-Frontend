@@ -20,7 +20,7 @@ export class TaskColumnComponent {
   displayedTasks: Task[] = [];
 
   color: string = '';
-  #tasksInterval: null | ReturnType<typeof setInterval> = null;
+  #tasksInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove

@@ -46,12 +46,13 @@ export class TaskService {
   } | null>(null);
   #createdTask = signal<Task | null>(null);
   #updatedTask = signal<Task | null>(null);
+  #deletedTask = signal<BaseTask | null>(null);
   #createdSubtask = signal<Subtask | null>(null);
   #updatedSubtask = signal<Subtask | null>(null);
+  #deletedSubtaskId = signal<string | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
   #subtaskWithUpdatedStatus = signal<Subtask | null>(null);
-  #deletedTask = signal<null | BaseTask>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
   #shouldDeleteAllTasks = signal<boolean>(false);
@@ -62,6 +63,7 @@ export class TaskService {
   updatedTask = this.#updatedTask.asReadonly();
   createdSubtask = this.#createdSubtask.asReadonly();
   updatedSubtask = this.#updatedSubtask.asReadonly();
+  deletedSubtaskId = this.#deletedSubtaskId.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   subtaskWithUpdatedStatus = this.#subtaskWithUpdatedStatus.asReadonly();
@@ -171,7 +173,6 @@ export class TaskService {
         if (!data || !data.deleteSubtaskEvent) {
           return;
         }
-        console.log(data.deleteSubtaskEvent);
         this.handleSubtaskDeletion(data.deleteSubtaskEvent);
       });
   }
@@ -418,7 +419,6 @@ export class TaskService {
       ],
       shouldUpdateView: false,
     });
-
     this.setDeletedTask(deletedTask);
   }
 
@@ -450,23 +450,32 @@ export class TaskService {
   }
 
   private handleSubtaskDeletion(subtaskId: string): void {
-    const taskWithRemovedSubtask = {
-      ...this.tasksView().tasks.find((task) =>
-        task.subtasks.some((subtask) => subtask.subtaskId === subtaskId)
-      )!!,
+    const taskWithRemovedSubtask = this.tasksView().tasks.find((task) =>
+      task.subtasks.some((subtask) => subtask.subtaskId === subtaskId)
+    );
+    if (
+      !taskWithRemovedSubtask ||
+      (this.isTask(taskWithRemovedSubtask) &&
+        taskWithRemovedSubtask.subtasks.length === 0)
+    ) {
+      return;
+    }
+    const taskWithoutSubtask = {
+      ...taskWithRemovedSubtask,
     };
-    taskWithRemovedSubtask.subtasks = taskWithRemovedSubtask.subtasks.filter(
+    taskWithoutSubtask.subtasks = taskWithRemovedSubtask.subtasks.filter(
       ({ subtaskId: id }) => id !== subtaskId
     );
     this.#tasksView.set({
       tasks: [
         ...this.tasksView().tasks.filter(
-          ({ taskId }) => taskId !== taskWithRemovedSubtask.taskId
+          ({ taskId }) => taskId !== taskWithoutSubtask.taskId
         ),
-        taskWithRemovedSubtask,
+        taskWithoutSubtask,
       ],
       shouldUpdateView: false,
     });
+    this.#deletedSubtaskId.set(subtaskId);
   }
 
   setTaskToUpdate(task: BaseTask | null, isTask: boolean): void {
