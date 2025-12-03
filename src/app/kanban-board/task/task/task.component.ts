@@ -120,8 +120,12 @@ export class TaskComponent {
     }
   }
 
-  updateAssignedUserToTask = (username: string): void =>
-    this.taskService.updateAssignedUserToTask(this.task()!!.taskId, username);
+  updateAssignedUserToTask(username: string): void {
+    const task = this.task()!!;
+    this.taskService.isSubtask(task)
+      ? this.taskService.updateAssignedUserToSubtask(task.subtaskId, username)
+      : this.taskService.updateAssignedUserToTask(task.taskId, username);
+  }
 
   startDeleteTaskAnimation(): void {
     this.taskAnimationState = 'delete';

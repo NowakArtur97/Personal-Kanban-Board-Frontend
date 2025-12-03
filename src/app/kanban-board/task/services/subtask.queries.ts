@@ -60,6 +60,31 @@ const UPDATE_SUBTASK = gql`
   }
 `;
 
+const UPDATE_USER_ASSIGNED_TO_SUBTASK = gql`
+  mutation UPDATE_USER_ASSIGNED_TO_SUBTASK(
+    $subtaskId: UUID!
+    $assignedToId: UUID!
+  ) {
+    updateUserAssignedToSubtask(
+      subtaskId: $subtaskId
+      assignedToId: $assignedToId
+    ) {
+      subtaskId
+      taskId
+      title
+      description
+      status
+      priority
+      targetEndDate
+      assignedTo
+      createdBy
+      createdOn
+      updatedBy
+      updatedOn
+    }
+  }
+`;
+
 const DELETE_SUBTASK = gql`
   mutation DELETE_SUBTASK($subtaskId: UUID!) {
     deleteSubtask(subtaskId: $subtaskId)
@@ -76,6 +101,7 @@ export {
   SUBTASK_EVENT,
   CREATE_SUBTASK,
   UPDATE_SUBTASK,
+  UPDATE_USER_ASSIGNED_TO_SUBTASK,
   DELETE_SUBTASK,
   DELETE_SUBTASK_EVENT,
 };

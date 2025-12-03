@@ -22,6 +22,7 @@ import {
   DELETE_SUBTASK_EVENT,
   SUBTASK_EVENT,
   UPDATE_SUBTASK,
+  UPDATE_USER_ASSIGNED_TO_SUBTASK,
 } from './subtask.queries';
 import BaseTask from '../models/base-task.model';
 import { HttpHeaders } from '@angular/common/http';
@@ -373,17 +374,25 @@ export class TaskService {
         context: this.createContext(),
       })
       .subscribe(
-        ({ data }: any) => {
-          this.#tasksView.set({
-            tasks: [
-              ...this.tasksView().tasks.filter(
-                ({ taskId }) => taskId !== data.updateUserAssignedToTask.taskId
-              ),
-              data.updateUserAssignedToTask,
-            ],
-            shouldUpdateView: false,
-          });
+        ({ data }: any) => this.handleTaskUpdate(data.updateUserAssignedToTask),
+        (error: ApolloError) =>
+          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+      );
+  }
+
+  updateAssignedUserToSubtask(subtaskId: string, assignedToId: string): void {
+    this.apollo
+      .mutate({
+        mutation: UPDATE_USER_ASSIGNED_TO_SUBTASK,
+        variables: {
+          subtaskId,
+          assignedToId,
         },
+        context: this.createContext(),
+      })
+      .subscribe(
+        ({ data }: any) =>
+          this.handleSubtaskUpdate(data.updateUserAssignedToSubtask),
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
