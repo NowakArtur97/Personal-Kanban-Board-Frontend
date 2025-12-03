@@ -363,38 +363,45 @@ export class TaskService {
     this.#updatedSubtask.set(updatedSubtask);
   }
 
-  updateAssignedUserToTask(taskId: string, assignedToId: string): void {
-    this.apollo
-      .mutate({
-        mutation: UPDATE_USER_ASSIGNED_TO_TASK,
-        variables: {
-          taskId,
-          assignedToId,
-        },
-        context: this.createContext(),
-      })
-      .subscribe(
-        ({ data }: any) => this.handleTaskUpdate(data.updateUserAssignedToTask),
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
-      );
-  }
+  updateAssignedUserToTask = (taskId: string, assignedToId: string): void =>
+    this.updateAssignedUserToBaseTask(
+      UPDATE_USER_ASSIGNED_TO_TASK,
+      {
+        taskId,
+        assignedToId,
+      },
+      ({ data }: any) => this.handleTaskUpdate(data.updateUserAssignedToTask)
+    );
 
-  updateAssignedUserToSubtask(subtaskId: string, assignedToId: string): void {
+  updateAssignedUserToSubtask = (
+    subtaskId: string,
+    assignedToId: string
+  ): void =>
+    this.updateAssignedUserToBaseTask(
+      UPDATE_USER_ASSIGNED_TO_SUBTASK,
+      {
+        subtaskId,
+        assignedToId,
+      },
+      ({ data }: any) =>
+        this.handleSubtaskUpdate(data.updateUserAssignedToSubtask)
+    );
+
+  private updateAssignedUserToBaseTask(
+    mutation: DocumentNode,
+    variables:
+      | { taskId: string | null; assignedToId: string }
+      | { subtaskId: string | null; assignedToId: string },
+    onSuccess: (data: any) => void
+  ): void {
     this.apollo
       .mutate({
-        mutation: UPDATE_USER_ASSIGNED_TO_SUBTASK,
-        variables: {
-          subtaskId,
-          assignedToId,
-        },
+        mutation,
+        variables,
         context: this.createContext(),
       })
-      .subscribe(
-        ({ data }: any) =>
-          this.handleSubtaskUpdate(data.updateUserAssignedToSubtask),
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+      .subscribe(onSuccess, (error: ApolloError) =>
+        this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
   }
 
