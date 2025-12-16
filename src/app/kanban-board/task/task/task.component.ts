@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   EventEmitter,
@@ -27,6 +28,7 @@ import { TaskService } from '../services/task.service';
   imports: [NgStyle, NgFor, NgClass],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css', '../../common/form.styles.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('taskState', [
       transition(':enter', [
