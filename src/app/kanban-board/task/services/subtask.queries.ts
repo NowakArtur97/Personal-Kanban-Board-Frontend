@@ -3,6 +3,8 @@ import { gql } from 'apollo-angular';
 const SUBTASK_EVENT = gql`
   subscription SUBTASK_EVENT {
     subtaskEvent {
+      taskEventType
+      taskId
       task {
         subtaskId
         taskId
@@ -17,7 +19,6 @@ const SUBTASK_EVENT = gql`
         updatedBy
         updatedOn
       }
-      taskEventType
     }
   }
 `;
@@ -91,17 +92,10 @@ const DELETE_SUBTASK = gql`
   }
 `;
 
-const DELETE_SUBTASK_EVENT = gql`
-  subscription DELETE_SUBTASK_EVENT {
-    deleteSubtaskEvent
-  }
-`;
-
 export {
   SUBTASK_EVENT,
   CREATE_SUBTASK,
   UPDATE_SUBTASK,
   UPDATE_USER_ASSIGNED_TO_SUBTASK,
   DELETE_SUBTASK,
-  DELETE_SUBTASK_EVENT,
 };

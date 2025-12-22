@@ -5,7 +5,6 @@ import {
   CREATE_TASK,
   DELETE_ALL_TASKS,
   DELETE_TASK,
-  DELETE_TASK_EVENT,
   FIND_ALL_TASKS,
   FIND_ALL_TASKS_ASSIGNED_TO,
   TASK_EVENT,
@@ -19,7 +18,6 @@ import Subtask from '../models/subtask.model';
 import {
   CREATE_SUBTASK,
   DELETE_SUBTASK,
-  DELETE_SUBTASK_EVENT,
   SUBTASK_EVENT,
   UPDATE_SUBTASK,
   UPDATE_USER_ASSIGNED_TO_SUBTASK,
@@ -125,21 +123,10 @@ export class TaskService {
           case 'UPDATE':
             this.handleTaskUpdate(data.taskEvent.task);
             break;
+          case 'DELETE':
+            this.handleTaskDeletion(data.taskEvent.taskId);
+            break;
         }
-      });
-  }
-
-  subscribeToDeleteTaskEvents(): void {
-    this.apollo
-      .subscribe<any>({
-        query: DELETE_TASK_EVENT,
-        context: this.createContext(),
-      })
-      .subscribe(({ data }) => {
-        if (!data || !data.deleteTaskEvent) {
-          return;
-        }
-        this.handleTaskDeletion(data.deleteTaskEvent);
       });
   }
 
@@ -160,21 +147,10 @@ export class TaskService {
           case 'UPDATE':
             this.handleSubtaskUpdate(data.subtaskEvent.task);
             break;
+          case 'DELETE':
+            this.handleSubtaskDeletion(data.subtaskEvent.taskId);
+            break;
         }
-      });
-  }
-
-  subscribeToDeleteSubtaskEvents(): void {
-    this.apollo
-      .subscribe<any>({
-        query: DELETE_SUBTASK_EVENT,
-        context: this.createContext(),
-      })
-      .subscribe(({ data }) => {
-        if (!data || !data.deleteSubtaskEvent) {
-          return;
-        }
-        this.handleSubtaskDeletion(data.deleteSubtaskEvent);
       });
   }
 
@@ -329,7 +305,10 @@ export class TaskService {
   private handleSubtaskUpdate(updatedSubtask: Subtask): void {
     const taskBeforeUpdate = this.tasksView().tasks.find(
       ({ taskId }) => taskId === updatedSubtask.taskId
-    )!!;
+    );
+    if (!taskBeforeUpdate) {
+      return;
+    }
     const subtaskBeforeUpdate = taskBeforeUpdate.subtasks.find(
       ({ subtaskId }) => subtaskId === updatedSubtask.subtaskId
     );
