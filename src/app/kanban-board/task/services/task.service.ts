@@ -71,6 +71,7 @@ export class TaskService {
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
 
+  // TODO: Fix issue with displaying tasks that were removed
   findAllTasks(): void {
     this.findAllTasksBy(FIND_ALL_TASKS, {}, ({ data }: any) =>
       this.#tasksView.set({
@@ -125,6 +126,10 @@ export class TaskService {
             break;
           case 'DELETE':
             this.handleTaskDeletion(data.taskEvent.taskId);
+            break;
+          case 'DELETE_ALL':
+            this.#shouldDeleteAllTasks.set(true);
+            setTimeout(() => this.#shouldDeleteAllTasks.set(false), 500);
             break;
         }
       });
@@ -197,6 +202,7 @@ export class TaskService {
     this.changeTaskFormVisibility(false);
   }
 
+  // Fix issue with displaying new subtask with column without parent task
   createSubtask(subtaskDTO: TaskDTO): void {
     this.createBaseTask(
       CREATE_SUBTASK,
