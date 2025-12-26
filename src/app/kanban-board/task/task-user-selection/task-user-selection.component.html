@@ -1,7 +1,7 @@
 <div class="task-user-selection">
   <div class="task-user-selection__user">
     <p class="task-user-selection__username task-user-selection__username--big">
-      Select user:
+      Select tasks for user:
     </p>
   </div>
   <div
@@ -12,7 +12,7 @@
       [ngStyle]="{ color: colors()[users().length - 1] }"
       class="task-user-selection__username"
     >
-      All tasks
+      All users
     </p>
   </div>
   @for (user of users(); track $index) {

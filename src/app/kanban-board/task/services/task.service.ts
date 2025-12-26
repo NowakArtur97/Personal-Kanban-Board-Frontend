@@ -99,12 +99,13 @@ export class TaskService {
     onSuccess: (data: any) => void
   ): void {
     this.apollo
-      .watchQuery({
+      .query({
         query,
         variables,
         context: this.createContext(),
+        fetchPolicy: 'network-only',
       })
-      .valueChanges.subscribe((data: any) => onSuccess(data));
+      .subscribe((data: any) => onSuccess(data));
   }
 
   subscribeToTaskEvents(): void {

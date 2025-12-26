@@ -45,7 +45,7 @@ export class UserService {
   loginUser(authenticationRequest: AuthenticationRequest): void {
     this.getApollo()
       .use('public')
-      .watchQuery({
+      .query({
         query: AUTHENTICATE_USER,
         variables: {
           authenticationRequest,
@@ -53,8 +53,9 @@ export class UserService {
         context: {
           clientName: 'public',
         },
+        fetchPolicy: 'network-only',
       })
-      .valueChanges.subscribe(
+      .subscribe(
         ({ data }: any) => this.handleUserResponse(data.loginUser),
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
@@ -82,13 +83,14 @@ export class UserService {
 
   findAllUsers(): void {
     this.getApollo()
-      .watchQuery({
+      .query({
         query: FIND_ALL_USERS,
         context: {
           headers: this.createAuthorizationHeader(),
         },
+        fetchPolicy: 'network-only',
       })
-      .valueChanges.subscribe(
+      .subscribe(
         ({ data }: any) => this.handleUsersResponse(data.users),
         (error: ApolloError) => {
           console.log(error.message);
