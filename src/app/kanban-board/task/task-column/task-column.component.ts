@@ -39,6 +39,9 @@ export class TaskColumnComponent {
 
   private displayTasks() {
     const { shouldUpdateView, tasks } = this.taskService.tasksView();
+    if (shouldUpdateView) {
+      this.displayedTasks = [];
+    }
     if (!shouldUpdateView || tasks.length === 0) {
       return;
     }

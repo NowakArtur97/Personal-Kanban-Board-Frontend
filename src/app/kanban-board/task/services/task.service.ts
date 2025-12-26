@@ -280,6 +280,9 @@ export class TaskService {
     const taskBeforeUpdate = this.tasksView().tasks.find(
       ({ taskId }) => taskId === updatedTask.taskId
     )!!;
+    if (!taskBeforeUpdate) {
+      return;
+    }
     if (updatedTask.status !== taskBeforeUpdate!!.status) {
       this.#taskWithUpdatedStatus.set(updatedTask);
     }
