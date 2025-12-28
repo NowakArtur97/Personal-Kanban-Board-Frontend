@@ -78,6 +78,7 @@ export class TaskComponent {
     effect(() => this.deleteSubtask());
     effect(() => this.addUpdatedSubtaskToDisplayedSubtasks());
     effect(() => this.startRemoveTaskAnimationOnDeleteTask());
+    effect(() => this.startRemoveSubtaskAnimationOnDeleteTaskSubtasks());
     effect(() => this.startRemoveTaskAnimationOnDeleteAllTasks());
     effect(() =>
       this.startRemoveTaskFromColumnAnimationOnRemoveTaskFromColumn()
@@ -240,6 +241,21 @@ export class TaskComponent {
       this.taskService.isSubtask(deletedTask) &&
       deletedTask.subtaskId === task.subtaskId;
     if (isSameTask || isSameSubtask) {
+      this.taskAnimationState = 'delete';
+      this.isDeletingTask = true;
+    }
+  }
+
+  private startRemoveSubtaskAnimationOnDeleteTaskSubtasks(): void {
+    const taskIdToDeleteSubtasks = this.taskService.taskIdToDeleteSubtasks();
+    if (!taskIdToDeleteSubtasks) {
+      return;
+    }
+    const task = this.task()!;
+    if (
+      this.taskService.isSubtask(task) &&
+      task.taskId === taskIdToDeleteSubtasks
+    ) {
       this.taskAnimationState = 'delete';
       this.isDeletingTask = true;
     }
