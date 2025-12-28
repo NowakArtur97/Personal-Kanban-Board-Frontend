@@ -92,10 +92,17 @@ const DELETE_SUBTASK = gql`
   }
 `;
 
+const DELETE_ALL_SUBTASKS_BY_TASK_ID = gql`
+  mutation DELETE_ALL_SUBTASKS_BY_TASK_ID($taskId: UUID!) {
+    deleteAllSubtasksByTaskId(taskId: $taskId)
+  }
+`;
+
 export {
   SUBTASK_EVENT,
   CREATE_SUBTASK,
   UPDATE_SUBTASK,
   UPDATE_USER_ASSIGNED_TO_SUBTASK,
   DELETE_SUBTASK,
+  DELETE_ALL_SUBTASKS_BY_TASK_ID,
 };

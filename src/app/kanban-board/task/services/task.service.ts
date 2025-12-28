@@ -17,6 +17,7 @@ import { UserService } from '../../user/services/user.service';
 import Subtask from '../models/subtask.model';
 import {
   CREATE_SUBTASK,
+  DELETE_ALL_SUBTASKS_BY_TASK_ID,
   DELETE_SUBTASK,
   SUBTASK_EVENT,
   UPDATE_SUBTASK,
@@ -51,6 +52,7 @@ export class TaskService {
   #deletedSubtaskId = signal<string | null>(null);
   #taskIdToAddSubtask = signal<string | null>(null);
   #taskWithUpdatedStatus = signal<Task | null>(null);
+  #taskIdToDeleteSubtasks = signal<string | null>(null);
   #subtaskWithUpdatedStatus = signal<Subtask | null>(null);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
@@ -65,6 +67,7 @@ export class TaskService {
   deletedSubtaskId = this.#deletedSubtaskId.asReadonly();
   taskIdToAddSubtask = this.#taskIdToAddSubtask.asReadonly();
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
+  taskIdToDeleteSubtasks = this.#taskIdToDeleteSubtasks.asReadonly();
   subtaskWithUpdatedStatus = this.#subtaskWithUpdatedStatus.asReadonly();
   deletedTask = this.#deletedTask.asReadonly();
   errors = this.#errors.asReadonly();
@@ -154,6 +157,9 @@ export class TaskService {
             break;
           case 'DELETE':
             this.handleSubtaskDeletion(data.subtaskEvent.taskId);
+            break;
+          case 'DELETE_ALL_SUBTASKS_FOR_TASK':
+            this.handleAllSubtasksDeletionByTaskId(data.subtaskEvent.taskId);
             break;
         }
       });
@@ -278,7 +284,7 @@ export class TaskService {
   private handleTaskUpdate(updatedTask: Task): void {
     const taskBeforeUpdate = this.tasksView().tasks.find(
       ({ taskId }) => taskId === updatedTask.taskId
-    )!!;
+    );
     if (!taskBeforeUpdate) {
       return;
     }
@@ -393,22 +399,33 @@ export class TaskService {
       );
   }
 
-  deleteTask(taskId: string): void {
+  private delete(
+    mutation: DocumentNode,
+    variables: { taskId: string } | { subtaskId: string },
+    onSuccess: () => void
+  ) {
     this.apollo
       .mutate({
-        mutation: DELETE_TASK,
-        variables: {
-          taskId,
-        },
+        mutation,
+        variables,
         context: this.createContext(),
       })
       .subscribe(
-        () => this.handleTaskDeletion(taskId),
+        () => onSuccess(),
         // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
   }
+
+  deleteTask = (taskId: string): void =>
+    this.delete(
+      DELETE_TASK,
+      {
+        taskId,
+      },
+      () => this.handleTaskDeletion(taskId)
+    );
 
   private handleTaskDeletion(taskId: string): void {
     const deletedTask = this.tasksView().tasks.find(
@@ -426,32 +443,14 @@ export class TaskService {
     this.setDeletedTask(deletedTask);
   }
 
-  deleteAllTasks(): void {
-    this.#shouldDeleteAllTasks.set(true);
-    this.apollo
-      .mutate({
-        mutation: DELETE_ALL_TASKS,
-        context: this.createContext(),
-      })
-      .subscribe(() => this.#shouldDeleteAllTasks.set(false));
-    // TODO: Display errors?
-  }
-
-  deleteSubtask(subtaskId: string): void {
-    this.apollo
-      .mutate({
-        mutation: DELETE_SUBTASK,
-        variables: {
-          subtaskId,
-        },
-        context: this.createContext(),
-      })
-      .subscribe(
-        () => this.handleSubtaskDeletion(subtaskId),
-        // TODO: Remove or create popup message with errors instead of displaying on task form
-        (error: ApolloError) => {}
-      );
-  }
+  deleteSubtask = (subtaskId: string): void =>
+    this.delete(
+      DELETE_SUBTASK,
+      {
+        subtaskId,
+      },
+      () => this.handleSubtaskDeletion(subtaskId)
+    );
 
   private handleSubtaskDeletion(subtaskId: string): void {
     const taskWithRemovedSubtask = this.tasksView().tasks.find((task) =>
@@ -480,6 +479,51 @@ export class TaskService {
       shouldUpdateView: false,
     });
     this.#deletedSubtaskId.set(subtaskId);
+  }
+
+  deleteAllSubtasksByTaskId = (taskId: string): void =>
+    this.delete(
+      DELETE_ALL_SUBTASKS_BY_TASK_ID,
+      {
+        taskId,
+      },
+      () => this.handleAllSubtasksDeletionByTaskId(taskId)
+    );
+
+  private handleAllSubtasksDeletionByTaskId(
+    taskIdToDeleteSubtasks: string
+  ): void {
+    const taskToRemoveSubtasks = this.tasksView().tasks.find(
+      ({ taskId }) => taskId === taskIdToDeleteSubtasks
+    );
+    if (!taskToRemoveSubtasks) {
+      return;
+    }
+    const taskWithoutSubtasks = {
+      ...taskToRemoveSubtasks,
+      subtasks: [],
+    };
+    this.#tasksView.set({
+      tasks: [
+        ...this.tasksView().tasks.filter(
+          ({ taskId }) => taskId !== taskIdToDeleteSubtasks
+        ),
+        taskWithoutSubtasks,
+      ],
+      shouldUpdateView: false,
+    });
+    this.#taskIdToDeleteSubtasks.set(taskIdToDeleteSubtasks);
+  }
+
+  deleteAllTasks(): void {
+    this.#shouldDeleteAllTasks.set(true);
+    this.apollo
+      .mutate({
+        mutation: DELETE_ALL_TASKS,
+        context: this.createContext(),
+      })
+      .subscribe(() => this.#shouldDeleteAllTasks.set(false));
+    // TODO: Display errors?
   }
 
   setTaskToUpdate(task: BaseTask | null, isTask: boolean): void {
