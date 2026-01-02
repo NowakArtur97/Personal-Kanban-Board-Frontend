@@ -171,7 +171,13 @@ export class TaskComponent {
       return;
     }
     const { taskId, status } = createdSubtask;
-    if (taskId === task.taskId && this.hasSameStatusAsColumn(status)) {
+    if (
+      taskId === task.taskId &&
+      this.hasSameStatusAsColumn(status) &&
+      !this.displayedSubtasks.find(
+        ({ subtaskId }) => subtaskId === createdSubtask.subtaskId
+      )
+    ) {
       this.displayedSubtasks.push(createdSubtask);
     }
   }

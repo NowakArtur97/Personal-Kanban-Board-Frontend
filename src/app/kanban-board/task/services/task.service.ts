@@ -228,9 +228,12 @@ export class TaskService {
     ) {
       return;
     }
-    const task = this.tasksView().tasks.filter(
+    const task = this.tasksView().tasks.find(
       ({ taskId }) => taskId === subtask.taskId
-    )[0];
+    );
+    if (!task) {
+      return;
+    }
     const taskWithNewSubtask = {
       ...task,
       subtasks: [...task.subtasks, subtask],
