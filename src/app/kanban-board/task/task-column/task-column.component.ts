@@ -26,6 +26,7 @@ export class TaskColumnComponent {
     effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
     effect(() => this.displayTasks());
     effect(() => this.addTaskToColumn());
+    effect(() => this.addTaskToColumnWhenSubtaskCreated());
     effect(() => this.updateTaskInColumn());
     effect(() => this.addUpdatedTaskToColumnIfHasSameStatus());
     effect(() => this.addTaskToColumnIfSubtaskUpdatedHasSameStatus());
@@ -73,6 +74,24 @@ export class TaskColumnComponent {
     }
     if (this.isTaskOrAnySubtaskInColumn(createdTask)) {
       this.displayedTasks.push(createdTask);
+    }
+  }
+
+  private addTaskToColumnWhenSubtaskCreated(): void {
+    const createdSubtask = this.taskService.createdSubtask();
+    if (!createdSubtask) {
+      return;
+    }
+    const taskWithNewSubtask = this.displayedTasks.find(
+      ({ taskId }) => taskId === createdSubtask.taskId
+    );
+    if (!taskWithNewSubtask) {
+      const task = this.taskService
+        .tasksView()
+        .tasks.find(({ taskId }) => taskId === createdSubtask.taskId);
+      if (task && this.isTaskOrAnySubtaskInColumn(task)) {
+        this.displayedTasks.push(task);
+      }
     }
   }
 
