@@ -23,7 +23,7 @@ export class TaskColumnComponent {
   #tasksInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
-    effect(() => this.randomColor(this.taskStatus() ?? 0)); // TODO: Remove
+    effect(() => this.randomColor(this.taskStatus()!));
     effect(() => this.displayTasks());
     effect(() => this.addTaskToColumn());
     effect(() => this.addTaskToColumnWhenSubtaskCreated());

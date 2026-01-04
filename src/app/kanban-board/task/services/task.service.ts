@@ -165,7 +165,6 @@ export class TaskService {
       });
   }
 
-  // TODO: Move to parent basic service and create again subtask service
   private createBaseTask(
     mutation: DocumentNode,
     variables:
@@ -556,13 +555,10 @@ export class TaskService {
     this.#taskIdToAddSubtask.set(id);
   }
 
-  setDeletedTask(task: BaseTask): void {
-    this.#deletedTask.set(task);
-  }
+  setDeletedTask = (task: BaseTask): void => this.#deletedTask.set(task);
 
-  changeTaskFormVisibility(isTaskFormVisible: boolean): void {
+  changeTaskFormVisibility = (isTaskFormVisible: boolean): void =>
     this.#isTaskFormVisible.set(isTaskFormVisible);
-  }
 
   private createContext(): { headers: HttpHeaders } {
     return {

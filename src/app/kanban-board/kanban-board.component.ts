@@ -32,13 +32,9 @@ export class KanbanBoardComponent implements OnInit {
         this.hideScrollbar(false);
       }
     });
-    // TODO: Remove when removing mocked user
-    effect(() => {
-      const userRole = isNaN(Number(this.user().role))
-        ? this.user().role
-        : UserRole[this.user().role];
-      this.isAdmin = userRole + '' === UserRole[UserRole.ADMIN];
-    });
+    effect(
+      () => (this.isAdmin = this.user().role + '' === UserRole[UserRole.ADMIN])
+    );
   }
 
   ngOnInit(): void {
