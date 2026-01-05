@@ -1,10 +1,11 @@
 import { Component, effect, inject } from '@angular/core';
 import { TaskService } from '../services/task.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-task-error',
   standalone: true,
-  imports: [],
+  imports: [NgClass],
   templateUrl: './task-error.component.html',
   styleUrl: './task-error.component.css',
 })

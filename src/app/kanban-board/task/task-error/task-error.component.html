@@ -1,8 +1,11 @@
 @if (hasErrorOccurred) {
 <div (click)="hideErrorMessages()" class="task_error__background"></div>
-<div class="task_error">
+}
+<div
+  [ngClass]="hasErrorOccurred ? 'task_error--active' : 'task_error--inactive'"
+  class="task_error"
+>
   @for (error of errors(); track $index) {
   <p class="task_error__message">{{ error }}</p>
   }
 </div>
-}
