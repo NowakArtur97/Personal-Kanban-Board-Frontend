@@ -27,8 +27,8 @@ export class TaskFormComponent {
   private taskService = inject(TaskService);
   private userService = inject(UserService);
 
-  taskToUpdate = this.taskService.taskToUpdate;
-  taskIdToAddSubtask = this.taskService.taskIdToAddSubtask;
+  private taskToUpdate = this.taskService.taskToUpdate;
+  private taskIdToAddSubtask = this.taskService.taskIdToAddSubtask;
   users = this.userService.users;
   errors = this.taskService.errors;
   isCeateTaskFormVisible = this.taskService.isTaskFormVisible;
@@ -128,14 +128,13 @@ export class TaskFormComponent {
     this.taskService.changeTaskFormVisibility(false);
   }
 
-  formErrors(
+  formErrors = (
     formControl: FormControl,
     controlName: string,
     minLength = 0,
     maxLength = 0
-  ): string[] {
-    return FormUtil.formErrors(formControl, controlName, minLength, maxLength);
-  }
+  ): string[] =>
+    FormUtil.formErrors(formControl, controlName, minLength, maxLength);
 
   status = (tasksStatus: TaskStatus): string => TaskStatus[tasksStatus];
 

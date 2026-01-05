@@ -17,21 +17,18 @@ export default class TaskColorUtil {
     return { color, numberOfTimesUsed: 0 };
   });
 
-  static randomColor(palette: string): string {
-    return palette === this.PALETTE.PRIMARY_PALETTE
+  static randomColor = (palette: string): string =>
+    palette === this.PALETTE.PRIMARY_PALETTE
       ? this.#randomColor(this.#primaryColorsPalette)
       : this.#randomColor(this.#secondaryColorsPalette);
-  }
 
-  static #randomColor(colors: string[]): string {
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
+  static #randomColor = (colors: string[]): string =>
+    colors[Math.floor(Math.random() * colors.length)];
 
-  static randomRareColor(palette: string): string {
-    return palette === this.PALETTE.PRIMARY_PALETTE
+  static randomRareColor = (palette: string): string =>
+    palette === this.PALETTE.PRIMARY_PALETTE
       ? this.#randomRareColor(this.#primaryRareColors)
       : this.#randomRareColor(this.#secondaryRareColors);
-  }
 
   static #randomRareColor(
     rareColors: { color: string; numberOfTimesUsed: number }[]

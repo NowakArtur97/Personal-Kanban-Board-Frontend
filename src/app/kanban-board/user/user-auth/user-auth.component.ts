@@ -84,14 +84,13 @@ export class UserAuthComponent {
     }
   }
 
-  formErrors(
+  formErrors = (
     formControl: FormControl,
     controlName: string,
     minLength = 0,
     maxLength = 0
-  ): string[] {
-    return FormUtil.formErrors(formControl, controlName, minLength, maxLength);
-  }
+  ): string[] =>
+    FormUtil.formErrors(formControl, controlName, minLength, maxLength);
 
   setupHover(
     hoveredElement: HTMLButtonElement,

@@ -19,9 +19,8 @@ export class KanbanBoardComponent implements OnInit {
   private userService = inject(UserService);
 
   taskStatuses = ALL_TASK_STATUSES;
-  isCeateTaskFormVisible = false;
-  user = this.userService.user;
-  lastScrollYPosition = 0;
+  private user = this.userService.user;
+  private lastScrollYPosition = 0;
   isAdmin = false;
 
   constructor() {

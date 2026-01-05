@@ -20,7 +20,7 @@ export class TaskColumnComponent {
   displayedTasks: Task[] = [];
 
   color: string = '';
-  #tasksInterval: ReturnType<typeof setInterval> | null = null;
+  private tasksInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     effect(() => this.randomColor(this.taskStatus()!));
@@ -54,15 +54,15 @@ export class TaskColumnComponent {
     if (tasksInColumn.length === 0) {
       return;
     }
-    if (this.#tasksInterval) {
-      clearInterval(this.#tasksInterval);
+    if (this.tasksInterval) {
+      clearInterval(this.tasksInterval);
     }
     this.displayedTasks = [];
     let counter = 0;
-    this.#tasksInterval = setInterval(() => {
+    this.tasksInterval = setInterval(() => {
       this.displayedTasks.push(tasksInColumn[counter++]);
       if (counter >= tasksInColumn.length) {
-        clearInterval(this.#tasksInterval!!);
+        clearInterval(this.tasksInterval!!);
       }
     }, 100);
   }
