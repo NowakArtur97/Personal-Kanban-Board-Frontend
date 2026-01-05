@@ -1,16 +1,16 @@
-<div class="task-user-selection">
-  <div class="task-user-selection__user">
-    <p class="task-user-selection__username task-user-selection__username--big">
+<div class="task_user_selection">
+  <div class="task_user_selection__user">
+    <p class="task_user_selection__username task_user_selection__username--big">
       Select tasks for user:
     </p>
   </div>
   <div
     (click)="findAllTasksAssignedToUser(ALL_TASKS_SELECTION)"
-    class="task-user-selection__user task-user-selection__user--selectable"
+    class="task_user_selection__user task_user_selection__user--selectable"
   >
     <p
       [ngStyle]="{ color: colors()[users().length - 1] }"
-      class="task-user-selection__username"
+      class="task_user_selection__username"
     >
       All users
     </p>
@@ -18,11 +18,11 @@
   @for (user of users(); track $index) {
   <div
     (click)="findAllTasksAssignedToUser(user.userId)"
-    class="task-user-selection__user task-user-selection__user--selectable"
+    class="task_user_selection__user task_user_selection__user--selectable"
   >
     <p
       [ngStyle]="{ color: colors()[$index] }"
-      class="task-user-selection__username"
+      class="task_user_selection__username"
     >
       {{ user.username }}
     </p>

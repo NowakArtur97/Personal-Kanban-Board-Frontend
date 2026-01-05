@@ -30,7 +30,7 @@ export class TaskFormComponent {
   private taskToUpdate = this.taskService.taskToUpdate;
   private taskIdToAddSubtask = this.taskService.taskIdToAddSubtask;
   users = this.userService.users;
-  errors = this.taskService.errors;
+  errors = this.taskService.formErrors;
   isCeateTaskFormVisible = this.taskService.isTaskFormVisible;
 
   taskForm = new FormGroup({

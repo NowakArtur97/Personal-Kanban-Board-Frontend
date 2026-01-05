@@ -1,4 +1,4 @@
-.task-user-selection {
+.task_user_selection {
   display: flex;
   flex-wrap: wrap;
 
@@ -6,30 +6,30 @@
   padding: 3.5% 0;
 }
 
-.task-user-selection__user {
+.task_user_selection__user {
   margin: 0 2%;
 }
 
-.task-user-selection__user--selectable {
+.task_user_selection__user--selectable {
   cursor: pointer;
 }
 
-.task-user-selection__username {
+.task_user_selection__username {
   font-size: 1.3em;
   font-weight: bold;
 }
 
-.task-user-selection__username--big {
+.task_user_selection__username--big {
   font-size: 1.4em;
   font-weight: bolder;
 }
 
 @media (min-width: 750px) {
-  .task-user-selection {
+  .task_user_selection {
     padding: 1.5% 0;
   }
 
-  .task-user-selection__user {
+  .task_user_selection__user {
     margin: 0 1.5%;
   }
 }

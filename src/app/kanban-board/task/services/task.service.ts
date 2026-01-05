@@ -54,6 +54,7 @@ export class TaskService {
   #taskWithUpdatedStatus = signal<Task | null>(null);
   #taskIdToDeleteSubtasks = signal<string | null>(null);
   #subtaskWithUpdatedStatus = signal<Subtask | null>(null);
+  #formErrors = signal<string[]>([]);
   #errors = signal<string[]>([]);
   #isTaskFormVisible = signal<boolean>(false);
   #shouldDeleteAllTasks = signal<boolean>(false);
@@ -70,6 +71,7 @@ export class TaskService {
   taskIdToDeleteSubtasks = this.#taskIdToDeleteSubtasks.asReadonly();
   subtaskWithUpdatedStatus = this.#subtaskWithUpdatedStatus.asReadonly();
   deletedTask = this.#deletedTask.asReadonly();
+  formErrors = this.#formErrors.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
   shouldDeleteAllTasks = this.#shouldDeleteAllTasks.asReadonly();
@@ -181,7 +183,7 @@ export class TaskService {
       .subscribe(
         (data: any) => onSuccess(data),
         (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+          this.#formErrors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
   }
 
@@ -267,7 +269,7 @@ export class TaskService {
       .subscribe(
         (data: any) => onSuccess(data),
         (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+          this.#formErrors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );
   }
 
@@ -414,7 +416,6 @@ export class TaskService {
       })
       .subscribe(
         () => onSuccess(),
-        // TODO: Remove or create popup message with errors instead of displaying on task form
         (error: ApolloError) =>
           this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
       );

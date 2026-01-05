@@ -1,12 +1,12 @@
-<div [ngStyle]="{ 'background-color': color }" class="task-column">
-  <h2 class="task-column__status">{{ formattedStatus() }}</h2>
-  <div class="task-column__tasks">
+<div [ngStyle]="{ 'background-color': color }" class="task_column">
+  <h2 class="task_column__status">{{ formattedStatus() }}</h2>
+  <div class="task_column__tasks">
     <app-task
       *ngFor="let task of displayedTasks"
       [task]="task"
       [columnStatus]="taskStatus()"
       (removedFromColumn)="removeFromColumn($event)"
-      class="task-column__task"
+      class="task_column__task"
     />
   </div>
 </div>

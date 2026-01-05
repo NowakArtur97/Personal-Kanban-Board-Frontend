@@ -1,23 +1,20 @@
-<header class="kanban-board__header">
-  <h1 class="kanban-board__title">Personal Kanban Board</h1>
-  <div class="kanban-board__options">
-    <button (click)="showCreateTaskForm()" class="kanban-board__option-button">
-      <span class="kanban-board__option">+</span>
+<header class="kanban_board__header">
+  <h1 class="kanban_board__title">Personal Kanban Board</h1>
+  <div class="kanban_board__options">
+    <button (click)="showCreateTaskForm()" class="kanban_board__kanban_board">
+      <span class="kanban_board__option">+</span>
     </button>
     @if (isAdmin) {
-    <button (click)="deleteAllTasks()" class="kanban-board__option-button">
-      <span class="kanban-board__option">-</span>
+    <button (click)="deleteAllTasks()" class="kanban_board__kanban_board">
+      <span class="kanban_board__option">-</span>
     </button>
     }
   </div>
 </header>
 <app-task-user-selection></app-task-user-selection>
-<main class="kanban-board">
+<main class="kanban_board">
   @for (taskStatus of taskStatuses; track $index) {
-  <app-task-column
-    [taskStatus]="taskStatus"
-    class="kanban-board__task-column"
-  />
+  <app-task-column [taskStatus]="taskStatus" />
   }
 </main>
 <app-task-form></app-task-form>

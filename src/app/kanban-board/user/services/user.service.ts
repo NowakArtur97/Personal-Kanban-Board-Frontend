@@ -103,9 +103,8 @@ export class UserService {
     this.router.navigate([PATHS.KANBAN_BOARD]);
   }
 
-  private handleUsersResponse(usersData: User[]): void {
+  private handleUsersResponse = (usersData: User[]): void =>
     this.#users.set(usersData);
-  }
 
   private getApollo(): Apollo {
     if (!this.apollo) {
