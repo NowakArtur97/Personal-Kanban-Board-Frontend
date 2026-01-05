@@ -133,8 +133,9 @@ export class TaskService {
             this.handleTaskDeletion(data.taskEvent.taskId);
             break;
           case 'DELETE_ALL':
-            this.#shouldDeleteAllTasks.set(true);
-            setTimeout(() => this.#shouldDeleteAllTasks.set(false), 500);
+            if (!this.#shouldDeleteAllTasks()) {
+              this.handlAllTaskDeletion();
+            }
             break;
         }
       });
@@ -516,16 +517,20 @@ export class TaskService {
   }
 
   deleteAllTasks(): void {
-    this.#shouldDeleteAllTasks.set(true);
     this.apollo
       .mutate({
         mutation: DELETE_ALL_TASKS,
         context: this.createContext(),
       })
       .subscribe(
-        () => this.#shouldDeleteAllTasks.set(false),
+        () => this.handlAllTaskDeletion(),
         (error: ApolloError) => this.setErrors(this.#errors, error)
       );
+  }
+
+  private handlAllTaskDeletion(): void {
+    this.#shouldDeleteAllTasks.set(true);
+    setTimeout(() => this.#shouldDeleteAllTasks.set(false), 1000);
   }
 
   setTaskToUpdate(task: BaseTask | null, isTask: boolean): void {
