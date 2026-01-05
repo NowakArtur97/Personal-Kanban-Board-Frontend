@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import Task from '../models/task.model';
 import { Apollo } from 'apollo-angular';
 import {
@@ -182,8 +182,7 @@ export class TaskService {
       })
       .subscribe(
         (data: any) => onSuccess(data),
-        (error: ApolloError) =>
-          this.#formErrors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        (error: ApolloError) => this.setErrors(this.#formErrors, error)
       );
   }
 
@@ -248,9 +247,9 @@ export class TaskService {
       ],
       shouldUpdateView: false,
     });
+    this.#createdSubtask.set(subtask);
     this.changeTaskFormVisibility(false);
     this.setTaskIdToAddSubtask(null);
-    this.#createdSubtask.set(subtask);
   }
 
   private updateBaseTask(
@@ -268,8 +267,7 @@ export class TaskService {
       })
       .subscribe(
         (data: any) => onSuccess(data),
-        (error: ApolloError) =>
-          this.#formErrors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        (error: ApolloError) => this.setErrors(this.#formErrors, error)
       );
   }
 
@@ -356,9 +354,9 @@ export class TaskService {
       ],
       shouldUpdateView: false,
     });
+    this.#updatedSubtask.set(updatedSubtask);
     this.changeTaskFormVisibility(false);
     this.setTaskToUpdate(null, false);
-    this.#updatedSubtask.set(updatedSubtask);
   }
 
   updateAssignedUserToTask = (taskId: string, assignedToId: string): void =>
@@ -399,7 +397,7 @@ export class TaskService {
         context: this.createContext(),
       })
       .subscribe(onSuccess, (error: ApolloError) =>
-        this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        this.setErrors(this.#errors, error)
       );
   }
 
@@ -416,8 +414,7 @@ export class TaskService {
       })
       .subscribe(
         () => onSuccess(),
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
+        (error: ApolloError) => this.setErrors(this.#errors, error)
       );
   }
 
@@ -525,8 +522,10 @@ export class TaskService {
         mutation: DELETE_ALL_TASKS,
         context: this.createContext(),
       })
-      .subscribe(() => this.#shouldDeleteAllTasks.set(false));
-    // TODO: Display errors?
+      .subscribe(
+        () => this.#shouldDeleteAllTasks.set(false),
+        (error: ApolloError) => this.setErrors(this.#errors, error)
+      );
   }
 
   setTaskToUpdate(task: BaseTask | null, isTask: boolean): void {
@@ -566,6 +565,11 @@ export class TaskService {
       headers: this.userService.createAuthorizationHeader(),
     };
   }
+
+  private setErrors = (
+    errors: WritableSignal<string[]>,
+    error: ApolloError
+  ): void => errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER));
 
   isTask = (task: BaseTask): task is Task =>
     (task as Task).subtasks !== undefined;

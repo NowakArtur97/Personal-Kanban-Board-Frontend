@@ -124,9 +124,8 @@ export class TaskFormComponent {
     });
   }
 
-  emitHideCeateTaskFormEvent(): void {
+  emitHideCeateTaskFormEvent = (): void =>
     this.taskService.changeTaskFormVisibility(false);
-  }
 
   formErrors = (
     formControl: FormControl,

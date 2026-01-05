@@ -1,0 +1,8 @@
+@if (hasErrorOccurred) {
+<div (click)="hideErrorMessages()" class="task_error__background"></div>
+<div class="task_error">
+  @for (error of errors(); track $index) {
+  <p class="task_error__message">{{ error }}</p>
+  }
+</div>
+}

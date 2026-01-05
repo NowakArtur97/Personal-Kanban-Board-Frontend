@@ -6,11 +6,17 @@ import { TaskService } from './task/services/task.service';
 import { UserService } from './user/services/user.service';
 import UserRole from './user/models/user-role.model';
 import { TaskUserSelectionComponent } from './task/task-user-selection/task-user-selection.component';
+import { TaskErrorComponent } from './task/task-error/task-error.component';
 
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [TaskColumnComponent, TaskFormComponent, TaskUserSelectionComponent],
+  imports: [
+    TaskColumnComponent,
+    TaskFormComponent,
+    TaskUserSelectionComponent,
+    TaskErrorComponent,
+  ],
   templateUrl: './kanban-board.component.html',
   styleUrl: './kanban-board.component.css',
 })
