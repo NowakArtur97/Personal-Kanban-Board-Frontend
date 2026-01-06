@@ -560,8 +560,12 @@ export class TaskService {
     this.#taskIdToAddSubtask.set(id);
   }
 
-  changeTaskFormVisibility = (isTaskFormVisible: boolean): void =>
-    this.#isTaskFormVisible.set(isTaskFormVisible);
+  changeTaskFormVisibility(isTaskFormVisible: boolean): void {
+    if (!isTaskFormVisible) {
+      this.#formErrors.set([]);
+    }
+    return this.#isTaskFormVisible.set(isTaskFormVisible);
+  }
 
   private createContext(): { headers: HttpHeaders } {
     return {
