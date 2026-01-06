@@ -109,7 +109,10 @@ export class TaskService {
         context: this.createContext(),
         fetchPolicy: 'network-only',
       })
-      .subscribe((data: any) => onSuccess(data));
+      .subscribe(
+        (data: any) => onSuccess(data),
+        (error: ApolloError) => this.setErrors(this.#errors, error)
+      );
   }
 
   subscribeToTaskEvents(): void {
