@@ -128,18 +128,13 @@ export class TaskComponent {
       : this.taskService.updateAssignedUserToTask(task.taskId, username);
   }
 
-  startDeleteTaskAnimation(): void {
-    this.taskAnimationState = 'delete';
-    this.isDeletingTask = true;
+  deleteTask(): void {
     const task = this.task()!;
-    this.taskService.setDeletedTask(task);
-    setTimeout(() => {
-      if (this.isTask()) {
-        this.taskService.deleteTask(task.taskId);
-      } else {
-        this.taskService.deleteSubtask((task as Subtask).subtaskId);
-      }
-    }, 500);
+    if (this.isTask()) {
+      this.taskService.deleteTask(task.taskId);
+    } else {
+      this.taskService.deleteSubtask((task as Subtask).subtaskId);
+    }
   }
 
   finishAnimation(): void {
@@ -247,8 +242,7 @@ export class TaskComponent {
       this.taskService.isSubtask(deletedTask) &&
       deletedTask.subtaskId === task.subtaskId;
     if (isSameTask || isSameSubtask) {
-      this.taskAnimationState = 'delete';
-      this.isDeletingTask = true;
+      this.startDeleteTaskAnimation();
     }
   }
 
@@ -262,15 +256,13 @@ export class TaskComponent {
       this.taskService.isSubtask(task) &&
       task.taskId === taskIdToDeleteSubtasks
     ) {
-      this.taskAnimationState = 'delete';
-      this.isDeletingTask = true;
+      this.startDeleteTaskAnimation();
     }
   }
 
   private startRemoveTaskAnimationOnDeleteAllTasks(): void {
     if (this.taskService.shouldDeleteAllTasks()) {
-      this.taskAnimationState = 'delete';
-      this.isDeletingTask = true;
+      this.startDeleteTaskAnimation();
     }
   }
 
@@ -300,6 +292,11 @@ export class TaskComponent {
     ) {
       this.startRemoveTaskFromColumnAnimation();
     }
+  }
+
+  private startDeleteTaskAnimation(): void {
+    this.taskAnimationState = 'delete';
+    this.isDeletingTask = true;
   }
 
   private startRemoveTaskFromColumnAnimation(): void {

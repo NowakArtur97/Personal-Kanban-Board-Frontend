@@ -63,6 +63,7 @@ export class TaskService {
   taskToUpdate = this.#taskToUpdate.asReadonly();
   createdTask = this.#createdTask.asReadonly();
   updatedTask = this.#updatedTask.asReadonly();
+  deletedTask = this.#deletedTask.asReadonly();
   createdSubtask = this.#createdSubtask.asReadonly();
   updatedSubtask = this.#updatedSubtask.asReadonly();
   deletedSubtaskId = this.#deletedSubtaskId.asReadonly();
@@ -70,7 +71,6 @@ export class TaskService {
   taskWithUpdatedStatus = this.#taskWithUpdatedStatus.asReadonly();
   taskIdToDeleteSubtasks = this.#taskIdToDeleteSubtasks.asReadonly();
   subtaskWithUpdatedStatus = this.#subtaskWithUpdatedStatus.asReadonly();
-  deletedTask = this.#deletedTask.asReadonly();
   formErrors = this.#formErrors.asReadonly();
   errors = this.#errors.asReadonly();
   isTaskFormVisible = this.#isTaskFormVisible.asReadonly();
@@ -406,7 +406,7 @@ export class TaskService {
     mutation: DocumentNode,
     variables: { taskId: string } | { subtaskId: string },
     onSuccess: () => void
-  ) {
+  ): void {
     this.apollo
       .mutate({
         mutation,
@@ -441,7 +441,7 @@ export class TaskService {
       ],
       shouldUpdateView: false,
     });
-    this.setDeletedTask(deletedTask);
+    this.#deletedTask.set(deletedTask);
   }
 
   deleteSubtask = (subtaskId: string): void =>
@@ -559,8 +559,6 @@ export class TaskService {
     this.#taskToUpdate.set(null);
     this.#taskIdToAddSubtask.set(id);
   }
-
-  setDeletedTask = (task: BaseTask): void => this.#deletedTask.set(task);
 
   changeTaskFormVisibility = (isTaskFormVisible: boolean): void =>
     this.#isTaskFormVisible.set(isTaskFormVisible);
