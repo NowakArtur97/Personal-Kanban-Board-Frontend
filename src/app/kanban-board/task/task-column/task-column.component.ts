@@ -43,6 +43,9 @@ export class TaskColumnComponent {
     if (shouldUpdateView) {
       this.displayedTasks = [];
     }
+    if (this.tasksInterval) {
+      clearInterval(this.tasksInterval);
+    }
     if (!shouldUpdateView || tasks.length === 0) {
       return;
     }
@@ -54,10 +57,6 @@ export class TaskColumnComponent {
     if (tasksInColumn.length === 0) {
       return;
     }
-    if (this.tasksInterval) {
-      clearInterval(this.tasksInterval);
-    }
-    this.displayedTasks = [];
     let counter = 0;
     this.tasksInterval = setInterval(() => {
       this.displayedTasks.push(tasksInColumn[counter++]);
