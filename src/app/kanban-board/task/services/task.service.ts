@@ -25,6 +25,8 @@ import {
 } from './subtask.queries';
 import BaseTask from '../models/base-task.model';
 import { HttpHeaders } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -109,10 +111,12 @@ export class TaskService {
         context: this.createContext(),
         fetchPolicy: 'network-only',
       })
-      .subscribe(
-        (data: any) => onSuccess(data),
-        (error: ApolloError) => this.setErrors(this.#errors, error)
-      );
+      .pipe(
+        catchError((error: ApolloError) =>
+          this.handleErrors(this.#errors, error)
+        )
+      )
+      .subscribe((data) => onSuccess(data));
   }
 
   subscribeToTaskEvents(): void {
@@ -184,10 +188,12 @@ export class TaskService {
         variables,
         context: this.createContext(),
       })
-      .subscribe(
-        (data: any) => onSuccess(data),
-        (error: ApolloError) => this.setErrors(this.#formErrors, error)
-      );
+      .pipe(
+        catchError((error: ApolloError) =>
+          this.handleErrors(this.#formErrors, error)
+        )
+      )
+      .subscribe((data) => onSuccess(data));
   }
 
   createTask(taskDTO: TaskDTO): void {
@@ -269,10 +275,12 @@ export class TaskService {
         variables,
         context: this.createContext(),
       })
-      .subscribe(
-        (data: any) => onSuccess(data),
-        (error: ApolloError) => this.setErrors(this.#formErrors, error)
-      );
+      .pipe(
+        catchError((error: ApolloError) =>
+          this.handleErrors(this.#formErrors, error)
+        )
+      )
+      .subscribe((data) => onSuccess(data));
   }
 
   updateTask(taskDTO: TaskDTO): void {
@@ -400,9 +408,12 @@ export class TaskService {
         variables,
         context: this.createContext(),
       })
-      .subscribe(onSuccess, (error: ApolloError) =>
-        this.setErrors(this.#errors, error)
-      );
+      .pipe(
+        catchError((error: ApolloError) =>
+          this.handleErrors(this.#errors, error)
+        )
+      )
+      .subscribe((data) => onSuccess(data));
   }
 
   private delete(
@@ -416,10 +427,12 @@ export class TaskService {
         variables,
         context: this.createContext(),
       })
-      .subscribe(
-        () => onSuccess(),
-        (error: ApolloError) => this.setErrors(this.#errors, error)
-      );
+      .pipe(
+        catchError((error: ApolloError) =>
+          this.handleErrors(this.#errors, error)
+        )
+      )
+      .subscribe(() => onSuccess());
   }
 
   deleteTask = (taskId: string): void =>
@@ -525,10 +538,12 @@ export class TaskService {
         mutation: DELETE_ALL_TASKS,
         context: this.createContext(),
       })
-      .subscribe(
-        () => this.handlAllTaskDeletion(),
-        (error: ApolloError) => this.setErrors(this.#errors, error)
-      );
+      .pipe(
+        catchError((error: ApolloError) =>
+          this.handleErrors(this.#errors, error)
+        )
+      )
+      .subscribe(() => this.handlAllTaskDeletion());
   }
 
   private handlAllTaskDeletion(): void {
@@ -576,14 +591,17 @@ export class TaskService {
     };
   }
 
-  private setErrors = (
-    errors: WritableSignal<string[]>,
-    error: ApolloError
-  ): void => errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER));
-
   isTask = (task: BaseTask): task is Task =>
     (task as Task).subtasks !== undefined;
 
   isSubtask = (task: BaseTask): task is Subtask =>
     (task as Subtask).subtaskId !== undefined;
+
+  private handleErrors(
+    errors: WritableSignal<string[]>,
+    error: ApolloError
+  ): any {
+    errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER));
+    return EMPTY;
+  }
 }

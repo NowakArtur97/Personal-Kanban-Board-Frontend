@@ -12,7 +12,7 @@ import { ApolloError } from '@apollo/client';
 import { Router } from '@angular/router';
 import { PATHS } from '../../../app.routes';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, EMPTY, Observable } from 'rxjs';
 import UserRole from '../models/user-role.model';
 import { environment } from '../../../../environments/environment';
 
@@ -55,11 +55,8 @@ export class UserService {
         },
         fetchPolicy: 'network-only',
       })
-      .subscribe(
-        ({ data }: any) => this.handleUserResponse(data.loginUser),
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
-      );
+      .pipe(catchError((error: ApolloError) => this.handleErrors(error)))
+      .subscribe(({ data }: any) => this.handleUserResponse(data.loginUser));
   }
 
   registerUser(userDTO: UserDTO): void {
@@ -74,11 +71,8 @@ export class UserService {
           clientName: 'public',
         },
       })
-      .subscribe(
-        ({ data }: any) => this.handleUserResponse(data.registerUser),
-        (error: ApolloError) =>
-          this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER))
-      );
+      .pipe(catchError((error: ApolloError) => this.handleErrors(error)))
+      .subscribe(({ data }: any) => this.handleUserResponse(data.registerUser));
   }
 
   findAllUsers(): void {
@@ -90,12 +84,7 @@ export class UserService {
         },
         fetchPolicy: 'network-only',
       })
-      .subscribe(
-        ({ data }: any) => this.handleUsersResponse(data.users),
-        (error: ApolloError) => {
-          console.log(error.message);
-        }
-      );
+      .subscribe(({ data }: any) => this.handleUsersResponse(data.users));
   }
 
   private handleUserResponse(userData: User): void {
@@ -138,4 +127,9 @@ export class UserService {
 
   createAuthorizationHeader = (): HttpHeaders =>
     new HttpHeaders().set('Authorization', 'Bearer ' + this.user().token);
+
+  private handleErrors(error: ApolloError): any {
+    this.#errors.set(error.message.split(this.ERROR_MESSAGE_DIVIDER));
+    return EMPTY;
+  }
 }
