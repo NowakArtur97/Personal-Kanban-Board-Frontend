@@ -1,27 +1,69 @@
-# PersonalKanbanBoardFrontend
+# Personal-Kanban-Board-Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.3.
+## Table of Contents
 
-## Development server
+- [General info](#general-info)
+- [Features](#features)
+- [Built With](#built-with)
+- [Status](#status)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## General info
 
-## Code scaffolding
+A frontend application for managing tasks on a kanban board, built using Angular and GraphQL.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Repository with backend application: https://github.com/NowakArtur97/Personal-Kanban-Board-Backend
 
-## Build
+## Features
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Kanban Board:
 
-## Running unit tests
+- User login
+- User registration
+- Authentication and authorization using JWT
+- Displaying functionality by role (user and admin roles)
+- Displaying information about tasks and subtasks
+- Creating, updating and deleting tasks
+- Adding subtasks to tasks
+- Deleting all subtasks from a task
+- Creating, updating and deleting subtasks
+- Deleting all tasks (only possible by admin)
+- Changing the user assigned to tasks and subtasks
+- Filtering tasks by the user assigned to them
+- Handling events emitted by the server
+- Input validation
+- Asynchronous input validation (username and email)
+- Blocking access to the board for unlogged users
+- GraphQL used for queries, mutations and subscriptions
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+CloudFormation:
 
-## Running end-to-end tests
+- Creating the resources needed to run a frontend application on an S3 bucket with access to the backend application
+- Importing the backend urls from the Parameter Store
+- Automatic detection of changes in the GitHub repository, building and deploying application using CodeBuild and CodePipeline
+- Generating an environment variables file
+- Automatic cleaning of the S3 buckets with application files and artifacts after deleting a CloudFormation template
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Built With
 
-## Further help
+Frontend build with:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Angular 17.2.0
+- Apollo Angular - 6.0.0
+- GraphQL - 16
+- GraphQL-WS - 6.0.6
+- Typescript - 5.3.2
+
+CloudFormation resources:
+
+- S3 Buckets
+- Bucket Policy
+- IAM Roles
+- CodeBuild (Project)
+- CodePipeline (Pipeline, Webhook)
+- Lambda Function
+- CloudFormation Custom Resource
+- Parameter Store
+
+## Status
+
+Project is: finished
