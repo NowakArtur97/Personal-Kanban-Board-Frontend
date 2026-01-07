@@ -67,6 +67,10 @@ Parameters:
     Type: String
     Description: Name of the parameter for backend URL
     Default: BACKEND_URL
+  ParameterStoreWSURLParameterName:
+    Type: String
+    Description: Name of the parameter for websocket URL
+    Default: WS_URL
 Resources:
   KanbanBoardWebsiteS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -233,7 +237,10 @@ Resources:
                 - Name: build-output-artifacts
               Configuration:
                 ProjectName: !Ref CodeBuildProject
-                EnvironmentVariables: !Sub '[{"name":"${ParameterStoreBackendURLParameterName}", "type": "PARAMETER_STORE", "value": "${ParameterStoreBackendURLParameterName}"}]'
+                EnvironmentVariables: !Sub '[
+                  {"name":"${ParameterStoreBackendURLParameterName}", "type": "PARAMETER_STORE", "value": "${ParameterStoreBackendURLParameterName}"},
+                  {"name":"${ParameterStoreWSURLParameterName}", "type": "PARAMETER_STORE", "value": "${ParameterStoreWSURLParameterName}"}
+                  ]'
               RunOrder: 1
         - Name: Deploy
           Actions:
