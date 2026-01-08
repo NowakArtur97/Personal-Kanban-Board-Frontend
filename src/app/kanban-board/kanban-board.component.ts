@@ -30,16 +30,8 @@ export class KanbanBoardComponent implements OnInit {
   isAdmin = false;
 
   constructor() {
-    effect(() => {
-      if (this.taskService.isTaskFormVisible()) {
-        this.hideScrollbar(true);
-      } else {
-        this.hideScrollbar(false);
-      }
-    });
-    effect(
-      () => (this.isAdmin = this.user().role + '' === UserRole[UserRole.ADMIN])
-    );
+    effect(() => this.setIsAdminValue());
+    effect(() => this.handleScrollbarWithTaskForm());
   }
 
   ngOnInit(): void {
@@ -64,4 +56,15 @@ export class KanbanBoardComponent implements OnInit {
   }
 
   deleteAllTasks = (): void => this.taskService.deleteAllTasks();
+
+  private setIsAdminValue = (): boolean =>
+    (this.isAdmin = this.user().role + '' === UserRole[UserRole.ADMIN]);
+
+  private handleScrollbarWithTaskForm(): void {
+    if (this.taskService.isTaskFormVisible()) {
+      this.hideScrollbar(true);
+    } else {
+      this.hideScrollbar(false);
+    }
+  }
 }

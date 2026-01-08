@@ -28,7 +28,6 @@ export class TaskFormComponent {
   private userService = inject(UserService);
 
   private taskToUpdate = this.taskService.taskToUpdate;
-  private taskIdToAddSubtask = this.taskService.taskIdToAddSubtask;
   users = this.userService.users;
   errors = this.taskService.formErrors;
   isCeateTaskFormVisible = this.taskService.isTaskFormVisible;
@@ -55,17 +54,8 @@ export class TaskFormComponent {
   taskPriorities = ALL_TASKS_PRIORITIES;
 
   constructor() {
-    effect(() => {
-      const taskToUpdate = this.taskToUpdate();
-      if (taskToUpdate) {
-        this.setTaskFormBasedOnTaskToUpdate(taskToUpdate.taskDTO);
-      }
-    });
-    effect(() => {
-      if (!this.taskService.isTaskFormVisible()) {
-        this.taskForm.reset();
-      }
-    });
+    effect(() => this.setTaskFormBasedOnTaskToUpdate());
+    effect(() => this.resetTaskFormIfNotVisible());
   }
 
   submitForm(): void {
@@ -84,7 +74,7 @@ export class TaskFormComponent {
     );
     if (this.taskToUpdate() && this.taskToUpdate()!.isTask) {
       this.taskService.updateTask(taskDTO);
-    } else if (this.taskIdToAddSubtask()) {
+    } else if (this.taskService.taskIdToAddSubtask()) {
       this.taskService.createSubtask(taskDTO);
     } else if (this.taskToUpdate() && !this.taskToUpdate()!.isTask) {
       this.taskService.updateSubtask(taskDTO);
@@ -113,15 +103,25 @@ export class TaskFormComponent {
     };
   }
 
-  private setTaskFormBasedOnTaskToUpdate(task: TaskDTO): void {
-    this.taskForm.setValue({
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      priority: task.priority!!!,
-      targetEndDate: task.targetEndDate,
-      assignedTo: task.assignedTo,
-    });
+  private setTaskFormBasedOnTaskToUpdate(): void {
+    const taskToUpdate = this.taskToUpdate();
+    if (taskToUpdate) {
+      const task = taskToUpdate.taskDTO;
+      this.taskForm.setValue({
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        priority: task.priority!!!,
+        targetEndDate: task.targetEndDate,
+        assignedTo: task.assignedTo,
+      });
+    }
+  }
+
+  private resetTaskFormIfNotVisible(): void {
+    if (!this.taskService.isTaskFormVisible()) {
+      this.taskForm.reset();
+    }
   }
 
   emitHideCeateTaskFormEvent = (): void =>
