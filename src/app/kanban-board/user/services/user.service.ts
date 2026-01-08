@@ -33,7 +33,7 @@ export class UserService {
     email: '',
     token: '',
     expirationTimeInMilliseconds: 0,
-    role: UserRole.ADMIN,
+    role: UserRole.ANONYMOUS,
   });
   #users = signal<User[]>([]);
   #errors = signal<string[]>([]);
