@@ -530,6 +530,7 @@ export class TaskService {
       shouldUpdateView: false,
     });
     this.#taskIdToDeleteSubtasks.set(taskIdToDeleteSubtasks);
+    setTimeout(() => this.#taskIdToDeleteSubtasks.set(null), 1000);
   }
 
   deleteAllTasks(): void {
